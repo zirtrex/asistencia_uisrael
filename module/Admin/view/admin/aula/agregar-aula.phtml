@@ -1,0 +1,63 @@
+<?php
+	$form = $this->form;
+	$form->setAttribute('action', $this->url('aula', array('action' => $this->action)));
+	$form->setAttribute('class', 'form-horizontal');
+	$form->prepare();
+?>
+<div class="row">
+	<div class="col-md-12">
+		<div class="box">
+			<div class="box-title">
+				<h3><?php echo $this->text;?></h3>
+			</div>
+			<div class="box-body padding-md">
+				<?php echo $this->form()->openTag($form);?>
+					
+					<?php echo $this->formHidden($form->get('codAula')); ?>					
+					
+					<div class="form-group">
+						<?php echo $this->formLabel($form->get('numero')) ?>
+						<div class="col-sm-10">
+							<?php echo $this->formInput($form->get('numero')); ?>
+							<?php echo $this->formElementErrors()
+	                            ->setMessageOpenFormat('<div class="alert alert-error alert-dismissable">')
+	                            ->setMessageSeparatorString('</div><div class="alert alert-error alert-dismissable">')
+	                            ->setMessageCloseString('</div>')
+	                            ->render($form->get('numero'));?>
+						</div>
+					</div>
+					<div class="form-group">
+						<?php echo $this->formLabel($form->get('piso')) ?>
+						<div class="col-sm-10">
+							<?php echo $this->formInput($form->get('piso')); ?>
+							<?php echo $this->formElementErrors()
+	                            ->setMessageOpenFormat('<div class="alert alert-error alert-dismissable">')
+	                            ->setMessageSeparatorString('</div><div class="alert alert-error alert-dismissable">')
+	                            ->setMessageCloseString('</div>')
+	                            ->render($form->get('piso'));?>
+						</div>
+					</div>
+					<div class="form-group">
+						<?php echo $this->formLabel($form->get('capacidad')) ?>
+						<div class="col-sm-10">
+							<?php echo $this->formInput($form->get('capacidad')); ?>
+							<?php echo $this->formElementErrors()
+	                            ->setMessageOpenFormat('<div class="alert alert-error alert-dismissable">')
+	                            ->setMessageSeparatorString('</div><div class="alert alert-error alert-dismissable">')
+	                            ->setMessageCloseString('</div>')
+	                            ->render($form->get('capacidad'));?>
+						</div>
+					</div>
+					
+					
+					<div class="form-group">
+						<div class="col-sm-offset-2 col-sm-10">
+							<?php echo $this->formInput($form->get('guardar')); ?>
+						</div>
+					</div>		
+				
+				<?php echo $this->form()->closeTag($form);?>
+			</div>
+		</div>
+	</div>
+</div>

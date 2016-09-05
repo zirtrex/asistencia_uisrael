@@ -1,0 +1,4 @@
+codUsuario;usuario;clave;rol
+1;admin;admin;Administrador
+2;wilmer;krbimv;Administrador
+3;docente;docente;Docente

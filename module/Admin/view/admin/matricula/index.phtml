@@ -1,0 +1,208 @@
+<div class="box">
+	<div class="box-title">
+		<i class="glyphicon glyphicon-new-window"></i>
+		<h3>Matricular Estudiantes</h3>
+		<div class="pull-right box-toolbar">
+			<a class="btn btn-link btn-xs collapse-box" href="#"><i class="fa fa-chevron-up"></i></a>			
+		</div>
+	</div>
+	<div class="box-body">
+	
+		<div class="row">
+		
+			<div class="col-md-12">
+				<div class="col-md-4">
+					<ul class="list-group">
+						<li class="list-group-item">
+							Ciclo Academico: <strong><?php echo $this->cargaAcademica['anio'] . ' - ' . $this->cargaAcademica['semestre'];?></strong>
+						</li>
+						<li class="list-group-item">
+							Modalidad: <strong><?php echo $this->cargaAcademica['modalidad'];?></strong>
+						</li>
+					</ul>
+				</div>
+				<div class="col-md-4">
+					<ul class="list-group">
+						<li class="list-group-item">
+							Curso: <strong><?php echo $this->cargaAcademica['curso'];?></strong>	
+						</li>
+						<li class="list-group-item">
+							Paralelo: <strong><?php echo $this->cargaAcademica['paralelo'];?></strong>
+						</li>
+					</ul>
+				</div>
+				<div class="col-md-4">
+					<ul class="list-group">
+						<li class="list-group-item">
+							<a class="btn btn-labeled palette-green-sea btn-color" href="<?php echo $this->url("carga-academica"); ?>"><span class="btn-label"><i class="glyphicon glyphicon-new-window"></i></span>Seleccionar carga académica</a>
+						</li>
+					</ul>
+				</div>
+			</div>			
+			
+			<div class="col-md-12">
+				<div class="row">
+					<div class="col-md-7">				
+									
+						<div class="col-md-12">
+							<div class="box">
+								<div class="box-title">
+									<i class="fa fa-fw fa-group"></i>
+									<h3>Estudiantes</h3>
+								</div>
+								<div class="box-body">
+									
+									<?php if($this->estudiantesMatriculados->count() != 0):?>
+										<table class="table table-hover table-striped">
+										    <thead>
+										    <tr>
+										        <th>Código</th>
+										        <th>Fecha de matrícula</th>
+										        <th>Nombres</th>
+										        <th>Primer apellido</th>      
+										        <th>Segundo apellido</th>
+										        <th>Acciones</th>			        
+										    </tr>
+										    </thead>
+										    <tbody>
+										    <?php foreach ($this->estudiantesMatriculados as $estudiante): ?>    
+										    <tr>     
+										        
+										        <td>
+										        	<?php echo $this->escapeHtml($estudiante['codEstudiante']);?>
+										        </td>					        
+										        
+										        <td>
+										        	<?php echo $this->escapeHtml($estudiante['fechaMatricula']);?>
+										        </td>
+										        
+										        <td>
+										        	<?php echo $this->escapeHtml($estudiante['nombres']);?>
+										        </td>
+										        
+										        <td>
+										        	<?php echo $this->escapeHtml($estudiante['primerApellido']);?>
+										        </td>
+										        
+										        <td>
+										        	<?php echo $this->escapeHtml($estudiante['segundoApellido']);?>
+										        </td>		        
+										        
+										        <td>
+													<a class="btn btn-danger btn-sm" href="<?php echo $this->url('matricula', array(
+																				'action' => 'eliminar-estudiante',
+																				'codcarreraprofesional' => $this->cargaAcademica['codCarreraProfesional'],
+															        			'codcicloacademico' => $this->cargaAcademica['codCicloAcademico'],
+															        			'codcurso' => $this->cargaAcademica['codCurso'],
+															        			'codmodalidad' => $this->cargaAcademica['codModalidad'],
+															        			'paralelo' => $this->cargaAcademica['paralelo'],
+																				'codestudiante' => $this->escapeHtml($estudiante['codEstudiante']),
+																			));?>">
+														<i class="fa fa-trash-o "></i> 
+													</a>
+												</td>
+										    </tr>
+										    <?php endforeach; ?>
+										    </tbody>   
+										</table>
+										<?php else: ?>
+										
+										<h2>No hay estudiantes matriculados.</h2>
+									
+									<?php endif;?>
+								
+								</div>	
+							</div>
+						</div>
+					</div>
+					
+					<div class="col-md-5">								
+						<div class="col-md-12">
+							<div class="box">
+								<div class="box-title">
+									<form method="post" action="<?php echo $this->url('matricula', array(
+																				'action' => 'index',
+																				'codcarreraprofesional' => $this->cargaAcademica['codCarreraProfesional'],
+															        			'codcicloacademico' => $this->cargaAcademica['codCicloAcademico'],
+															        			'codcurso' => $this->cargaAcademica['codCurso'],
+															        			'codmodalidad' => $this->cargaAcademica['codModalidad'],
+															        			'paralelo' => $this->cargaAcademica['paralelo']
+																			));?>">
+										<div class="input-group">						
+											<input type="text" name="texto" class="form-control" placeholder="Buscar estudiantes">
+											<span class="input-group-addon">
+												<input type="submit" value="buscar" class="btn btn-labeled">
+											</span>
+										</div>
+									</form>
+								</div>
+								<div class="box-body">
+									
+									<?php if($this->estudiantesEncontrados != null):?>
+										<?php if($this->estudiantesEncontrados->count() != 0):?>
+											<table class="table table-hover table-striped">
+											    <thead>
+											    <tr>
+											        <th>Código</th>
+											        <th>Nombres</th>
+											        <th>Primer apellido</th>      
+											        <th>Segundo apellido</th>
+											        <th>Acciones</th>			        
+											    </tr>
+											    </thead>
+											    <tbody>
+											    <?php foreach ($this->estudiantesEncontrados as $estudiante): ?>    
+											    <tr>     
+											        
+											        <td>
+											        	<?php echo $this->escapeHtml($estudiante['codEstudiante']);?>
+											        </td>							
+											        
+											        <td>
+											        	<div class="get-v" data-c="nombres"><?php echo $this->escapeHtml($estudiante['nombres']);?></div>
+											        </td>
+											        
+											        <td>
+											        	<div class="get-v" data-c="primerApellido"><?php echo $this->escapeHtml($estudiante['primerApellido']);?></div>
+											        </td>
+											        
+											        <td>
+											        	<div class="get-v" data-c="segundoApellido"><?php echo $this->escapeHtml($estudiante['segundoApellido']);?></div>
+											        </td>		        
+											        
+											        <td>
+														<a title="Matricular estudiante" class="btn btn-success btn-sm" href="<?php echo $this->url('matricula', array(
+																											'action' => 'matricular-estudiante',
+																											'codcarreraprofesional' => $this->cargaAcademica['codCarreraProfesional'],
+																						        			'codcicloacademico' => $this->cargaAcademica['codCicloAcademico'],
+																						        			'codcurso' => $this->cargaAcademica['codCurso'],
+																						        			'codmodalidad' => $this->cargaAcademica['codModalidad'],
+																						        			'paralelo' => $this->cargaAcademica['paralelo'],
+																											'codestudiante' => $this->escapeHtml($estudiante['codEstudiante']),
+																										));?>" >
+															<i class="fa fa-fw fa-plus-square"></i> 
+														</a>
+													</td>
+											    </tr>
+											    <?php endforeach; ?>
+											    </tbody>   
+											</table>
+										<?php else: ?>
+											<p>No se han encontrado resultados.</p>	
+										<?php endif;?>
+									<?php else: ?>
+										
+										<p>Inicie una búsqueda.</p>
+									
+									<?php endif;?>
+									
+								</div>	
+							</div>
+						</div>												
+					</div>
+				</div>
+			</div>			
+		</div>	
+				
+	</div>
+</div>

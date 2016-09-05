@@ -1,0 +1,5 @@
+fechaInicioClases;codCicloAcademico;codCurso;esComun;codAreaConocimiento;codCarreraProfesional;paralelo;codModalidad;codAula;codSeccion;codDocente
+2015-10-01;9;869;Si;null;null;A;2;1;3;1
+2015-10-01;9;869;No;1;null;B;2;1;3;1
+2015-10-01;9;870;No;1;1;A;2;1;3;1
+2015-10-01;9;870;Si;null;null;B;2;1;3;1

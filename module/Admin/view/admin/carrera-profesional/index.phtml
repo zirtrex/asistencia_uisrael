@@ -1,0 +1,104 @@
+<?php $url_order = ($this->order == 'ASC') ? 'DESC' : 'ASC'; ?>
+
+<?php
+	$buscarForm = $this->buscarForm;
+	$buscarForm->setAttribute('action', $this->url('carrera-profesional'));
+	$buscarForm->prepare();
+?>
+
+<div class="box">
+	<div class="box-title">
+		<i class="fa fa-fw fa-graduation-cap"></i>
+		<h3>Carreras Profesionales</h3>
+		<div class="pull-right box-toolbar">
+			<a class="btn btn-link btn-xs collapse-box" href="#"><i class="fa fa-chevron-up"></i></a>			
+		</div>
+	</div>
+	<div class="box-body">
+	
+		<div class="row">
+		
+			<div class="col-lg-6 col-md-6 col-sm-4 col-xs-12 margin-bottom">
+				<a class="btn btn-labeled btn-success" href="<?php echo $this->url("carrera-profesional", array('action' => 'agregar-carrera-profesional')); ?>"><span class="btn-label"><i class="fa fa-fw fa-plus-square"></i></span>Agregar</a>
+			</div>
+			
+			<div class="col-lg-6 col-md-6 col-sm-8 col-xs-12 margin-bottom">
+				<?php echo $this->form()->openTag($buscarForm);?>
+					<div class="input-group">						
+						<?php echo $this->formInput($buscarForm->get('texto')); ?>
+						<span class="input-group-btn">
+							<?php echo $this->formInput($buscarForm->get('buscar')); ?>
+						</span>
+					</div>
+				<?php echo $this->form()->closeTag($buscarForm);?>
+			</div>
+			
+		</div>
+				
+		<hr>
+		
+						<?php
+                            if ($this->messages):
+                                foreach ($this->messages as $msg):
+                                    ?>
+                                    <div class="alert alert-error alert-dismissable bg-success">                                        
+                                        <?php echo $msg; ?>
+                                    </div>
+                                <?php
+                                endforeach;
+                            endif;
+                       	?>	
+		
+		<?php if($this->carrerasProfesionales->count() != 0):?>
+			<table class="table table-hover table-striped" data-server="cp">
+			    <thead>
+			    <tr>
+			        <th><a href="<?php echo $this->url('carrera-profesional', array('action' => 'index', 'orderby' => 'codcarreraprofesional', 'order' => $url_order)); ?>">Código<?php if ($this->orderby == 'codcarreraprofesional'): ?><i class="glyphicon glyphicon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a></th>
+			        <th>Identificador</th>
+			        <th><a href="<?php echo $this->url('carrera-profesional', array('action' => 'index', 'orderby' => 'carreraprofesional', 'order' => $url_order)); ?>">Carrera Profesional<?php if ($this->orderby == 'carreraprofesional'): ?><i class="glyphicon glyphicon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a></th>
+			        <th>Area del Conocimiento</th>
+			        <th>Acciones</th>
+			    </tr>
+			    </thead>
+			    <tbody>
+			    <?php foreach ($this->carrerasProfesionales as $carrera) : ?>    
+			    <tr>        
+			        <td><?php echo $this->escapeHtml($carrera['codCarreraProfesional']);?></td>
+			        
+			        <td><?php echo $this->escapeHtml($carrera['codigo']);?></td>
+			        
+			        <td><?php echo $this->escapeHtml($carrera['carreraProfesional']);?></td>
+			        
+			        <td><?php echo $this->escapeHtml($carrera['areaConocimiento']);?></td>	        
+			        
+			        <td>
+						<a title="Editar carrera profesional" class="btn btn-info btn-sm" href="<?php echo $this->url('carrera-profesional', array('action' => 'editar-carrera-profesional','codcarreraprofesional' => $carrera['codCarreraProfesional']));?>" >
+							<i class="fa fa-edit"></i>  
+						</a>
+						<a title="Eliminar carrera profesional" class="btn btn-danger btn-sm" href="<?php echo $this->url('carrera-profesional', array('action' => 'eliminar-carrera-profesional', 'codcarreraprofesional' => $carrera['codCarreraProfesional']));?>">
+							<i class="fa fa-trash-o "></i> 
+						</a>
+					</td>
+			    </tr>
+			    <?php endforeach; ?>
+			    </tbody>
+			    <tfoot>
+			    <tr>
+			        <th>Código</th>
+			        <th>Identificador</th>
+			        <th>Carrera Profesional</th>
+			        <th>Area del Conocimiento</th>
+			        <th>Acciones</th>
+			    </tr>
+			    </tfoot>    
+			</table>
+
+			<?php echo $this->paginationControl($this->carrerasProfesionales, 'Sliding', 'paginator', array('route' => 'carrera-profesional', 'action' => 'index', 'orderby' => $this->orderby, 'order' => $order));?>
+
+			<?php else: ?>
+			
+			<h2>No se han encontrado resultados.</h2>
+		
+		<?php endif;?>			
+	</div>
+</div>

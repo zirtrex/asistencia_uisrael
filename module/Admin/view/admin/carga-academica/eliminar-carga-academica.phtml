@@ -1,0 +1,31 @@
+<?php
+
+ $title = 'Eliminar Carga Académica';
+ $this->headTitle($title);
+
+ ?>
+
+ <h1><?php echo $this->escapeHtml($title); ?></h1>
+
+ <h3>Esta seguro que desea eliminar la Carga Académica: </h3>
+ <p>Ciclo Académico: <?php echo (int) $this->cargaAcademica['codCicloAcademico']; ?> </p>
+ <p>Código de Curso: <?php echo (int) $this->cargaAcademica['codCurso']; ?></p>
+ <p>Código de Modalidad: <?php echo (int) $this->cargaAcademica['codModalidad']; ?></p>
+ <p>Paralelo: <?php echo $this->cargaAcademica['paralelo']; ?></p> 
+ 
+ <hr />
+ 
+ <p>La eliminación es definitiva e irreversible</p>
+ 
+  <p><em>Recuerda que la carga académica está enlazada a las clases de los docentes, su eliminación podría derivar en una inconsistencia de datos</em></p>
+ 
+ <form action="<?php echo $this->url('carga-academica', array('action' => 'eliminar-carga-academica')); ?>" method="post">
+
+	 <input type="hidden" name="codCicloAcademico" value="<?php echo (int) $this->cargaAcademica['codCicloAcademico']; ?>" />
+	 <input type="hidden" name="codCurso" value="<?php echo (int) $this->cargaAcademica['codCurso']; ?>" />
+	 <input type="hidden" name="codModalidad" value="<?php echo (int) $this->cargaAcademica['codModalidad']; ?>" />
+	 <input type="hidden" name="paralelo" value="<?php echo $this->cargaAcademica['paralelo']; ?>" />
+	 <input type="submit" name="eliminar" value="si" />
+	 <input type="submit" name="eliminar" value="no" />
+
+ </form>

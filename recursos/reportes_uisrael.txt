@@ -1,0 +1,18 @@
+Reporte de MATERIAS
+
+1. Porcentaje de avance de cada materia por carrera y por docente
+2. Los 10 Cursos o materias que mejor porcentaje de avance tienen y las 10 que peor avance tiene. Igual por carrera.
+3. Reporte del porcentaje de avance de las materias por competencias generales . Igual agrupadas por carrera
+
+Reporte de DOCENTES
+
+4. Los docentes que más puntuales General y por carrera
+5. Docentes más impuntuales General y por carrera
+6. Los 10 Docentes que más han cumplido con el silabo General y por carrera . (Promedio del porcentaje de todos sus cursos)
+7. Los 10 Docentes que menos han cumplido con el silabo General y por carrera
+8. Carrera que más cumplimiento de silabo tiene. (promedio del porcentaje de todas las materias de la carrera)
+9. Carrera que más docentes puntuales tiene (Promedio del porcentaje de todos los docentes)
+
+Reporte de Estudiantes
+
+10. Porcentaje de asistencia de los estudiantes por cada materia

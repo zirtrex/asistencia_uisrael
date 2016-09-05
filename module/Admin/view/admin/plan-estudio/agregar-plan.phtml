@@ -1,0 +1,76 @@
+<?php
+	$form = $this->form;
+	$form->setAttribute('action', $this->url('plan-estudio', array('action' => $this->action)));
+	$form->setAttribute('class', 'form-horizontal');
+	$form->prepare();
+?>
+<div class="row">
+	<div class="col-md-12">
+		<div class="box">
+			<div class="box-title">
+				<h3><?php echo $this->text; ?> Plan de Estudio</h3>
+			</div>
+			<div class="box-body padding-md">
+				<?php echo $this->form()->openTag($form);?>
+					
+					<?php echo $this->formHidden($form->get('codPlanEstudio')); ?>					
+					
+					<div class="form-group">
+						<?php echo $this->formLabel($form->get('titulo')) ?>
+						<div class="col-sm-10">
+							<?php echo $this->formInput($form->get('titulo')); ?>
+							<?php echo $this->formElementErrors()
+	                            ->setMessageOpenFormat('<div class="alert alert-error alert-dismissable">')
+	                            ->setMessageSeparatorString('</div><div class="alert alert-error alert-dismissable">')
+	                            ->setMessageCloseString('</div>')
+	                            ->render($form->get('titulo'));?>
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<?php echo $this->formLabel($form->get('anioPlanEstudio')) ?>
+						<div class="col-sm-10">
+							<?php echo $this->formInput($form->get('anioPlanEstudio')); ?>
+							<?php echo $this->formElementErrors()
+	                            ->setMessageOpenFormat('<div class="alert alert-error alert-dismissable">')
+	                            ->setMessageSeparatorString('</div><div class="alert alert-error alert-dismissable">')
+	                            ->setMessageCloseString('</div>')
+	                            ->render($form->get('anioPlanEstudio'));?>
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<?php echo $this->formLabel($form->get('numeroCiclos')) ?>
+						<div class="col-sm-10">
+							<?php echo $this->formSelect($form->get('numeroCiclos')); ?>
+							<?php echo $this->formElementErrors()
+	                            ->setMessageOpenFormat('<div class="alert alert-error alert-dismissable">')
+	                            ->setMessageSeparatorString('</div><div class="alert alert-error alert-dismissable">')
+	                            ->setMessageCloseString('</div>')
+	                            ->render($form->get('numeroCiclos'));?>
+						</div>
+					</div>			
+					
+					<div class="form-group">
+						<?php echo $this->formLabel($form->get('codCarreraProfesional')) ?>
+						<div class="col-sm-10">
+							<?php echo $this->formSelect($form->get('codCarreraProfesional')); ?>
+							<?php echo $this->formElementErrors()
+	                            ->setMessageOpenFormat('<div class="alert alert-error alert-dismissable">')
+	                            ->setMessageSeparatorString('</div><div class="alert alert-error alert-dismissable">')
+	                            ->setMessageCloseString('</div>')
+	                            ->render($form->get('codCarreraProfesional'));?>
+						</div>
+					</div>				
+					
+					<div class="form-group">
+						<div class="col-sm-offset-2 col-sm-10">
+							<?php echo $this->formInput($form->get('guardar')); ?>
+						</div>
+					</div>		
+				
+				<?php echo $this->form()->closeTag($form);?>
+			</div>
+		</div>
+	</div>
+</div>

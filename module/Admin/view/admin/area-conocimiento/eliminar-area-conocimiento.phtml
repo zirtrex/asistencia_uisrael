@@ -1,0 +1,20 @@
+<?php
+
+ $title = 'Eliminar Area del Conocimiento';
+ $this->headTitle($title);
+
+ ?>
+
+ <h1><?php echo $this->escapeHtml($title); ?></h1>
+
+ <h3>Esta seguro que desea eliminar el Área del Conocimiento: <strong><?php echo $this->escapeHtml($this->areaConocimiento['areaConocimiento']);?></strong></h3>
+ 
+ <p>La eliminación es definitiva e irreversible</p>
+ 
+ <form action="<?php echo $this->url('area-conocimiento', array('action' => 'eliminar-area-conocimiento')); ?>" method="post">
+
+	 <input type="hidden" name="codAreaConocimiento" value="<?php echo (int) $this->areaConocimiento['codAreaConocimiento']; ?>" />
+	 <input type="submit" name="eliminar" value="si" />
+	 <input type="submit" name="eliminar" value="no" />
+
+ </form>

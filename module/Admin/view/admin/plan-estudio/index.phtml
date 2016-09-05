@@ -1,0 +1,105 @@
+<?php $url_order = ($this->order == 'ASC') ? 'DESC' : 'ASC'; ?>
+
+<?php
+	$buscarForm = $this->buscarForm;
+	$buscarForm->setAttribute('action', $this->url('plan-estudio'));
+	$buscarForm->prepare();
+?>
+
+<div class="box">
+	<div class="box-title">
+		<i class="fa fa-fw fa-file-text"></i>
+		<h3>Plan de Estudio</h3>
+		<div class="pull-right box-toolbar">
+			<a class="btn btn-link btn-xs collapse-box" href="#"><i class="fa fa-chevron-up"></i></a>			
+		</div>
+	</div>
+	<div class="box-body">
+	
+		<div class="row">
+		
+			<div class="col-lg-6 col-md-6 col-sm-4 col-xs-12 margin-bottom">
+				<a class="btn btn-labeled btn-success" href="<?php echo $this->url("plan-estudio", array('action' => 'agregar-plan')); ?>"><span class="btn-label"><i class="fa fa-fw fa-plus-square"></i></span>Agregar</a>
+			</div>
+			
+			<div class="col-lg-6 col-md-6 col-sm-8 col-xs-12 margin-bottom"><!-- BUSCAR -->					
+				<?php echo $this->form()->openTag($buscarForm);?>
+					<div class="input-group">						
+						<?php echo $this->formInput($buscarForm->get('texto')); ?>
+						<span class="input-group-btn">
+							<?php echo $this->formInput($buscarForm->get('buscar')); ?>
+						</span>
+					</div>
+				<?php echo $this->form()->closeTag($buscarForm);?>				
+			</div><!-- BUSCAR  END -->
+			
+		</div>
+		
+		<hr>	
+		
+		<?php if($this->planesEstudio->count() != 0):?>
+			<table class="table table-hover table-striped">
+			    <thead>
+			    <tr>
+			        <th><a href="<?php echo $this->url('plan-estudio', array('action' => 'index', 'orderby' => 'codplanestudio', 'order' => $url_order)); ?>">Código<?php if ($this->orderby == 'codplanestudio'): ?><i class="glyphicon glyphicon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a></th>
+			        <th><a href="<?php echo $this->url('plan-estudio', array('action' => 'index', 'orderby' => 'titulo', 'order' => $url_order)); ?>">Título<?php if ($this->orderby == 'titulo'): ?><i class="glyphicon glyphicon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a></th>
+			        <th>Año</th>
+			        <th>Número de Ciclos</th>      
+			        <th>Carrera Profesional</th>
+			        <th>Acciones</th>			        
+			    </tr>
+			    </thead>
+			    <tbody>
+			    <?php foreach ($this->planesEstudio as $planEstudio): ?>    
+			    <tr>     
+			        
+			        <td><?php echo $this->escapeHtml($planEstudio['codPlanEstudio']);?></td>
+			        
+			        <td>
+			        	<?php echo $this->escapeHtml($planEstudio['titulo']);?>
+			        </td>
+			        
+			        <td>
+			        	<?php echo $this->escapeHtml($planEstudio['anioPlanEstudio']);?>
+			        </td>
+			        
+			        <td>
+			        	<?php echo $this->escapeHtml($planEstudio['numeroCiclos']);?>
+			        </td>
+			        
+			        <td>
+			        	<?php echo $this->escapeHtml($planEstudio['carreraProfesional']);?>
+			        </td>		        
+			        
+			        <td>
+						<a title="Editar plan de estudio" class="btn btn-info btn-sm" href="<?php echo $this->url('plan-estudio', array('action' => 'editar-plan', 'codplanestudio' => $this->escapeHtml($planEstudio['codPlanEstudio'])));?>">
+							<i class="fa fa-edit"></i>  
+						</a>
+						<a title="Eliminar plan de estudio" class="btn btn-danger btn-sm" href="<?php echo $this->url('plan-estudio', array('action' => 'eliminar-plan', 'codplanestudio' => $this->escapeHtml($planEstudio['codPlanEstudio'])));?>">
+							<i class="fa fa-trash-o"></i> 
+						</a>
+					</td>
+			    </tr>
+			    <?php endforeach; ?>
+			    </tbody>
+			    <tfoot>
+			    <tr>
+			        <th>Código</th>
+			        <th>Título</th>
+			        <th>Año</th>
+			        <th>Número de Ciclos</th>      
+			        <th>Carrera Profesional</th>
+			        <th>Acciones</th>
+			    </tr>
+			    </tfoot>    
+			</table>
+			
+			<?php echo $this->paginationControl($this->planesEstudio, 'Sliding', 'paginator', array('route' => 'plan-estudio', 'action' => 'index', 'orderby' => $this->orderby, 'order' => $url_order));?>
+
+			<?php else: ?>
+			
+			<h2>No se han encontrado resultados.</h2>
+		
+		<?php endif;?>			
+	</div>
+</div>

@@ -1,0 +1,88 @@
+<?php $url_order = ($this->order == 'ASC') ? 'DESC' : 'ASC'; ?>
+
+<?php
+	$buscarForm = $this->buscarForm;
+	$buscarForm->setAttribute('action', $this->url('ciclo-academico'));
+	$buscarForm->prepare();
+?>
+
+<div class="box">
+	<div class="box-title">
+		<i class="fa fa-fw fa-ellipsis-h"></i>
+		<h3>Ciclo Académico</h3>
+		<div class="pull-right box-toolbar">
+			<a class="btn btn-link btn-xs collapse-box" href="#"><i class="fa fa-chevron-up"></i></a>			
+		</div>
+	</div>
+	<div class="box-body">
+	
+		<div class="row">
+		
+			<div class="col-md-6">
+				<a class="btn btn-labeled btn-success" href="<?php echo $this->url("ciclo-academico", array('action' => 'agregar-ciclo')); ?>"><span class="btn-label"><i class="fa fa-fw fa-plus-square"></i></span>Agregar</a>
+			</div>
+			
+			<div class="col-lg-6 col-md-6 col-sm-8 col-xs-12 margin-bottom">
+				<?php echo $this->form()->openTag($buscarForm);?>
+					<div class="input-group">						
+						<?php echo $this->formInput($buscarForm->get('texto')); ?>
+						<span class="input-group-btn">
+							<?php echo $this->formInput($buscarForm->get('buscar')); ?>
+						</span>
+					</div>
+				<?php echo $this->form()->closeTag($buscarForm);?>
+			</div>
+			
+		</div>
+		
+		<hr>	
+		
+		<?php if($this->ciclosAcademicos->count() != 0):?>
+			<table class="table table-hover table-striped" data-server="ciac">
+			    <thead>
+			    <tr>
+			        <th><a href="<?php echo $this->url('ciclo-academico', array('action' => 'index', 'orderby' => 'codcicloacademico', 'order' => $url_order)); ?>">Código<?php if ($this->orderby == 'codcicloacademico'): ?><i class="glyphicon glyphicon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a></th>
+			        <th><a href="<?php echo $this->url('ciclo-academico', array('action' => 'index', 'orderby' => 'anio', 'order' => $url_order)); ?>">Año<?php if ($this->orderby == 'anio'): ?><i class="glyphicon glyphicon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a></th>
+			        <th>Semestre</th>
+			        <th>Acciones</th>		        
+			    </tr>
+			    </thead>
+			    <tbody>
+			    <?php foreach ($this->ciclosAcademicos as $cicloAcademico): ?>
+			    <tr>     
+			        
+			        <td><?php echo $this->escapeHtml($cicloAcademico['codCicloAcademico']);?></td>
+			        
+			        <td><?php echo $this->escapeHtml($cicloAcademico['anio']);?></td>
+			        
+			        <td><?php echo $this->escapeHtml($cicloAcademico['semestre']);?></td>       
+			        
+			        <td>
+						<a title="Editar ciclo académico" class="btn btn-info btn-sm" href="<?php echo $this->url('ciclo-academico', array('action' => 'editar-ciclo', 'codcicloacademico' => $this->escapeHtml($cicloAcademico['codCicloAcademico'])));?>" >
+							<i class="fa fa-edit "></i>  
+						</a>
+						<a title="Eliminar ciclo académico" class="btn btn-danger btn-sm delete-this" id="delete-<?php echo $this->escapeHtml($cicloAcademico['codCicloAcademico']);?>" href="<?php echo $this->url('ciclo-academico', array('action' => 'eliminar-ciclo', 'codcicloacademico' => $this->escapeHtml($cicloAcademico['codCicloAcademico'])));?>">
+							<i class="fa fa-trash-o "></i> 
+						</a>
+					</td>
+			    </tr>
+			    <?php endforeach; ?>
+			    </tbody>
+			    <tfoot>
+			    <tr>
+			        <th>Código</th>
+			        <th>Año</th>
+			        <th>Semestre</th>
+			        <th>Acciones</th>
+			    </tr>
+			    </tfoot>    
+			</table>
+
+			<?php echo $this->paginationControl($this->ciclosAcademicos, 'Sliding', 'paginator', array('route' => 'ciclo-academico', 'action' => 'index', 'orderby' => $this->orderby, 'order' => $order));?>
+			<?php else: ?>
+			
+			<h2>No se han encontrado resultados.</h2>
+		
+		<?php endif;?>			
+	</div>
+</div>

@@ -1,0 +1,94 @@
+<?php $url_order = ($this->order == 'ASC') ? 'DESC' : 'ASC'; ?>
+
+<?php
+	$buscarForm = $this->buscarForm;
+	$buscarForm->setAttribute('action', $this->url('aula'));
+	$buscarForm->prepare();
+?>
+
+<div class="box">
+	<div class="box-title">
+		<i class="fa fa-fw fa-bank"></i>
+		<h3>Aulas</h3>
+		<div class="pull-right box-toolbar">
+			<a class="btn btn-link btn-xs collapse-box" href="#"><i class="fa fa-chevron-up"></i></a>			
+		</div>
+	</div>
+	<div class="box-body">
+	
+		<div class="row">
+		
+			<div class="col-md-6">
+				<a class="btn btn-labeled btn-success" href="<?php echo $this->url("aula", array('action' => 'agregar-aula')); ?>"><span class="btn-label"><i class="fa fa-fw fa-plus-square"></i></span>Agregar</a>
+			</div>
+			
+			<div class="col-lg-6 col-md-6 col-sm-8 col-xs-12 margin-bottom">
+				<?php echo $this->form()->openTag($buscarForm);?>
+					<div class="input-group">						
+						<?php echo $this->formInput($buscarForm->get('texto')); ?>
+						<span class="input-group-btn">
+							<?php echo $this->formInput($buscarForm->get('buscar')); ?>
+						</span>
+					</div>
+				<?php echo $this->form()->closeTag($buscarForm);?>
+			</div>
+			
+		</div>
+				
+		<hr>		
+		
+		<?php if($this->aulas->count() != 0):?>
+			<table class="table table-hover table-striped" data-server="aula">
+			    <thead>
+			    <tr>
+			        <th><a href="<?php echo $this->url('aula', array('action' => 'index', 'orderby' => 'codaula', 'order' => $url_order)); ?>">Código<?php if ($this->orderby == 'codaula'): ?><i class="glyphicon glyphicon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a></th>
+			        <th><a href="<?php echo $this->url('aula', array('action' => 'index', 'orderby' => 'numero', 'order' => $url_order)); ?>">Número<?php if ($this->orderby == 'numero'): ?><i class="glyphicon glyphicon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a></th>
+			        <th>Piso</th>
+			        <th>Capacidad</th>
+			        <th>Estado</th>
+			        <th>Acciones</th>
+			    </tr>
+			    </thead>
+			    <tbody>
+			    <?php foreach ($this->aulas as $aula) : ?>    
+			    <tr>        
+			        <td>
+			        	<?php echo $this->escapeHtml($aula['codAula']);?>
+			        </td>
+			        
+			        <td><?php echo $this->escapeHtml($aula['numero']);?></td>
+			        <td><?php echo $this->escapeHtml($aula['piso']);?></td>
+			        <td><?php echo $this->escapeHtml($aula['capacidad']);?></td>
+			        <td><?php echo $this->escapeHtml($aula['estado']);?></td>	        
+			        
+			        <td>
+						<a class="btn btn-info btn-sm" href="<?php echo $this->url('aula', array('action' => 'editar-aula','codaula'=>$this->escapeHtml($aula['codAula'])));?>" >
+							<i class="fa fa-edit"></i>  
+						</a>
+						<a class="btn btn-danger btn-sm delete-this" id="delete-<?php echo $this->escapeHtml($aula['codAula']);?>" href="<?php echo $this->url('aula', array('action' => 'eliminar-aula','codaula'=>$this->escapeHtml($aula['codAula'])));?>">
+							<i class="fa fa-trash-o"></i> 
+						</a>
+					</td>
+			    </tr>
+			    <?php endforeach; ?>
+			    </tbody>
+			    <tfoot>
+			    <tr>
+			        <th>Código</th>
+			        <th>Número</th>
+			        <th>Piso</th>
+			        <th>Capacidad</th>
+			        <th>Estado</th>
+			        <th>Acciones</th>
+			    </tr>
+			    </tfoot>    
+			</table>
+
+			<?php echo $this->paginationControl($this->aulas, 'Sliding', 'paginator', array('route' => 'aula', 'action' => 'index', 'orderby' => $this->orderby, 'order' => $order));?>
+			<?php else: ?>
+			
+			<h2>No se han encontrado resultados.</h2>
+		
+		<?php endif;?>			
+	</div>
+</div>

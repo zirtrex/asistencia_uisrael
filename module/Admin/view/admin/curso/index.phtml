@@ -1,0 +1,112 @@
+<?php $url_order = ($this->order == 'ASC') ? 'DESC' : 'ASC'; ?>
+
+<?php
+	$buscarForm = $this->buscarForm;
+	$buscarForm->setAttribute('action', $this->url('curso'));
+	$buscarForm->prepare();
+?>
+
+<div class="box">
+	<div class="box-title">
+		<i class="fa fa-fw fa-cube"></i>
+		<h3>Curso</h3>
+		<div class="pull-right box-toolbar">
+			<a class="btn btn-link btn-xs collapse-box" href="#"><i class="fa fa-chevron-up"></i></a>			
+		</div>
+	</div>
+	<div class="box-body">
+	
+		<div class="row">
+		
+			<div class="col-md-6">
+				<a class="btn btn-labeled btn-success" href="<?php echo $this->url("curso", array('action' => 'agregar-curso')); ?>"><span class="btn-label"><i class="fa fa-fw fa-plus-square"></i></span>Agregar</a>
+				<a class="btn btn-labeled palette-green-sea btn-color" href="<?php echo $this->url("carga-academica"); ?>"><span class="btn-label"><i class="glyphicon glyphicon-new-window"></i></span>Ver carga académica</a>				
+			</div>
+			
+			<div class="col-lg-6 col-md-6 col-sm-8 col-xs-12 margin-bottom">
+				<?php echo $this->form()->openTag($buscarForm);?>
+					<div class="input-group">						
+						<?php echo $this->formInput($buscarForm->get('texto')); ?>
+						<span class="input-group-btn">
+							<?php echo $this->formInput($buscarForm->get('buscar')); ?>
+						</span>
+					</div>
+				<?php echo $this->form()->closeTag($buscarForm);?>
+			</div>
+			
+		</div>
+		
+		<hr>	
+		
+		<?php if($this->cursos->count() != 0):?>
+			<table class="table table-hover table-striped" data-server="cur">
+			    <thead>
+			    <tr>
+			        <th><a href="<?php echo $this->url('curso', array('action' => 'index', 'orderby' => 'codcurso', 'order' => $url_order)); ?>">Código <?php if ($this->orderby == 'codcurso'): ?><i class="glyphicon glyphicon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a></th>
+			        <th>Identificador</th>
+			        <th><a href="<?php echo $this->url('curso', array('action' => 'index', 'orderby' => 'curso', 'order' => $url_order)); ?>">Curso<?php if ($this->orderby == 'curso'): ?><i class="glyphicon glyphicon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a></th>
+			        <th>Nivel</th>
+			        <th>Abreviatura</th>
+			        <th>Créditos</th>      
+			        <th>Plan de Estudio</th>
+			        <th>Acciones</th>			        
+			    </tr>
+			    </thead>
+			    <tbody>
+			    <?php foreach ($this->cursos as $curso): ?>    
+			    <tr>     
+			        
+			        <td><?php echo $this->escapeHtml($curso['codCurso']);?></td>
+			        
+			        <td><?php echo $this->escapeHtml($curso['codigo']);?></td>
+			        
+			        <td><?php echo $this->escapeHtml($curso['curso']);?></td>
+			        
+			        <td><?php echo $this->escapeHtml($curso['nivel']);?></td>
+			        
+			        <td><?php echo $this->escapeHtml($curso['abreviatura']);?></td>
+			        
+			        <td><?php echo $this->escapeHtml($curso['creditos']);?></td>
+			        
+			        <td><?php echo $this->escapeHtml($curso['titulo']);?></td>
+			        
+			        <td>
+			        	<a title="Asignar carga académica" href="<?php echo $this->url('carga-academica', array('action' => 'agregar-carga-academica', 'codcurso' => $this->escapeHtml($curso['codCurso'])));?>" class="btn palette-green-sea btn-color btn-sm">
+							<i class="glyphicon glyphicon-new-window"></i>
+						</a>			        	
+						<a title="Asignar sílabo" href="<?php echo $this->url('silabo', array('action' => 'index', 'codcurso' => $this->escapeHtml($curso['codCurso'])));?>" class="btn palette-sun-flower btn-color btn-sm">
+							<i class="glyphicon glyphicon-tasks"></i> 
+						</a>
+						<a title="Editar curso" class="btn btn-info btn-sm" href="<?php echo $this->url('curso', array('action' => 'editar-curso', 'codcurso' => $this->escapeHtml($curso['codCurso'])));?>" >
+							<i class="fa fa-edit"></i>  
+						</a>
+						<a title="Eliminar curso" class="btn btn-danger btn-sm delete-this" id="delete-<?php echo $this->escapeHtml($curso['codCurso']);?>" href="<?php echo $this->url('curso', array('action' => 'eliminar-curso', 'codcurso' => $this->escapeHtml($curso['codCurso'])));?>" >
+							<i class="fa fa-trash-o"></i> 
+						</a>
+					</td>
+			    </tr>
+			    <?php endforeach; ?>
+			    </tbody>
+			    <tfoot>
+			    <tr>
+			        <th>Código</th>
+			        <th>Identificador</th>
+			        <th>Curso</th>
+			        <th>Nivel</th>
+			        <th>Abreviatura</th>
+			        <th>Créditos</th>      
+			        <th>Plan de Estudio</th>
+			        <th>Acciones</th>
+			    </tr>
+			    </tfoot>    
+			</table>
+			
+			<?php echo $this->paginationControl($this->cursos, 'Sliding', 'paginator', array('route' => 'curso', 'action' => 'index', 'orderby' => $this->orderby, 'order' => $order));?>
+			
+			<?php else: ?>
+			
+			<h2>No se han encontrado resultados.</h2>
+		
+		<?php endif;?>			
+	</div>
+</div>

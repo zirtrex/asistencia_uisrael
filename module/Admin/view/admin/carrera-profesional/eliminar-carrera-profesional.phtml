@@ -1,0 +1,20 @@
+<?php
+
+ $title = 'Eliminar Carrera Profesional';
+ $this->headTitle($title);
+
+ ?>
+
+ <h1><?php echo $this->escapeHtml($title); ?></h1>
+
+ <h3>Esta seguro que desea eliminar la Carrera Profesional: <strong><?php echo $this->escapeHtml($this->carreraProfesional['carreraProfesional']);?></strong></h3>
+ 
+ <p>La eliminación es definitiva e irreversible</p>
+ 
+ <form action="<?php echo $this->url('carrera-profesional', array('action' => 'eliminar-carrera-profesional')); ?>" method="post">
+
+	 <input type="hidden" name="codCarreraProfesional" value="<?php echo (int) $this->carreraProfesional['codCarreraProfesional']; ?>" />
+	 <input type="submit" name="eliminar" value="si" />
+	 <input type="submit" name="eliminar" value="no" />
+
+ </form>

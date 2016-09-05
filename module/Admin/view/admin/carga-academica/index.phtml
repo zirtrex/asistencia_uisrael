@@ -1,0 +1,169 @@
+<?php $url_order = ($this->order == 'ASC') ? 'DESC' : 'ASC'; ?>
+
+<?php
+	$buscarForm = $this->buscarForm;
+	$buscarForm->setAttribute('action', $this->url('carga-academica'));
+	$buscarForm->prepare();
+?>
+
+<div class="box">
+	<div class="box-title">
+		<i class="glyphicon glyphicon-new-window"></i>
+		<h3>Carga Académica</h3>
+		<div class="pull-right box-toolbar">
+			<a class="btn btn-link btn-xs collapse-box" href="#"><i class="fa fa-chevron-up"></i></a>			
+		</div>
+	</div>
+	<div class="box-body">
+	
+		<div class="row">
+		
+			<div class="col-md-6">				
+				<a class="btn btn-labeled palette-carrot btn-color" href="<?php echo $this->url("curso"); ?>"><span class="btn-label"><i class="fa fa-fw fa-share-square-o"></i></span>Ver cursos</a>
+			</div>
+			
+			<div class="col-lg-6 col-md-6 col-sm-8 col-xs-12 margin-bottom">
+				<?php echo $this->form()->openTag($buscarForm);?>
+					<div class="input-group">						
+						<?php echo $this->formInput($buscarForm->get('texto')); ?>
+						<span class="input-group-btn">
+							<?php echo $this->formInput($buscarForm->get('buscar')); ?>
+						</span>
+					</div>
+				<?php echo $this->form()->closeTag($buscarForm);?>
+			</div>
+			
+		</div>
+		
+		<hr>	
+		
+		<?php if($this->cargasAcademicas->count() != 0):?>
+			<table class="table table-hover table-striped">
+			    <thead>
+			    <tr>
+			        <th><a href="<?php echo $this->url('carga-academica', array('action' => 'index', 'orderby' => 'fechainicioclases', 'order' => $url_order)); ?>">Fecha de Inicio<?php if ($this->orderby == 'fechainicioclases'): ?><i class="glyphicon glyphicon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a></th>			        
+			        <th>Es común</th>
+			        <th>Area de Conocimiento</th>
+			        <th><a href="<?php echo $this->url('carga-academica', array('action' => 'index', 'orderby' => 'carreraprofesional', 'order' => $url_order)); ?>">Carrera Profesional<?php if ($this->orderby == 'carreraprofesional'): ?><i class="glyphicon glyphicon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a></th>
+			        <th>Ciclo Académico</th>
+			        <th><a href="<?php echo $this->url('carga-academica', array('action' => 'index', 'orderby' => 'codigo', 'order' => $url_order)); ?>">Código<?php if ($this->orderby == 'codigo'): ?><i class="glyphicon glyphicon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a></th>      
+			        <th>Curso</th>
+			        <th><a href="<?php echo $this->url('carga-academica', array('action' => 'index', 'orderby' => 'primerApellido', 'order' => $url_order)); ?>">Docente<?php if ($this->orderby == 'primerapellido'): ?><i class="glyphicon glyphicon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a></th>
+			        <th>Modalidad</th>
+			        <th>Aula</th>
+			        <th>Sección</th>
+			        <th>Paralelo</th>
+			        <th>Acciones</th>			        
+			    </tr>
+			    </thead>
+			    <tbody>
+			    <?php foreach ($this->cargasAcademicas as $cargaAcademica): ?>    
+			    <tr> 
+			    
+			    	<td>
+			        	<?php echo $this->escapeHtml($cargaAcademica['fechaInicioClases']);?>
+			        </td>
+			        
+			        <td>
+			        	<?php echo $this->escapeHtml($cargaAcademica['esComun']);?>
+			        </td>
+			        
+			        <td>
+			        	<?php echo $this->escapeHtml($cargaAcademica['areaConocimiento']);?>
+			        </td>
+			        
+			        <td>
+			        	<?php echo $this->escapeHtml($cargaAcademica['carreraProfesional']);?>
+			        </td>
+			        
+			        <td>
+			        	<?php echo $this->escapeHtml($cargaAcademica['anio']) . " - ";?>
+			        	<?php echo $this->escapeHtml($cargaAcademica['semestre']);?>
+			        </td>			        
+			        
+			        <td>
+			        	<?php echo $this->escapeHtml($cargaAcademica['codigo']);?>
+			        </td>
+			        
+			        <td>
+			        	<?php echo $this->escapeHtml($cargaAcademica['curso']);?>
+			        </td>
+			        
+			         <td>
+			        	<?php echo $this->escapeHtml($cargaAcademica['primerApellido'] . ' ' . $cargaAcademica['segundoApellido'] . ' ' . $cargaAcademica['nombres']);?>
+			        </td>		        
+			        
+			        <td>
+			        	<?php echo $this->escapeHtml($cargaAcademica['modalidad']);?>
+			        </td>
+			        
+			        <td>
+			        	<?php echo $this->escapeHtml($cargaAcademica['numero']);?>
+			        </td>
+			        
+			        <td>
+			        	<?php echo $this->escapeHtml($cargaAcademica['seccion']);?>
+			        </td>
+			        
+			        <td>
+			        	<?php echo $this->escapeHtml($cargaAcademica['paralelo']);?>
+			        </td>     
+			        
+			        <td>
+			        	<a title="Matricular estudiantes" class="btn palette-wet-asphalt btn-color btn-sm" href="<?php echo $this->url('matricula', array(
+				        			'action' => 'index',
+				        			'codcicloacademico' => $this->escapeHtml($cargaAcademica['codCicloAcademico']),
+				        			'codcurso' => $this->escapeHtml($cargaAcademica['codCurso']),
+				        			'codmodalidad' => $this->escapeHtml($cargaAcademica['codModalidad']),
+				        			'paralelo' => $this->escapeHtml($cargaAcademica['paralelo']),
+				        	));?>" >
+							<i class="fa fa-fw fa-sign-in"></i>  
+						</a>
+						<a title="Editar carga académica" class="btn btn-info btn-sm" href="<?php echo $this->url('carga-academica', array(
+				        			'action' => 'editar-carga-academica',
+				        			'codcicloacademico' => $this->escapeHtml($cargaAcademica['codCicloAcademico']),
+				        			'codcurso' => $this->escapeHtml($cargaAcademica['codCurso']),
+				        			'codmodalidad' => $this->escapeHtml($cargaAcademica['codModalidad']),
+				        			'paralelo' => $this->escapeHtml($cargaAcademica['paralelo']),
+				        	));?>">
+							<i class="fa fa-edit"></i>  
+						</a>
+						<a title="Eliminar carga académica" class="btn btn-danger btn-sm" href="<?php echo $this->url('carga-academica', array(
+				        			'action' => 'eliminar-carga-academica',
+				        			'codcicloacademico' => $this->escapeHtml($cargaAcademica['codCicloAcademico']),
+				        			'codcurso' => $this->escapeHtml($cargaAcademica['codCurso']),
+				        			'codmodalidad' => $this->escapeHtml($cargaAcademica['codModalidad']),
+				        			'paralelo' => $this->escapeHtml($cargaAcademica['paralelo']),
+				        	));?>">
+							<i class="fa fa-trash-o"></i>
+						</a>
+					</td>
+			    </tr>
+			    <?php endforeach; ?>
+			    </tbody>
+			    <tfoot>
+			    <tr>
+			        <th>Fecha de Inicio</th>			        
+			        <th>Carrera Profesional</th>
+			        <th>Ciclo Académico</th>
+			        <th>Código</th>      
+			        <th>Curso</th>
+			        <th>Docente</th>
+			        <th>Modalidad</th>
+			        <th>Aula</th>
+			        <th>Sección</th>
+			        <th>Paralelo</th>
+			        <th>Acciones</th>
+			    </tr>
+			    </tfoot>    
+			</table>
+
+			<?php echo $this->paginationControl($this->cargasAcademicas, 'Sliding', 'paginator', array('route' => 'carga-academica', 'action' => 'index', 'orderby' => $this->orderby, 'order' => $order));?>
+			
+			<?php else: ?>
+			
+			<h2>No se han encontrado resultados.</h2>
+		
+		<?php endif;?>			
+	</div>
+</div>
