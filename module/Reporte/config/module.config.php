@@ -7,14 +7,16 @@ return array(
 	        		'reportes' => array (
 								'type' => 'Zend\Mvc\Router\Http\Segment',
 								'options' => array (
-										'route'    => '/reportes[/][:action][/imprimirpdf/:imprimirpdf][/codcicloacademico/:codcicloacademico][/codcurso/:codcurso][/codmodalidad/:codmodalidad][/paralelo/:paralelo][/coddocente/:coddocente]',
+										'route'    => '/reportes[/][:action][/imprimirpdf/:imprimirpdf][/codcicloacademico/:codcicloacademico][/codcurso/:codcurso][/codmodalidad/:codmodalidad][/paralelo/:paralelo][/codaula/:codaula][/codseccion/:codseccion][/coddocente/:coddocente]',
 										'constraints' => array (
 												'action' 				=> '[a-zA-Z][a-zA-Z0-9_-]*',
 												'imprimirpdf' 			=> 'si',												
 												'codcicloacademico' 	=> '[0-9]*',
 												'codcurso' 				=> '[0-9]*',
 												'codmodalidad' 			=> '[0-9]*',
-												'paralelo'				=> '[a-zA-Z]',
+												'paralelo'				=> '[a-zA-Z]',												
+												'codaula'	 			=> '[0-9]*',
+												'codseccion' 			=> '[0-9]*',
 												'coddocente' 			=> '[0-9]*',
 										),
 										'defaults' => array (

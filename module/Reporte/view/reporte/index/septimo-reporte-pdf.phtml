@@ -1,0 +1,148 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+
+<title>REPORTE DE ASISTENCIA DOCENTE</title>
+
+
+<style type="text/css">
+
+@page {
+	margin: 1.5cm;
+}
+
+body {
+  	font-family: sans-serif;
+	margin: 2.5cm 0 0 1cm;
+	text-align: justify;
+	font-size: 0.9em;
+	color: #222;
+}
+
+#header,
+#footer {
+ 	position: fixed;
+  	left: 0;
+	right: 0;
+	color: #aaa;
+	font-size: 1.1em;
+}
+
+#header {
+  	top: 0;
+	border-bottom: 0.1pt solid #aaa;
+	margin-bottom: 20px;
+}
+
+#footer {
+  bottom: 0;
+  border-top: 0.1pt solid #aaa;
+}
+
+#header table,
+#footer table {
+	margin; 1pt;
+	width: 100%;
+	border-collapse: collapse;
+	border: none;
+}
+
+#header td,
+#footer td {
+  	padding: 0;
+	width: 50%;
+}
+
+table {
+	margin; 1pt;
+	width: 100%;
+	border-collapse: collapse;
+	border: none;
+}
+
+.page-number {
+  text-align: center;
+}
+
+.page-number:before {
+  content: "Page " counter(page);
+}
+
+hr {
+  page-break-after: always;
+  border: 0;
+}
+
+td{
+	border-top: 1px solid #ddd;
+	vertical-align: middle;
+	line-height: 1.42857;
+    padding: 8px;
+}
+
+</style>
+  
+</head>
+
+<body>
+
+<div id="header">
+	REPORTE DE ASISTENCIA DOCENTE<br></br>
+	Docente: <strong><?php echo $this->docente;?></strong><br></br>
+	Ciclo Académico: <strong><?php echo $this->cicloAcademico;?></strong>
+	, Curso: <strong><?php echo $this->nombreCurso;?></strong><br></br>
+	Modalidad: <strong><?php echo $this->modalidad;?></strong>
+	, Paralelo: <strong><?php echo $this->paralelo;?></strong>
+	, Aula: <strong><?php echo $this->aula;?></strong>
+	, Sección: <strong><?php echo $this->seccion;?></strong>
+</div>
+
+<div id="footer">
+  <div class="page-number"></div>
+</div>
+
+<?php if($this->asistencia != null):?>
+	<table class="table">
+		<thead>
+	        		<tr>
+	        			<th colspan="3">Horario Principal</th>
+	        			<th colspan="1">&nbsp;</th>
+	        			<th colspan="5">Horario Registrado</th>	
+	        		</tr>
+				    <tr>			        
+				        <th>Día</th>
+				        <th>Hora inicial</th>
+				        <th>Hora final</th>        
+				        <th>&nbsp;</th>						        
+				        <th style="width:100px">Fecha</th>
+				        <th>Día</th>
+				        <th>Hora inicial</th>
+				        <th>Hora final</th>        
+				        <th>Minutos tarde</th>      
+					</tr>
+		</thead>
+		<tbody>
+        				<?php foreach ($this->asistencia as $registro) : ?>
+							<tr>
+								<td><?php echo $registro['codDiaSemana']; ?></td>
+						        <td><?php echo $registro['horaInicioHorario']; ?></td>
+						        <td><?php echo $registro['horaFinHorario']; ?></td>        
+						        <td>&nbsp;</td>								        
+						        <td><?php echo $registro['fecha']; ?></td>
+						        <td><?php echo $registro['diaSemana']; ?></td>
+						        <td><?php echo $registro['horaInicio']; ?></td>
+						        <td><?php echo $registro['horaFin']; ?></td>        
+						        <td align="center"><?php echo $registro['minutosTarde']; ?></td>
+							</tr>
+						<?php endforeach;?>
+		</tbody>
+	</table>
+<?php else: ?>
+	
+	<h2>No se han encontrado resultados</h2>
+
+<?php endif;?>	
+
+</body>
+</html>

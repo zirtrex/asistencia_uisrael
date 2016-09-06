@@ -114,6 +114,42 @@ class ReportForm extends Form
     			),
     	));
     	
+    	$this->add(
+    			array(
+    					'name' => 'fechaInicioClases',
+    					'type' => 'Zend\Form\Element\Text',
+    					'attributes' => array(
+    							'id' => 'fechaInicioClases',
+    							'placeholder' => 'Ingrese fecha de inicio de clases',
+    							'class' => 'form-control datepicker',
+    					),
+    					'options' => array(
+    							'label' => 'Fecha de inicio de clases',
+    							'label_attributes' => array(
+    									'class' => 'col-sm-2 control-label'
+    							),
+    					),
+    			)
+    	);
+    	
+    	$this->add(
+    			array(
+    					'name' => 'fechaFinClases',
+    					'type' => 'Zend\Form\Element\Text',
+    					'attributes' => array(
+    							'id' => 'fechaFinClases',
+    							'placeholder' => 'Ingrese fecha de final de clases',
+    							'class' => 'form-control datepicker',
+    					),
+    					'options' => array(
+    							'label' => 'Fecha de final de clases',
+    							'label_attributes' => array(
+    									'class' => 'col-sm-2 control-label'
+    							),
+    					),
+    			)
+    	);
+    	
     	$this->add(array(
     			'name' => 'listar',
     			'attributes' => array(

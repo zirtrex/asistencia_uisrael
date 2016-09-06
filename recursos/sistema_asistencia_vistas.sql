@@ -168,6 +168,7 @@ CREATE VIEW vw_asistencia_estudiante
 AS
   SELECT ae.codAsistenciaEstudiante, ae.estadoAsistenciaEstudiante,
 	e.codEstudiante, CONCAT(e.primerApellido, ' ', e.segundoApellido, ', ', e.nombres) AS estudiante,
+    secl.fecha,
     secl.esComun,
     secl.codAreaConocimiento, secl.areaConocimiento,
     secl.codCarreraProfesional, secl.carreraProfesional, 

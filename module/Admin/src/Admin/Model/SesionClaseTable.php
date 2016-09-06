@@ -155,7 +155,29 @@ class SesionClaseTable extends AbstractTableGateway
     	$resultSet = $statement->execute();
     
     	return $resultSet;
-    }    
+    }
+
+    public function obtenerSesionClase($codCicloAcademico, $codCurso, $codModalidad, $paralelo, $codAula, $codSeccion, $codDocente)
+    {
+    	$sql = new Sql($this->adapter);
+    	$select = $sql->select();
+    
+    	$select->from(array('sc' => 'vw_sesion_clase'))
+    	->columns(array('*'))
+    	->where(array('sc.codCicloAcademico' => $codCicloAcademico))
+    	->where(array('sc.codCurso' => $codCurso))
+    	->where(array('sc.codModalidad' => $codModalidad))
+    	->where(array('sc.paralelo' => $paralelo))
+    	->where(array('sc.codAula' => $codAula))
+    	->where(array('sc.codSeccion' => $codSeccion))
+    	->where(array('sc.codDocente' => $codDocente))
+    	->limit(1);
+    
+    	$statement = $sql->prepareStatementForSqlObject($select);
+    	$resultSet = $statement->execute();
+    
+    	return $resultSet->current();
+    }
     
     
     public function obtenerSesion($codSesionClase)

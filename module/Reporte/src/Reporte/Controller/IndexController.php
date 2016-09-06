@@ -461,6 +461,62 @@ class IndexController extends AbstractActionController
 		return $this->redirect()->toRoute('ingresar');
 	}
 	
+	//Asistencia de estudiantes  por curso/docente
+	public function septimoReportePdfAction()
+	{
+		if($this->identity())
+		{
+			$docente = $this->obtenerDatosUsuario();
+				
+			$imprimirpdf 			= $this->params()->fromRoute('imprimirpdf');
+			$codCicloAcademico 		= (int) $this->params()->fromRoute('codcicloacademico', 0);
+			$codCurso 				= (int) $this->params()->fromRoute('codcurso', 0);
+			$codModalidad 			= (int) $this->params()->fromRoute('codmodalidad', 0);
+			$paralelo	 			= $this->params()->fromRoute('paralelo', null);
+			$codAula				= (int) $this->params()->fromRoute('codaula', 0);
+			$codSeccion				= (int) $this->params()->fromRoute('codseccion', 0);
+			$codDocente				= (int) $this->params()->fromRoute('coddocente', 0);
+				
+			$resulsetAsistenciaDocente = $this->getDBSesionClaseTable()->obtenerRegistroAsistencia($codCicloAcademico, $codCurso, $codModalidad, $paralelo, $codAula, $codSeccion, $codDocente);
+			$sesionClase = $this->getDBSesionClaseTable()->obtenerSesionClase($codCicloAcademico, $codCurso, $codModalidad, $paralelo, $codAula, $codSeccion, $codDocente);
+				
+			if($imprimirpdf == 'si')
+			{
+				$pdf = new PdfModel();
+				$pdf->setTerminal(true);
+				$pdf->setTemplate('reporte/index/septimo-reporte-pdf.phtml');
+				//$pdf->setOption('filename', 'Asistencia de estudiantes'); // Esta opcion fuerza la descarga del PDF.
+				// La extension ".pdf" se agrega automaticamente
+				$pdf->setOption('paperSize', 'a4'); // Tamaño del papel
+				$pdf->setOption('paperOrientation', 'portrait'); // Defaults to "portrait"
+					
+				// Pasamos variables a la vista
+				$pdf->setVariables(array(
+						'docente'			=> $sesionClase['primerApellido'] .' '. $sesionClase['segundoApellido'] .', '. $sesionClase['nombres'],
+						'cicloAcademico' 	=> $sesionClase['anio'] .'-'.$sesionClase['semestre'],
+						'nombreCurso' 		=> $sesionClase['curso'],
+						'modalidad'			=> $sesionClase['modalidad'],
+						'paralelo'			=> $sesionClase['paralelo'],
+						'aula'				=> $sesionClase['numero'],
+						'seccion'			=> $sesionClase['seccion'],
+						'asistencia'		=> $resulsetAsistenciaDocente
+				));
+	
+				return $pdf;
+			}
+	
+			// $this->layout('layout/login');
+			/*return new ViewModel(array(
+					'form' 			=> $form,
+					'estudiantes' 	=> $estudiantes,
+					'dataUrl' 		=> array($codCicloAcademico, $codCurso, $codModalidad, $paralelo)
+			));*/
+				
+		}
+	
+		return $this->redirect()->toRoute('ingresar');
+	}
+	
 	private function obtenerDatosUsuario()
 	{
 		$rol = $this->identity()['rol'];

@@ -117,8 +117,8 @@ class IndexController extends AbstractActionController implements ServiceLocator
 					
 					$sesion = array(
 							'codSesionClase' => NULL,
-							'fecha' => gmdate("Y-m-d",Miscellanea::getHoraLocal()),
-							'diaSemana' => gmdate("N",Miscellanea::getHoraLocal()),
+							'fecha' => gmdate("Y-m-d",Miscellanea::getHoraLocal(-5)),
+							'diaSemana' => gmdate("N",Miscellanea::getHoraLocal(-5)),
 							'horaInicio' => gmdate("H:i:s.U" ,Miscellanea::getHoraLocal(-5)),
 							'horaFin' => NULL,
 							'asistenciaRealizada' => 'No',
@@ -442,9 +442,9 @@ class IndexController extends AbstractActionController implements ServiceLocator
 			
 			$observacion = "La sesión ha finalizado correctamente.";
 			
-			if($fechaRegistrada !== gmdate("Y-m-d",Miscellanea::getHoraLocal()))
+			if($fechaRegistrada !== gmdate("Y-m-d",Miscellanea::getHoraLocal(-5)))
 			{
-				$observacion = "La hora de salida corresponde a la fecha: " . gmdate("Y-m-d",Miscellanea::getHoraLocal());
+				$observacion = "La hora de salida corresponde a la fecha: " . gmdate("Y-m-d",Miscellanea::getHoraLocal(-5));
 			}
 			
 			$avanceSilaboTable = $this->getServiceLocator()->get('AvanceSilaboTable');
