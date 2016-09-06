@@ -1,3 +1,4 @@
+.dropbox
 .buildpath
 .DS_Store
 .idea
@@ -8,5 +9,4 @@
 build/
 nbproject
 tmp/
-vendor/
 composer.lock
