@@ -178,7 +178,7 @@ class CargaMasivaController extends AbstractActionController
 					break;
 				}    		
 	    	 
-	    		$path = $this->getFileUploadLocation();
+	    		$path = $this->getFileUploadLocation(); var_dump($path);return ;
 	    		$sourceFileName = $path . '/' . $file . '.csv';
 	    	 
 		    	if(file_exists ($sourceFileName))
