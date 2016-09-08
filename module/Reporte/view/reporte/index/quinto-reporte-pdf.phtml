@@ -1,163 +1,202 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 
-<section> 
-
-    <div class="row">  
-    <?php
-        $form = $this->form;        
-        $form->setAttribute('action', $this->url('reportes', array('action' => 'quinto-reporte')));
-        //$form->setAttribute('class', '');
-        $form->prepare();
-	?>  
+<title>REPORTE ASISTENCIA DE ESTUDIANTES</title>
 
 
-	    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 margin-bottom"> 
+<style type="text/css">
 
-	    	<?php echo $this->form()->openTag($form); ?>
-	    
-	    		<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 margin-bottom"> 
-	    		
-		    		<div class="form-group">
-						<?php echo $this->formSelect($form->get('esComun'));?>
-						<span class="help-block"><?php echo $this->formElementErrors($form->get('esComun'));?></span>
-					</div>
-				    
-				    <div class="form-group">
-						<?php echo $this->formSelect($form->get('codAreaConocimiento'));?>
-						<span><?php echo $this->formElementErrors($form->get('codAreaConocimiento'));?></span>
-					</div>
-				    
-				    <div class="form-group">
-						<?php echo $this->formSelect($form->get('codCarreraProfesional'));?>
-						<span><?php echo $this->formElementErrors($form->get('codCarreraProfesional'));?></span>
-					</div>
-		    			
-		    		<div class="form-group">						
-						<?php echo $this->formSelect($form->get('codCicloAcademico'));?>
-						<span class="help-block"><?php echo $this->formElementErrors($form->get('codCicloAcademico'));?></span>
-					</div>
-				
-				</div>
-				
-				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 margin-bottom"> 
-				
-					<div class="form-group">						
-						<?php echo $this->formSelect($form->get('codCurso'));?>
-						<span class="help-block"><?php echo $this->formElementErrors($form->get('codCurso'));?></span>
-					</div>
-					
-					<div class="form-group">						
-						<?php echo $this->formSelect($form->get('codModalidad'));?>
-						<span class="help-block"><?php echo $this->formElementErrors($form->get('codModalidad'));?></span>
-					</div>
-					
-					<div class="form-group">						
-						<?php echo $this->formSelect($form->get('paralelo'));?>
-						<span class="help-block"><?php echo $this->formElementErrors($form->get('paralelo'));?></span>
-					</div>
-					
-					<div class="form-group">
-						<!-- <label for="codDocente"><?php //echo $this->formLabel($form->get('codDocente')); ?></label> -->
-						<?php echo $this->formSelect($form->get('codDocente'));?>
-						<span class="help-block"><?php echo $this->formElementErrors($form->get('codDocente'));?></span>
-					</div>
-				
-				</div>
-				
-				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"> 
-		    
-			    	<?php echo $this->formSubmit($form->get('listar'));?>    
-			    
-			    </div>
-		    
-		    <?php echo $this->form()->closeTag() ?>
+.grafico {
+	position: relative; /* IE is dumb */
+	width: 100%;
+	border: 1px solid #B1D632;
+	padding: 2px;
+}
 
-		</div>
+.grafico .barra {
+	display: block;
+	min-width: 1%;
+	position: relative;
+	background: #B1D632;
+	text-align: center;
+	color: #333;
+	height: 2em;
+	line-height: 2em;
+}
 
-    </div>	
-    <hr>
-</section>
+.grafico_red {
+	border: 1px solid #b33030;
+}
 
+.grafico_green {
+	border: 1px solid #B1D632;
+}
 
-<div class="box">
-	<div class="box-title">
-		<i class="fa fa-fw fa-cube"></i>
-		<h3>Cursos</h3>
-		<div class="pull-right box-toolbar">
-			<a class="btn btn-link btn-xs collapse-box" href="#"><i class="fa fa-chevron-up"></i></a>			
-		</div>
-	</div>
-	<div class="box-body">			
-		
-		<?php if($this->estudiantes != null):?>
-			<table class="table">
-			    <thead>
-			    <tr>
-			        <th>N°</th>
-			        <th>Código de Estudiante</th>      
-			        <th>Estudiante</th>
-			        <th># de clases</th>
-			        <th>Asistencias</th>        
-			        <th>Tardanzas</th>
-			        <th>Inasistencias</th>
-			        <th>% Asistencia</th>      
-			    </tr>
-			    </thead>
-			    <tbody>
-			    <?php
-			    	$i = 0;
-					foreach ($this->estudiantes as $estudiante) :
-					$i++;
-				?>    
-			    <tr>
-			        <td><?php echo $i;?></td>       
-			        
-			        <td><?php echo $this->escapeHtml($estudiante['codEstudiante']);?></td>
-			        
-			        <td><?php echo $this->escapeHtml($estudiante['estudiante']); ?></td>
-			        
-			        <td><?php echo $this->escapeHtml($estudiante['numeroClases']);?></td>
-			        
-			        <td><?php echo $this->escapeHtml($estudiante['totalPuntual']);?></td>
-			        
-			        <td><?php echo $this->escapeHtml($estudiante['totalTarde']);?></td> 
-			        		            
-			        <td><?php echo $this->escapeHtml($estudiante['totalFalta']);?></td> 
-			        
-			        <?php
-			        
-			        	$barra = "_red";
-			        	$porcentajeAsistencia = 0;
-			        	
-			        	if($estudiante['numeroClases'] != 0 )
-			        	{
-				        	$porcentajeAsistencia = round(($estudiante['totalPuntual'] + $estudiante['totalTarde']) * 100 /  $estudiante['numeroClases'], 2);			        	
-				        	
-				        	if($porcentajeAsistencia > 80) $barra = "_green";
-			        	}
-			        ?>
-			        
-			        <td><div class="grafico grafico<?php echo $barra;?>"><strong class="barra barra<?php echo $barra;?>" style="width: <?php echo $porcentajeAsistencia; ?>%;"><?php echo $porcentajeAsistencia; ?>%</strong></div></td>		        
-			        
-			    </tr>
-			    <?php endforeach; ?>
-			    </tbody>
-			    <tfoot>
-			    <tr>
-			        <th>N°</th>
-			        <th>Código de Estudiante</th>      
-			        <th>Estudiante</th>
-			        <th># de clases</th>
-			        <th>Asistencias</th>        
-			        <th>Tardanzas</th>
-			        <th>Inasistencias</th>
-			        <th>% Asistencia</th>  	        
-			    </tr>
-			    </tfoot>    
-			</table>
-		<?php else: ?>
-			
-			<h2>No se han encontrado resultados</h2>
-		
-		<?php endif;?>			
-	</div>
+.grafico_yellow {
+	border: 1px solid #ffb527;
+}
+
+.grafico .barra_red {
+	background: #b33030;
+}
+
+.grafico .barra_green {
+	background: #B1D632;
+}
+
+.grafico .barra_yellow {
+	background: #ffb527;
+}
+
+@page {
+	margin: 1.5cm;
+}
+
+body {
+  	font-family: sans-serif;
+	margin: 2.8cm 0 0 1cm;
+	text-align: justify;
+	font-size: 0.9em;
+	color: #222;
+}
+
+#header,
+#footer {
+ 	position: fixed;
+  	left: 0;
+	right: 0;
+	color: #aaa;
+	font-size: 1.2em;
+}
+
+#header {
+  	top: 0;
+	border-bottom: 0.1pt solid #aaa;
+	margin-bottom: 20px;
+}
+
+#footer {
+  bottom: 0;
+  border-top: 0.1pt solid #aaa;
+}
+
+#header table,
+#footer table {
+	margin; 1pt;
+	width: 100%;
+	border-collapse: collapse;
+	border: none;
+}
+
+#header td,
+#footer td {
+  	padding: 0;
+	width: 50%;
+}
+
+.page-number {
+  text-align: right;
+}
+
+.page-number:before {
+  content: "Page " counter(page);
+}
+
+hr {
+  page-break-after: always;
+  border: 0;
+}
+
+td{
+	border-top: 1px solid #ddd;
+	vertical-align: middle;
+	line-height: 1.42857;
+    padding: 8px;
+}
+</style>
+  
+</head>
+
+<body>
+
+<?php 
+$fechaInicio = new DateTime($this->fechaInicio);
+$fechaFin = new DateTime($this->fechaFin);
+?>
+
+<div id="header">
+<strong>REPORTE DE ASISTENCIA DE ALUMNOS</strong> <?php echo $this->cicloAcademico;?><br></br>
+<strong>Curso: </strong><?php echo $this->nombreCurso;?>, <strong>Modalidad: </strong><?php echo $this->modalidad;?>, <strong>Paralelo: </strong><?php echo $this->paralelo;?><br/>
+<strong>Docente: </strong><?php echo $this->docente;?><br/>
+<strong>Fecha: </strong><?php echo $fechaInicio->format('d-M-Y'); ?> - <?php echo $fechaFin->format('d-M-Y'); ?>
 </div>
+
+<div id="footer">
+  <div class="page-number"></div>
+  <div><?php echo date("d-M-Y")?></div>
+</div>
+
+<?php if($this->estudiantes != null):?>
+	<table class="table">
+	    <thead>
+	    <tr>
+	        <th>N°</th>
+	        <th>Código de Estudiante</th>      
+	        <th>Estudiante</th>
+	        <th># de clases</th>
+	        <th>Asistencias</th>        
+	        <th>Tardanzas</th>
+	        <th>Inasistencias</th>
+	        <th>% Asistencia</th>      
+	    </tr>
+	    </thead>
+	    <tbody>
+	    <?php
+	    	$i = 0;
+			foreach ($this->estudiantes as $estudiante) :
+			$i++;
+		?>    
+	    <tr>
+	        <td><?php echo $i;?></td>
+	        
+	        <td><?php echo $this->escapeHtml($estudiante['codEstudiante']);?></td>
+	        
+	        <td><?php echo $this->escapeHtml($estudiante['estudiante']);?></td>
+	        
+	        <td><?php echo $this->escapeHtml($estudiante['numeroClases']);?></td>
+	        
+	        <td><?php echo $this->escapeHtml($estudiante['totalPuntual']);?></td>
+	        
+	        <td><?php echo $this->escapeHtml($estudiante['totalTarde']);?></td> 
+	        		            
+	        <td><?php echo $this->escapeHtml($estudiante['totalFalta']);?></td> 
+	        
+	        <?php
+	        
+	        	$barra = "_red";
+	        	$porcentajeAsistencia = 0;
+	        	
+	        	if($estudiante['numeroClases'] != 0 )
+	        	{
+		        	$porcentajeAsistencia = round(($estudiante['totalPuntual'] + $estudiante['totalTarde']) * 100 /  $estudiante['numeroClases'], 2);			        	
+		        	
+		        	if($porcentajeAsistencia > 80) $barra = "_green";
+	        	}
+	        ?>
+	        
+	        <td><div class="grafico grafico<?php echo $barra;?>"><strong class="barra barra<?php echo $barra;?>" style="width: <?php echo $porcentajeAsistencia; ?>%;"><?php echo $porcentajeAsistencia; ?>%</strong></div></td>		        
+	        
+	    </tr>
+	    <?php endforeach; ?>
+	    </tbody> 
+	</table>
+	<?php else: ?>
+	
+	<h2>No se han encontrado resultados</h2>
+
+<?php endif;?>	
+
+</body>
+</html>

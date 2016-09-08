@@ -186,13 +186,13 @@ AS
   
 /*SELECT * FROM vw_asistencia_estudiante WHERE codDocente = '1';
   
-SELECT *, COUNT(estado) AS numeroClases FROM vw_asistencia_estudiante
-WHERE codCarreraProfesional = "1" AND codCicloAcademico = "7" AND codCurso = "C001"
+SELECT *, COUNT(estadoAsistenciaEstudiante) AS numeroClases FROM vw_asistencia_estudiante
+WHERE fecha >= '2016-05-15' and fecha <= '2016-09-08'
 GROUP BY codEstudiante
 
   
-SELECT COUNT(estado) AS totalEstado FROM vw_asistencia_estudiante_estado 
-WHERE codEstudiante = "1" AND estado = "Puntual";
+SELECT *, COUNT(estadoAsistenciaEstudiante) AS totalEstado FROM vw_asistencia_estudiante 
+WHERE codEstudiante = "1" AND estadoAsistenciaEstudiante = "Puntual";
 
 SELECT *, max(temasTerminados) AS maxTemasTerminados, max(temasTerminados) * 100 / totalTemas AS avance FROM plataforma_uisrael.sesion_clase
 GROUP BY codCicloAcademico, paralelo, codAula, codSeccion, codCurso, codDocente, codModalidad

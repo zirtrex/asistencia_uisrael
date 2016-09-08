@@ -36,7 +36,7 @@ class AsistenciaEstudianteTable extends AbstractTableGateway
     }*/
     
     //Obtengo todos los estudiantes que han asistido a las clases a traves del parametro proporcionado
-    public function obtenerAsistenciaEstudiantes($esComun = null, $codAreaConocimiento = null, $codCarreraProfesional = null, $codCicloAcademico = null, $codCurso = null, $codModalidad = null, $paralelo = null, $codDocente = null, $limit = 2)
+    public function obtenerAsistenciaEstudiantes($esComun = null, $codAreaConocimiento = null, $codCarreraProfesional = null, $codCicloAcademico = null, $codCurso = null, $codModalidad = null, $paralelo = null, $codDocente = null, $fechaInicio = null, $fechaFin = null, $limit = 2)
     {    	
     	$select = new Select();
     	
@@ -51,6 +51,11 @@ class AsistenciaEstudianteTable extends AbstractTableGateway
     	if($codCurso !== null){ $select->where(array('codCurso' => $codCurso)); }
     	if($codModalidad !== null){ $select->where(array('codModalidad' => $codModalidad)); }
     	if($paralelo != null){ $select->where(array('paralelo' => $paralelo)); }
+    	if($fechaInicio != null && $fechaFin != null){
+    		$select->where(array("fecha >= '$fechaInicio'" , "fecha <= '$fechaFin'"));
+    	}elseif($fechaInicio != null && $fechaFin == null){
+    		$select->where(array("fecha >= '$fechaInicio'"));
+    	}
     	
 		$select->group('codEstudiante');
 		//$select->limit($limit);
@@ -62,7 +67,7 @@ class AsistenciaEstudianteTable extends AbstractTableGateway
     }
     
     //Obtengo las cantidades de estado Asistencias, tardanzas y faltas
-    public function obtenerEstudiantesEstado($codEstudiante, $codCicloAcademico, $codCurso, $paralelo, $codModalidad, $estado = "Puntual")
+    public function obtenerEstudiantesEstado($codEstudiante, $codCicloAcademico, $codCurso, $paralelo, $codModalidad, $fechaInicio = null, $fechaFin = null, $estado = "Puntual")
     {
     	$sql = new Sql($this->adapter);
     	$select = $sql->select();
@@ -75,6 +80,11 @@ class AsistenciaEstudianteTable extends AbstractTableGateway
 	    	->where(array('ae.codModalidad' => $codModalidad))
 	    	->where(array('ae.codEstudiante' => $codEstudiante))
 	    	->where(array('ae.estadoAsistenciaEstudiante' => $estado));
+    	if($fechaInicio != null && $fechaFin != null){
+    		$select->where(array("fecha >= '$fechaInicio'" , "fecha <= '$fechaFin'"));
+    	}elseif($fechaInicio != null && $fechaFin == null){
+    		$select->where(array("fecha >= '$fechaInicio'"));
+    	}
     
     
     	$statement = $sql->prepareStatementForSqlObject($select);

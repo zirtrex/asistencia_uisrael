@@ -217,12 +217,11 @@ class IndexController extends AbstractActionController
 		return $this->redirect()->toRoute('ingresar');
 	}
 	
-	//Asistencia de estudiantes  por carrera profesional y curso
+	//Reporte de asistencia de estudiantes para administradores
 	public function quintoReporteAction()
 	{
 		if($this->identity())
-		{	
-			
+		{			
 			$form = new ReportForm();
 			$form->get("codAreaConocimiento")->setValueOptions($this->getDBCargaAcademicaTable()->obtenerAreasConocimientoArray());
 			$form->get("codCarreraProfesional")->setValueOptions($this->getDBCargaAcademicaTable()->obtenerCarrerasProfesionalesArray());
@@ -244,6 +243,8 @@ class IndexController extends AbstractActionController
 			$codModalidad 			= "";
 			$paralelo 				= "";
 			$codDocente 			= "";
+			$fechaInicio			= "";
+			$fechaFin				= "";
 			
 			$request = $this->getRequest();
 			
@@ -267,6 +268,10 @@ class IndexController extends AbstractActionController
 					$codModalidad 			= $data['codModalidad'];
 					$paralelo 				= $data['paralelo'];
 					$codDocente 			= $data['codDocente'];
+					$fechaInicio			= $data['fechaInicioClases'];
+					$fechaFin				= $data['fechaFinClases'];
+					
+					//\Zend\Debug\Debug::dump($data); return;
 				 
 				}
 				else 
@@ -274,21 +279,21 @@ class IndexController extends AbstractActionController
 					 $form->setAttribute('class', 'has-error');
 				}
 				 
-				$resulsetEstudiantes = $this->getDBAsistenciaEstudianteTable()->obtenerAsistenciaEstudiantes($esComun, $codAreaConocimiento, $codCarreraProfesional, $codCicloAcademico, $codCurso, $codModalidad, $paralelo, $codDocente, 2);
+				$resulsetEstudiantes = $this->getDBAsistenciaEstudianteTable()->obtenerAsistenciaEstudiantes($esComun, $codAreaConocimiento, $codCarreraProfesional, $codCicloAcademico, $codCurso, $codModalidad, $paralelo, $codDocente, $fechaInicio, $fechaFin, 2);
 				
 				if($resulsetEstudiantes->count() != 0)
 				{	
 					foreach ($resulsetEstudiantes as $estudiante)
 					{						 
-						$totalPuntual = $this->getDBAsistenciaEstudianteTable()->obtenerEstudiantesEstado($estudiante['codEstudiante'], $estudiante['codCicloAcademico'], $estudiante['codCurso'], $estudiante['paralelo'], $estudiante['codModalidad'],  "Puntual");
+						$totalPuntual = $this->getDBAsistenciaEstudianteTable()->obtenerEstudiantesEstado($estudiante['codEstudiante'], $estudiante['codCicloAcademico'], $estudiante['codCurso'], $estudiante['paralelo'], $estudiante['codModalidad'], $fechaInicio, $fechaFin,  "Puntual");
 						 
 						$estudiante['totalPuntual'] = $totalPuntual['totalEstado'];
 						 
-						$totalTardanza = $this->getDBAsistenciaEstudianteTable()->obtenerEstudiantesEstado($estudiante['codEstudiante'], $estudiante['codCicloAcademico'], $estudiante['codCurso'], $estudiante['paralelo'], $estudiante['codModalidad'],  "Tarde");
+						$totalTardanza = $this->getDBAsistenciaEstudianteTable()->obtenerEstudiantesEstado($estudiante['codEstudiante'], $estudiante['codCicloAcademico'], $estudiante['codCurso'], $estudiante['paralelo'], $estudiante['codModalidad'], $fechaInicio, $fechaFin,  "Tarde");
 						 
 						$estudiante['totalTarde'] = $totalTardanza['totalEstado'];
 						
-						$totalFalta = $this->getDBAsistenciaEstudianteTable()->obtenerEstudiantesEstado($estudiante['codEstudiante'], $estudiante['codCicloAcademico'], $estudiante['codCurso'], $estudiante['paralelo'], $estudiante['codModalidad'],  "Falta");
+						$totalFalta = $this->getDBAsistenciaEstudianteTable()->obtenerEstudiantesEstado($estudiante['codEstudiante'], $estudiante['codCicloAcademico'], $estudiante['codCurso'], $estudiante['paralelo'], $estudiante['codModalidad'], $fechaInicio, $fechaFin,  "Falta");
 						 
 						$estudiante['totalFalta'] = $totalFalta['totalEstado'];
 						
@@ -300,9 +305,86 @@ class IndexController extends AbstractActionController
 			$this->layout()->setVariable('titulo', 'Asistencia de estudiantes');
 	
 			return new ViewModel(array(
-					'form' => $form,
-					'estudiantes' => $estudiantes,
+					'form' 			=> $form,
+					'estudiantes' 	=> $estudiantes,
+					'dataUrl' 		=> array($codCicloAcademico, $codCurso, $codModalidad, $paralelo, $codDocente, $fechaInicio, $fechaFin)
 			));
+		}
+	
+		return $this->redirect()->toRoute('ingresar');
+	}
+	
+	//Reporte de asistencia de estudiantes para administradores
+	public function quintoReportePdfAction()
+	{
+		if($this->identity())
+		{
+			$estudiantes = array();
+			
+			$imprimirpdf 			= $this->params()->fromRoute('imprimirpdf');
+			$codCicloAcademico 		= (int) $this->params()->fromRoute('codcicloacademico', 0);
+			$codCurso 				= (int) $this->params()->fromRoute('codcurso', 0);
+			$codModalidad 			= (int) $this->params()->fromRoute('codmodalidad', 0);
+			$paralelo	 			= $this->params()->fromRoute('paralelo', null);
+			$codDocente	 			= $this->params()->fromRoute('coddocente', null);
+			$fechaInicio			= $this->params()->fromRoute('fechainicio');
+			$fechaFin				= $this->params()->fromRoute('fechafin');
+			
+			$resulsetEstudiantes = $this->getDBAsistenciaEstudianteTable()->obtenerAsistenciaEstudiantes(null, null, null, $codCicloAcademico, $codCurso, $codModalidad, $paralelo, $codDocente, $fechaInicio, $fechaFin,  $limit = 2);			
+			$sesionClase = $this->getDBSesionClaseTable()->obtenerSesionClase($codCicloAcademico, $codCurso, $codModalidad, $paralelo, null, null, $codDocente);
+			
+			if($resulsetEstudiantes->count() != 0)
+			{
+				foreach ($resulsetEstudiantes as $estudiante){
+			
+					$totalPuntual = $this->getDBAsistenciaEstudianteTable()->obtenerEstudiantesEstado($estudiante['codEstudiante'], $estudiante['codCicloAcademico'], $estudiante['codCurso'], $estudiante['paralelo'], $estudiante['codModalidad'], $fechaInicio, $fechaFin, "Puntual");
+			
+					$estudiante['totalPuntual'] = $totalPuntual['totalEstado'];
+			
+					$totalTardanza = $this->getDBAsistenciaEstudianteTable()->obtenerEstudiantesEstado($estudiante['codEstudiante'], $estudiante['codCicloAcademico'], $estudiante['codCurso'], $estudiante['paralelo'], $estudiante['codModalidad'], $fechaInicio, $fechaFin, "Tarde");
+			
+					$estudiante['totalTarde'] = $totalTardanza['totalEstado'];
+			
+					$totalFalta = $this->getDBAsistenciaEstudianteTable()->obtenerEstudiantesEstado($estudiante['codEstudiante'], $estudiante['codCicloAcademico'], $estudiante['codCurso'], $estudiante['paralelo'], $estudiante['codModalidad'], $fechaInicio, $fechaFin, "Falta");
+			
+					$estudiante['totalFalta'] = $totalFalta['totalEstado'];
+						
+					//Datos para imprimir PDF
+					$cicloAcademico = $estudiante['anio'] . ' - ' . $estudiante['semestre'];
+					$nombreCurso = $estudiante['curso'];
+					$modalidad = $estudiante['modalidad'];
+			
+					array_push($estudiantes, $estudiante);
+				}
+					
+			}
+				
+			if($imprimirpdf == 'si')
+			{
+				$pdf = new PdfModel();
+				$pdf->setTerminal(true);
+				$pdf->setTemplate('reporte/index/quinto-reporte-pdf.phtml');
+				//$pdf->setOption('filename', 'Asistencia de estudiantes'); // Esta opcion fuerza la descarga del PDF.
+				// La extension ".pdf" se agrega automaticamente
+				$pdf->setOption('paperSize', 'a4'); // Tamaño del papel
+				$pdf->setOption('paperOrientation', 'landscape'); // Defaults to "portrait"
+					
+				// Pasamos variables a la vista
+				$pdf->setVariables(array(						
+						'docente'			=> $sesionClase['primerApellido'] .' '. $sesionClase['segundoApellido'] .', '. $sesionClase['nombres'],
+						'cicloAcademico' 	=> $sesionClase['anio'] .'-'.$sesionClase['semestre'],
+						'nombreCurso' 		=> $sesionClase['curso'],
+						'modalidad'			=> $sesionClase['modalidad'],
+						'paralelo'			=> $sesionClase['paralelo'],
+						'aula'				=> $sesionClase['numero'],
+						'seccion'			=> $sesionClase['seccion'],
+						'fechaInicio'		=> $fechaInicio,
+						'fechaFin'			=> $fechaFin,
+						'estudiantes' 		=> $estudiantes,
+				));
+			
+				return $pdf;
+			}
 		}
 	
 		return $this->redirect()->toRoute('ingresar');
@@ -323,13 +405,17 @@ class IndexController extends AbstractActionController
 			
 			$estudiantes = array();
 			
-			$imprimirpdf = 'no';
-			$codCicloAcademico = 0;			
-			$codCurso = 0;
-			$codModalidad = 0;
-			$paralelo = null;
+			$imprimirpdf 		= 'no';
+			$codCicloAcademico 	= 0;			
+			$codCurso 			= 0;
+			$codModalidad 		= 0;
+			$paralelo 			= null;
+			$fechaInicio		= "";
+			$fechaFin			= "";
 			
 			$request = $this->getRequest();
+			
+			$form->setAttribute('class', '');
 			
 			if($request->isPost())
 			{									
@@ -338,7 +424,9 @@ class IndexController extends AbstractActionController
 				$codCicloAcademico 		= $data['codCicloAcademico'];
 				$codCurso 				= $data['codCurso'];
 				$codModalidad 			= $data['codModalidad'];
-				$paralelo 				= $data['paralelo'];	
+				$paralelo 				= $data['paralelo'];
+				$fechaInicio			= $data['fechaInicioClases'];
+				$fechaFin				= $data['fechaFinClases'];
 				
 				$form->setData($data);
 			}
@@ -349,9 +437,11 @@ class IndexController extends AbstractActionController
 	    		$codCurso 				= (int) $this->params()->fromRoute('codcurso', 0);
 	    		$codModalidad 			= (int) $this->params()->fromRoute('codmodalidad', 0);
 	    		$paralelo	 			= $this->params()->fromRoute('paralelo', null);
+	    		$fechaInicio			= $this->params()->fromRoute('fechainicio');
+	    		$fechaFin				= $this->params()->fromRoute('fechafin');
 			}
 				
-			$resulsetEstudiantes = $this->getDBAsistenciaEstudianteTable()->obtenerAsistenciaEstudiantes(null, null, null, $codCicloAcademico, $codCurso, $codModalidad, $paralelo, $docente['codDocente'], $limit = 2);
+			$resulsetEstudiantes = $this->getDBAsistenciaEstudianteTable()->obtenerAsistenciaEstudiantes(null, null, null, $codCicloAcademico, $codCurso, $codModalidad, $paralelo, $docente['codDocente'], $fechaInicio, $fechaFin,  $limit = 2);
 				
 			//\Zend\Debug\Debug::dump($docente['codDocente']); return;
 				
@@ -359,15 +449,15 @@ class IndexController extends AbstractActionController
 			{
 				foreach ($resulsetEstudiantes as $estudiante){
 						
-					$totalPuntual = $this->getDBAsistenciaEstudianteTable()->obtenerEstudiantesEstado($estudiante['codEstudiante'], $estudiante['codCicloAcademico'], $estudiante['codCurso'], $estudiante['paralelo'], $estudiante['codModalidad'], "Puntual");
+					$totalPuntual = $this->getDBAsistenciaEstudianteTable()->obtenerEstudiantesEstado($estudiante['codEstudiante'], $estudiante['codCicloAcademico'], $estudiante['codCurso'], $estudiante['paralelo'], $estudiante['codModalidad'], $fechaInicio, $fechaFin, "Puntual");
 						
 					$estudiante['totalPuntual'] = $totalPuntual['totalEstado'];
 						
-					$totalTardanza = $this->getDBAsistenciaEstudianteTable()->obtenerEstudiantesEstado($estudiante['codEstudiante'], $estudiante['codCicloAcademico'], $estudiante['codCurso'], $estudiante['paralelo'], $estudiante['codModalidad'], "Tarde");
+					$totalTardanza = $this->getDBAsistenciaEstudianteTable()->obtenerEstudiantesEstado($estudiante['codEstudiante'], $estudiante['codCicloAcademico'], $estudiante['codCurso'], $estudiante['paralelo'], $estudiante['codModalidad'], $fechaInicio, $fechaFin, "Tarde");
 						
 					$estudiante['totalTarde'] = $totalTardanza['totalEstado'];
 						
-					$totalFalta = $this->getDBAsistenciaEstudianteTable()->obtenerEstudiantesEstado($estudiante['codEstudiante'], $estudiante['codCicloAcademico'], $estudiante['codCurso'], $estudiante['paralelo'], $estudiante['codModalidad'], "Falta");
+					$totalFalta = $this->getDBAsistenciaEstudianteTable()->obtenerEstudiantesEstado($estudiante['codEstudiante'], $estudiante['codCicloAcademico'], $estudiante['codCurso'], $estudiante['paralelo'], $estudiante['codModalidad'], $fechaInicio, $fechaFin, "Falta");
 						
 					$estudiante['totalFalta'] = $totalFalta['totalEstado'];		
 					
@@ -407,7 +497,7 @@ class IndexController extends AbstractActionController
 			return new ViewModel(array(					
 					'form' 			=> $form,
 					'estudiantes' 	=> $estudiantes,
-					'dataUrl' 		=> array($codCicloAcademico, $codCurso, $codModalidad, $paralelo)
+					'dataUrl' 		=> array($codCicloAcademico, $codCurso, $codModalidad, $paralelo, $fechaInicio, $fechaFin)
 			));
 			
 		}
@@ -504,13 +594,6 @@ class IndexController extends AbstractActionController
 	
 				return $pdf;
 			}
-	
-			// $this->layout('layout/login');
-			/*return new ViewModel(array(
-					'form' 			=> $form,
-					'estudiantes' 	=> $estudiantes,
-					'dataUrl' 		=> array($codCicloAcademico, $codCurso, $codModalidad, $paralelo)
-			));*/
 				
 		}
 	

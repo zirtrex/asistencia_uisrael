@@ -77,7 +77,22 @@
 				
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"> 
 		    
-			    	<?php echo $this->formSubmit($form->get('listar'));?>    
+			    	<?php echo $this->formSubmit($form->get('listar'));?>
+			    	
+			    	<?php if($this->estudiantes != null):?>
+						<a class="btn btn-labeled btn-danger" target="_blank" href="<?php echo $this->url("reportes", array(
+																										'action' => 'quinto-reporte-pdf',
+																										'imprimirpdf' => 'si',
+																										'codcicloacademico'=> $this->dataUrl[0],
+																										'codcurso'=> $this->dataUrl[1],
+																										'codmodalidad'=> $this->dataUrl[2],
+																										'paralelo'=> $this->dataUrl[3],
+																										'coddocente'=> $this->dataUrl[4],
+																										'fechainicio'=> $this->dataUrl[5],
+																										'fechafin'=> $this->dataUrl[6],
+																										
+																				)); ?>"><span class="btn-label"><i class="fa fa-fw fa-file-pdf-o"></i></span>Descargar Pdf</a>
+					<?php endif;?>
 			    
 			    </div>
 		    

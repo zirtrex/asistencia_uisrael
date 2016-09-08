@@ -217,7 +217,7 @@ if (defined('RUNNING_FROM_ROOT')) {
 					<?php endif; ?>
 		            	            
 		        </div>
-		    </div><!-- Barra laterial izquierda-->
+		    </div><!-- Barra laterial derecha-->
            	
            	<div class="rightside">
             	
@@ -231,13 +231,13 @@ if (defined('RUNNING_FROM_ROOT')) {
 					              ->setPartial('partial/breadcrumb.phtml'); 
 				    ?>		                         	
 				    <?php if($usuario['rol'] == "docente"): ?>
-					    <div class="logo_int">
-							<img alt="logo Universidad Israel" src="<?php echo $this->basePath('img/logo_uisrael_azul.png'); ?>" width="320" height="auto"/>						
-						</div>
+					    <!-- <div class="logo_int">
+							<img alt="logo Universidad Israel" src="<?php //echo $this->basePath('img/logo_uisrael_azul.png'); ?>" width="320" height="auto"/>						
+						</div> -->
 					<?php endif;?>
 	                
 		        </div>
-           		<div class="content">
+           		<div class="content" style="background-repeat:no-repeat; background-size: 20%; background-position: center top; background-image: url('<?php echo $this->basePath('img/logo_uisrael_azul.png');?>')">
             		<?php echo $this->content; ?>
             	</div>
             </div>

@@ -163,15 +163,17 @@ class SesionClaseTable extends AbstractTableGateway
     	$select = $sql->select();
     
     	$select->from(array('sc' => 'vw_sesion_clase'))
-    	->columns(array('*'))
-    	->where(array('sc.codCicloAcademico' => $codCicloAcademico))
-    	->where(array('sc.codCurso' => $codCurso))
-    	->where(array('sc.codModalidad' => $codModalidad))
-    	->where(array('sc.paralelo' => $paralelo))
-    	->where(array('sc.codAula' => $codAula))
-    	->where(array('sc.codSeccion' => $codSeccion))
-    	->where(array('sc.codDocente' => $codDocente))
-    	->limit(1);
+	    	->columns(array('*'))
+	    	->where(array('sc.codCicloAcademico' => $codCicloAcademico))
+	    	->where(array('sc.codCurso' => $codCurso))
+	    	->where(array('sc.codModalidad' => $codModalidad))
+	    	->where(array('sc.paralelo' => $paralelo))
+    		->where(array('sc.codDocente' => $codDocente));
+    	
+    	if($codAula !== null){$select->where(array('sc.codAula' => $codAula));}
+    	if($codSeccion !== null){$select->where(array('sc.codSeccion' => $codSeccion));}
+	    	
+	    $select->limit(1);
     
     	$statement = $sql->prepareStatementForSqlObject($select);
     	$resultSet = $statement->execute();
