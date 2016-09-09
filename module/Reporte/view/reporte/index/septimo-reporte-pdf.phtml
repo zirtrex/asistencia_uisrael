@@ -62,7 +62,7 @@ table {
 }
 
 .page-number {
-  text-align: center;
+  text-align: right;
 }
 
 .page-number:before {
@@ -100,6 +100,7 @@ td{
 
 <div id="footer">
   <div class="page-number"></div>
+  <div><?php echo date("d-M-Y")?></div>
 </div>
 
 <?php if($this->asistencia != null):?>

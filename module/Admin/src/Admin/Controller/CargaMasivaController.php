@@ -37,7 +37,7 @@ class CargaMasivaController extends AbstractActionController
     				
     				$nombreArchivo = explode("." , $uploadFile['name']);
     				
-    				$destination = $this->getFileUploadLocation();
+    				$destination = $this->getFileUploadLocation(); //var_dump($destination);return ;
     				
     				$adapter = new Http();
     				
@@ -82,7 +82,7 @@ class CargaMasivaController extends AbstractActionController
 	    	{    	
 	    		$path = $this->getFileUploadLocation();
 	    					
-	    		$sourceFileName = $path . '/' . $file . '.csv';
+	    		$sourceFileName = $path . '/' . $file . '.csv'; var_dump($path);return ;
 	    		
 	    		if(file_exists ($sourceFileName))
 	    		{    	
@@ -178,7 +178,7 @@ class CargaMasivaController extends AbstractActionController
 					break;
 				}    		
 	    	 
-	    		$path = $this->getFileUploadLocation(); var_dump($path);return ;
+	    		$path = $this->getFileUploadLocation(); 
 	    		$sourceFileName = $path . '/' . $file . '.csv';
 	    	 
 		    	if(file_exists ($sourceFileName))
