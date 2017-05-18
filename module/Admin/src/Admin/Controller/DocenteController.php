@@ -112,7 +112,6 @@ class DocenteController extends AbstractActionController
     
     public function asignarUsuarioAction()
     {
-
         if($this->identity())
         { 
             $form = new \Admin\Form\UsuarioForm();         
@@ -123,13 +122,15 @@ class DocenteController extends AbstractActionController
                 //primero guardar el usuario y obtener su id
                 $form->setInputFilter(new \Admin\Form\Filter\UsuarioFilter());
                 $form->setData($request->getPost());
-                $form->setValidationGroup(array('codUsuario', 'usuario', 'clave', 'rol'));
+                $form->setValidationGroup(array('codDocente', 'usuario', 'clave', 'rol'));
                  
                 if ($form->isValid())
                 {                   
                     $usuario = $form->getData();
-                    $usuario->setClave(md5($usuario->getClave()));
-                    $codDocente = $usuario->getCodUsuario();
+                    
+                    //\Zend\Debug\Debug::dump($usuario); exit;
+                    
+                    $codDocente = $usuario->getCodDocente();
                     
                     $codUsuario = $this->getDBUsuarioTable()->insertar($usuario);
 
@@ -177,17 +178,17 @@ class DocenteController extends AbstractActionController
                 
                 $usuario->setRol('docente'); //predeterminar la casilla del combo
                 $usuario->setUsuario($numeroDocumento);
-                $usuario->setCodUsuario($codDocente); //guardar el codigo en el formulario usuario 
+                $usuario->setCodDocente($codDocente); 
                 
                 $form->bind($usuario);
             }
 
             
             $view = new ViewModel(array(
-                          'form' => $form,
-                          'text'=>'Asignar usuario a ' . $nombrePersona . ' (Docente)',
-                          'controller'=>'docente',
-                          'action'=>'asignar-usuario'
+                          'form' 		=> $form,
+                          'text'		=>'Asignar usuario a ' . $nombrePersona . ' (Docente)',
+                          'controller'	=>'docente',
+                          'action'		=>'asignar-usuario'
             ));
 
             $view->setTemplate('admin/usuario/agregar-usuario.phtml');
@@ -215,8 +216,7 @@ class DocenteController extends AbstractActionController
                         'Persona' => array('codPersona', 'nombres', 'primerApellido', 'segundoApellido', 'tipoDocumento', 'numeroDocumento', 'fechaNacimiento','correo', 'celular')
                 ));
                 
-                $form->setData($request->getPost());                
-                
+                $form->setData($request->getPost());               
 
                 if ($form->isValid())
                 {                   
@@ -224,11 +224,11 @@ class DocenteController extends AbstractActionController
                     
                     $persona = $docente->getPersona();
                     
+                    //\Zend\Debug\Debug::dump($docente); exit;
+                    
                     if($this->getDBPersonaTable()->actualizar($persona))
-                    {   
-                                        
-
-                        if($this->getDBDocenteTable()->actualizar($docente))
+                    {
+                    	if($this->getDBDocenteTable()->actualizar($docente))
                         {
                             return $this->redirect()->toRoute('docente');
                         }
@@ -252,23 +252,23 @@ class DocenteController extends AbstractActionController
                 {
                     return $this->redirect()->toRoute('docente');
                 }
-
                 
                 $docente = new Docente();
                 
                 $docente->exchangeArray($docenteSeleccionado);
                 
+                //\Zend\Debug\Debug::dump($docente); exit;
+                
                 $form->bind($docente); //unimos el objeto docente al formulario y lo carga correctamente              
                 
             }
 
-            $view = new ViewModel(
-                array(
+            $view = new ViewModel(array(
                           'form' => $form,
                           'text'=>'Editar',
                           'action'=>'editar-docente'
-                      )
-                );
+                      ));
+            
             $view->setTemplate('admin/docente/agregar-docente.phtml');
             return $view;
         }

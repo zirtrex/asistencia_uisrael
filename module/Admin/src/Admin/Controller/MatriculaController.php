@@ -24,23 +24,24 @@ class MatriculaController extends AbstractActionController
     {
     	if($this->identity())
     	{
+    		$codCargaAcademica 		= (int) $this->params()->fromRoute('codcargaacademica', 0);
     		$codCicloAcademico 		= (int) $this->params()->fromRoute('codcicloacademico', 0);
     		$codCurso 				= (int) $this->params()->fromRoute('codcurso', 0);
     		$codModalidad 			= (int) $this->params()->fromRoute('codmodalidad', 0);
     		$paralelo	 			= $this->params()->fromRoute('paralelo', null);
     			
     		//Verificamos que se envien los parámetros necesarios.
-    		if(!$codCicloAcademico || !$codCurso || !$codModalidad || !$paralelo)    		
+    		if(!$codCargaAcademica || !$codCicloAcademico || !$codCurso || !$codModalidad || !$paralelo)    		
     			return $this->redirect()->toRoute('carga-academica');    		
     		
-    		$cargaAcademica = $this->getDBCargaAcademicaTable()->obtenerCargaAcademica($codCicloAcademico, $codCurso, $codModalidad, $paralelo);
+    		$cargaAcademica = $this->getDBCargaAcademicaTable()->obtenerCargaAcademica($codCargaAcademica, $codCicloAcademico, $codCurso, $codModalidad, $paralelo);
     		
     		if(!$cargaAcademica)
     		{		
     			return $this->redirect()->toRoute('carga-academica');
     		}
     		
-    		$estudiantesMatriculados = $this->getDBMatriculaTable()->obtenerEstudiantesMatriculados($codCicloAcademico, $codCurso, $codModalidad, $paralelo);
+    		$estudiantesMatriculados = $this->getDBMatriculaTable()->obtenerEstudiantesMatriculados($codCargaAcademica, $codCicloAcademico, $codCurso, $codModalidad, $paralelo);
     	
     		$estudiantesEncontrados = null;
     		
@@ -67,7 +68,8 @@ class MatriculaController extends AbstractActionController
     public function matricularEstudianteAction()
     {
     	if($this->identity())
-    	{ 		
+    	{ 	
+    		$codCargaAcademica 		= (int) $this->params()->fromRoute('codcargaacademica', 0);
     		$codCicloAcademico 		= (int) $this->params()->fromRoute('codcicloacademico', 0);
     		$codCurso 				= (int) $this->params()->fromRoute('codcurso', 0);
     		$codModalidad 			= (int) $this->params()->fromRoute('codmodalidad', 0);
@@ -75,12 +77,12 @@ class MatriculaController extends AbstractActionController
     		$codEstudiante 			= (int) $this->params()->fromRoute('codestudiante', 0);
     		 
     		//Verificamos que se envien los parámetros necesarios.
-    		if(!$codCicloAcademico || !$codCurso || !$codModalidad || !$paralelo || !$codEstudiante)
+    		if(!$codCargaAcademica || !$codCicloAcademico || !$codCurso || !$codModalidad || !$paralelo || !$codEstudiante)
     		{
     			//return $this->redirect()->toRoute('carga-academica');
     		}    		
     		
-    		$cargaAcademica = $this->getDBCargaAcademicaTable()->obtenerCargaAcademica($codCicloAcademico, $codCurso, $codModalidad, $paralelo);
+    		$cargaAcademica = $this->getDBCargaAcademicaTable()->obtenerCargaAcademica($codCargaAcademica, $codCicloAcademico, $codCurso, $codModalidad, $paralelo);
     		
     		// \Zend\Debug\Debug::dump($cargaAcademica); return ;
     		
@@ -89,24 +91,24 @@ class MatriculaController extends AbstractActionController
     			return $this->redirect()->toRoute('carga-academica');
     		}
     		
-    		$estudianteMatriculado = $this->getDBMatriculaTable()->obtenerEstudianteMatriculado($codCicloAcademico, $codCurso, $codModalidad, $paralelo, $codEstudiante);
+    		$estudianteMatriculado = $this->getDBMatriculaTable()->obtenerEstudianteMatriculado($codCargaAcademica, $codCicloAcademico, $codCurso, $codModalidad, $paralelo, $codEstudiante);
 			
 			if(!$estudianteMatriculado)
 			{    		
 				$nuevaMatricula = array(
-    				'fechaMatricula' 		=> gmdate("Y-m-d", Miscellanea::getHoraLocal()),
+    				'fechaMatricula' 		=> gmdate("Y-m-d", Miscellanea::getHoraLocal(-5)),
+					'codEstudiante' 		=> $codEstudiante,
+					'codCargaAcademica' 	=> $codCargaAcademica,
     				'codCicloAcademico' 	=> $codCicloAcademico,
     				'codCurso' 				=> $codCurso,
 					'codModalidad' 			=> $codModalidad,
-					'paralelo' 				=> $paralelo,
-					'codEstudiante' 		=> $codEstudiante,
+					'paralelo' 				=> $paralelo,					
     			);
 	    	
 	    		if($this->getDBMatriculaTable()->insertar($nuevaMatricula))
 	    		{
 	    			$this->flashMessenger()->addErrorMessage('¡Estudiante agregado correctamente!');
 	    		}
-				//return $this->redirect()->toRoute('carga-academica');
 	    	}    	
 	    	
 	    	//header('Location: http://www.example.com/');
@@ -114,6 +116,7 @@ class MatriculaController extends AbstractActionController
 	    	
 	    	$this->redirect()->toRoute('matricula', array(
 	    			'action' 				=> 'index',
+	    			'codcargaacademica' 	=> $codCargaAcademica,
 	    			'codcicloacademico' 	=> $codCicloAcademico,
 	    			'codcurso' 				=> $codCurso,
 	    			'codmodalidad' 			=> $codModalidad,
@@ -132,7 +135,8 @@ class MatriculaController extends AbstractActionController
     public function eliminarEstudianteAction()
     {
     	if($this->identity())
-    	{    		
+    	{
+    		$codCargaAcademica 		= (int) $this->params()->fromRoute('codcargaacademica', 0);
     		$codCicloAcademico 		= (int) $this->params()->fromRoute('codcicloacademico', 0);
     		$codCurso 				= (int) $this->params()->fromRoute('codcurso', 0);
     		$codModalidad 			= (int) $this->params()->fromRoute('codmodalidad', 0);
@@ -140,20 +144,21 @@ class MatriculaController extends AbstractActionController
     		$codEstudiante 			= (int) $this->params()->fromRoute('codestudiante', 0);
     		 
     		//Verificamos que se envien los parámetros necesarios.
-    		if(!$codCicloAcademico || !$codCurso || !$codModalidad || !$paralelo || !$codEstudiante)
+    		if(!$codCargaAcademica || !$codCicloAcademico || !$codCurso || !$codModalidad || !$paralelo || !$codEstudiante)
     			return $this->redirect()->toRoute('carga-academica');
     	
     	
-    		$cargaAcademica = $this->getDBCargaAcademicaTable()->obtenerCargaAcademica($codCicloAcademico, $codCurso, $codModalidad, $paralelo);
+    		$cargaAcademica = $this->getDBCargaAcademicaTable()->obtenerCargaAcademica($codCargaAcademica, $codCicloAcademico, $codCurso, $codModalidad, $paralelo);
     	
     		if(!$cargaAcademica)
     			return $this->redirect()->toRoute('carga-academica');
     	
-    		$estudianteMatriculado = $this->getDBMatriculaTable()->obtenerEstudianteMatriculado($codCicloAcademico, $codCurso, $codModalidad, $paralelo, $codEstudiante);
+    		$estudianteMatriculado = $this->getDBMatriculaTable()->obtenerEstudianteMatriculado($codCargaAcademica, $codCicloAcademico, $codCurso, $codModalidad, $paralelo, $codEstudiante);
     			
     		if($estudianteMatriculado)
     		{
     			$eliminarMatricula = array(
+    					'codCargaAcademica' 	=> $codCargaAcademica,
     					'codCicloAcademico' 	=> $codCicloAcademico,
     					'codCurso' 				=> $codCurso,
     					'codModalidad' 			=> $codModalidad,
@@ -166,6 +171,7 @@ class MatriculaController extends AbstractActionController
     	
     		return $this->redirect()->toRoute('matricula', array(
     				'action' 				=> 'index',
+    				'codcargaacademica' 	=> $codCargaAcademica,
     				'codcicloacademico' 	=> $codCicloAcademico,
     				'codcurso' 				=> $codCurso,
     				'codmodalidad' 			=> $codModalidad,

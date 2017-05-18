@@ -20,9 +20,16 @@ class CarreraProfesionalForm extends Form
         $this->add(
         		array(
         				'name' => 'codCarreraProfesional',
-        				'type' => 'hidden',
+        				'type' => 'Zend\Form\Element\Text',
         				'attributes' => array(
-        						'id' => 'codCarreraProfesional'
+        						'class' 	=> 'form-control',
+        						'readonly' 	=> 'readonly'
+        				),
+        				'options' => array(
+        						'label' => 'Código',
+        						'label_attributes' => array(
+        								'class' => 'col-sm-2 control-label'
+        						),
         				),
         		)
         );
@@ -33,11 +40,11 @@ class CarreraProfesionalForm extends Form
         				'type' => 'Zend\Form\Element\Text',
         				'attributes' => array(
         						'id' => 'codigo',
-        						'placeholder' => 'Ingrese código',
+        						'placeholder' => 'Ingrese identificador',
         						'class' => 'form-control',
         				),
         				'options' => array(
-        						'label' => 'Código',
+        						'label' => 'Ingrese identificador',
         						'label_attributes' => array(
         								'class' => 'col-sm-2 control-label'
         						),

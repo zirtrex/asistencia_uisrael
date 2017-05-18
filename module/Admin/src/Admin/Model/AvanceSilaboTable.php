@@ -17,7 +17,7 @@ class AvanceSilaboTable extends AbstractTableGateway
     }
     
     //Obtengo los temas avanzados más no terminados
-    public function obtenerTemasAvanzados($codCicloAcademico, $codCurso, $codModalidad, $paralelo, $codAula, $codSeccion, $codDocente, $terminados = false)
+    public function obtenerTemasAvanzados($codCargaAcademica, $codCicloAcademico, $codCurso, $codModalidad, $paralelo, $codAula, $codSeccion, $codDocente, $terminados = false)
     {
     	$sql = new Sql($this->adapter);
     	$select = $sql->select();    	
@@ -26,6 +26,7 @@ class AvanceSilaboTable extends AbstractTableGateway
 		{		
 			$select->from(array('avsi' => 'vw_avance_silabo'))
 	        	->columns(array('*'))        	
+	        	->where(array('avsi.codCargaAcademica' => $codCargaAcademica))
 		    	->where(array('avsi.codCicloAcademico' => $codCicloAcademico))
 		    	->where(array('avsi.codCurso' => $codCurso))
 		    	->where(array('avsi.codModalidad' => $codModalidad))
@@ -39,6 +40,7 @@ class AvanceSilaboTable extends AbstractTableGateway
 		{
 			$select->from(array('avsi' => 'vw_avance_silabo'))
 				->columns(array('*'))
+				->where(array('avsi.codCargaAcademica' => $codCargaAcademica))
 		    	->where(array('avsi.codCicloAcademico' => $codCicloAcademico))
 		    	->where(array('avsi.codCurso' => $codCurso))
 		    	->where(array('avsi.codModalidad' => $codModalidad))

@@ -6,6 +6,10 @@
 	$buscarForm->prepare();
 ?>
 
+<div class="">
+<?php echo $this->flashmessenger()->setMessageOpenFormat('<div%s><p>')->setMessageSeparatorString('</p><p>')->setMessageCloseString('</p></div>')->render('default' , array('custom-box', 'palette-nephritis')); ?>
+</div>
+
 <div class="box">
 	<div class="box-title">
 		<i class="glyphicon glyphicon-new-window"></i>
@@ -41,6 +45,7 @@
 			<table class="table table-hover table-striped">
 			    <thead>
 			    <tr>
+			    	<th>Código Carga Académica</th>
 			        <th><a href="<?php echo $this->url('carga-academica', array('action' => 'index', 'orderby' => 'fechainicioclases', 'order' => $url_order)); ?>">Fecha de Inicio<?php if ($this->orderby == 'fechainicioclases'): ?><i class="glyphicon glyphicon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a></th>			        
 			        <th>Es común</th>
 			        <th>Area de Conocimiento</th>
@@ -58,7 +63,11 @@
 			    </thead>
 			    <tbody>
 			    <?php foreach ($this->cargasAcademicas as $cargaAcademica): ?>    
-			    <tr> 
+			    <tr>
+			    
+			    	<td>
+			        	<?php echo $this->escapeHtml($cargaAcademica['codCargaAcademica']);?>
+			        </td> 
 			    
 			    	<td>
 			        	<?php echo $this->escapeHtml($cargaAcademica['fechaInicioClases']);?>
@@ -110,8 +119,12 @@
 			        </td>     
 			        
 			        <td>
+			        	<a title="Asignar sílabo" href="<?php echo $this->url('silabo', array('action' => 'index', 'codcargaacademica' => $this->escapeHtml($cargaAcademica['codCargaAcademica'])));?>" class="btn palette-sun-flower btn-color btn-sm">
+							<i class="glyphicon glyphicon-tasks"></i> 
+						</a>
 			        	<a title="Matricular estudiantes" class="btn palette-wet-asphalt btn-color btn-sm" href="<?php echo $this->url('matricula', array(
 				        			'action' => 'index',
+			        				'codcargaacademica' => $this->escapeHtml($cargaAcademica['codCargaAcademica']),
 				        			'codcicloacademico' => $this->escapeHtml($cargaAcademica['codCicloAcademico']),
 				        			'codcurso' => $this->escapeHtml($cargaAcademica['codCurso']),
 				        			'codmodalidad' => $this->escapeHtml($cargaAcademica['codModalidad']),
@@ -121,6 +134,7 @@
 						</a>
 						<a title="Editar carga académica" class="btn btn-info btn-sm" href="<?php echo $this->url('carga-academica', array(
 				        			'action' => 'editar-carga-academica',
+									'codcargaacademica' => $this->escapeHtml($cargaAcademica['codCargaAcademica']),
 				        			'codcicloacademico' => $this->escapeHtml($cargaAcademica['codCicloAcademico']),
 				        			'codcurso' => $this->escapeHtml($cargaAcademica['codCurso']),
 				        			'codmodalidad' => $this->escapeHtml($cargaAcademica['codModalidad']),
@@ -130,6 +144,7 @@
 						</a>
 						<a title="Eliminar carga académica" class="btn btn-danger btn-sm" href="<?php echo $this->url('carga-academica', array(
 				        			'action' => 'eliminar-carga-academica',
+									'codcargaacademica' => $this->escapeHtml($cargaAcademica['codCargaAcademica']),
 				        			'codcicloacademico' => $this->escapeHtml($cargaAcademica['codCicloAcademico']),
 				        			'codcurso' => $this->escapeHtml($cargaAcademica['codCurso']),
 				        			'codmodalidad' => $this->escapeHtml($cargaAcademica['codModalidad']),
@@ -140,22 +155,7 @@
 					</td>
 			    </tr>
 			    <?php endforeach; ?>
-			    </tbody>
-			    <tfoot>
-			    <tr>
-			        <th>Fecha de Inicio</th>			        
-			        <th>Carrera Profesional</th>
-			        <th>Ciclo Académico</th>
-			        <th>Código</th>      
-			        <th>Curso</th>
-			        <th>Docente</th>
-			        <th>Modalidad</th>
-			        <th>Aula</th>
-			        <th>Sección</th>
-			        <th>Paralelo</th>
-			        <th>Acciones</th>
-			    </tr>
-			    </tfoot>    
+			    </tbody> 
 			</table>
 
 			<?php echo $this->paginationControl($this->cargasAcademicas, 'Sliding', 'paginator', array('route' => 'carga-academica', 'action' => 'index', 'orderby' => $this->orderby, 'order' => $order));?>

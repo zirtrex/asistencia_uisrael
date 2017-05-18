@@ -39,6 +39,7 @@ class IndexController extends AbstractActionController implements ServiceLocator
 		if($this->identity())
 		{			
 			$codDocente 			= $this->getDatosDocente()['codDocente'];
+			$codCargaAcademica 		= (int) $this->params()->fromRoute('codcargaacademica', 0);
 			$codCicloAcademico 		= (int) $this->params()->fromRoute('codcicloacademico', 0);
 			$codCurso 				= (int) $this->params()->fromRoute('codcurso', 0);
 			$codModalidad 			= (int) $this->params()->fromRoute('codmodalidad', 0);
@@ -47,21 +48,21 @@ class IndexController extends AbstractActionController implements ServiceLocator
 			$codSeccion 			= (int) $this->params()->fromRoute('codseccion', 0);
 			
 			//Verificamos que se envien los parámetros necesarios para listar las sesiones.
-			if(!$codCicloAcademico || !$codCurso || !$codModalidad || !$paralelo || !$codAula || !$codSeccion)
+			if(!$codCargaAcademica || !$codCicloAcademico || !$codCurso || !$codModalidad || !$paralelo || !$codAula || !$codSeccion)
 			{
 				return $this->redirect()->toRoute('cursos');
 			}
 			
 			$cargaAcademicaTable = $this->getServiceLocator()->get('CargaAcademicaTable');			
 							
-			$cursoSeleccionado = $cargaAcademicaTable->obtenerCurso($codCicloAcademico, $codCurso, $codModalidad, $paralelo, $codAula, $codSeccion, $codDocente);
+			$cursoSeleccionado = $cargaAcademicaTable->obtenerCurso($codCargaAcademica, $codCicloAcademico, $codCurso, $codModalidad, $paralelo, $codAula, $codSeccion, $codDocente);
 				
 			//Verificamos que los valores enviados coincidan con la carrera, el ciclo, el curso, docente, aula y turno para determinar si es único
 			if($cursoSeleccionado)
 			{				
 				$sesionClaseTable = $this->getServiceLocator()->get('SesionClaseTable');
 				
-				$sesionAbierta = $sesionClaseTable->obtenerSesionAbierta($codCicloAcademico, $codCurso, $codModalidad, $paralelo, $codAula, $codSeccion, $codDocente);
+				$sesionAbierta = $sesionClaseTable->obtenerSesionAbierta($codCargaAcademica, $codCicloAcademico, $codCurso, $codModalidad, $paralelo, $codAula, $codSeccion, $codDocente);
 				
 				//Si existe una sesión abierta verificamos su estado
 				if($sesionAbierta){
@@ -71,6 +72,7 @@ class IndexController extends AbstractActionController implements ServiceLocator
 						return $this->forward()->dispatch('Asistencia\Controller\Index', array(
 									'action'				=>'listar-estudiantes',
 									'codsesionclase' 		=> $sesionAbierta['codSesionClase'],
+									'codcargaacademica' 	=> $sesionAbierta['codCargaAcademica'],
 									'codcicloacademico' 	=> $sesionAbierta['codCicloAcademico'],
 									'codcurso' 				=> $sesionAbierta['codCurso'],
 									'codmodalidad' 			=> $sesionAbierta['codModalidad'],
@@ -86,6 +88,7 @@ class IndexController extends AbstractActionController implements ServiceLocator
 							return $this->forward()->dispatch('Asistencia\Controller\Index', array(
 										'action'				=>'avance-silabo',
 										'codsesionclase' 		=> $sesionAbierta['codSesionClase'],
+										'codcargaacademica' 	=> $sesionAbierta['codCargaAcademica'],
 										'codcicloacademico' 	=> $sesionAbierta['codCicloAcademico'],
 										'codcurso' 				=> $sesionAbierta['codCurso'],
 										'codmodalidad' 			=> $sesionAbierta['codModalidad'],
@@ -99,6 +102,7 @@ class IndexController extends AbstractActionController implements ServiceLocator
 							return $this->forward()->dispatch('Asistencia\Controller\Index', array(
 										'action'				=>'cerrar-sesion',
 										'codsesionclase' 		=> $sesionAbierta['codSesionClase'],
+										'codcargaacademica' 	=> $sesionAbierta['codCargaAcademica'],
 										'codcicloacademico' 	=> $sesionAbierta['codCicloAcademico'],
 										'codcurso' 				=> $sesionAbierta['codCurso'],
 										'codmodalidad' 			=> $sesionAbierta['codModalidad'],
@@ -116,26 +120,27 @@ class IndexController extends AbstractActionController implements ServiceLocator
 					$sesionClaseTable = $this->getServiceLocator()->get('SesionClaseTable');
 					
 					$sesion = array(
-							'codSesionClase' => NULL,
-							'fecha' => gmdate("Y-m-d",Miscellanea::getHoraLocal(-5)),
-							'diaSemana' => gmdate("N",Miscellanea::getHoraLocal(-5)),
-							'horaInicio' => gmdate("H:i:s.U" ,Miscellanea::getHoraLocal(-5)),
-							'horaFin' => NULL,
-							'asistenciaRealizada' => 'No',
-							'totalEstudiantes' => NULL,
+							'codSesionClase' 		=> NULL,
+							'fecha' 				=> gmdate("Y-m-d",Miscellanea::getHoraLocal(-5)),
+							'diaSemana' 			=> gmdate("N",Miscellanea::getHoraLocal(-5)),
+							'horaInicio' 			=> gmdate("H:i:s.U" ,Miscellanea::getHoraLocal(-5)),
+							'horaFin' 				=> NULL,
+							'asistenciaRealizada' 	=> 'No',
+							'totalEstudiantes' 		=> NULL,
 							'estudiantesAsistieron' => NULL,
-							'avanceSilabo' => 'No',
-							'totalTemas' => NULL,
-							'temasTerminados' => NULL,
-							'sesionTerminada' => 'No',
-							'observacion' => NULL,
-							'codCicloAcademico' => $codCicloAcademico,
-							'codCurso' => $codCurso,
-							'codModalidad' => $codModalidad,
-							'paralelo' => $paralelo,							
-							'codAula' => $codAula,
-							'codSeccion' => $codSeccion,
-							'codDocente' => $codDocente,
+							'avanceSilabo' 			=> 'No',
+							'totalTemas' 			=> NULL,
+							'temasTerminados' 		=> NULL,
+							'sesionTerminada' 		=> 'No',
+							'observacion' 			=> NULL,
+							'codCargaAcademica' 	=> $codCargaAcademica,
+							'codCicloAcademico' 	=> $codCicloAcademico,
+							'codCurso' 				=> $codCurso,
+							'codModalidad' 			=> $codModalidad,
+							'paralelo' 				=> $paralelo,							
+							'codAula' 				=> $codAula,
+							'codSeccion' 			=> $codSeccion,
+							'codDocente' 			=> $codDocente,
 					);
 					
 					$codSesionInsertada = $sesionClaseTable->nuevaSesion($sesion);
@@ -145,6 +150,7 @@ class IndexController extends AbstractActionController implements ServiceLocator
 						return $this->forward()->dispatch('Asistencia\Controller\Index', array(
 								'action'					=>'listar-estudiantes',
 								'codsesionclase' 			=> $codSesionInsertada,
+								'codcargaacademica' 		=> $codCargaAcademica,
 								'codcicloacademico' 		=> $codCicloAcademico,
 								'codcurso' 					=> $codCurso,
 								'codmodalidad' 				=> $codModalidad,
@@ -180,6 +186,7 @@ class IndexController extends AbstractActionController implements ServiceLocator
 		{
 			$codDocente 			= $this->getDatosDocente()['codDocente'];
 			$codSesionClase			= (int) $this->params()->fromRoute('codsesionclase', 0);
+			$codCargaAcademica 		= (int) $this->params()->fromRoute('codcargaacademica', 0);
 			$codCicloAcademico 		= (int) $this->params()->fromRoute('codcicloacademico', 0);
 			$codCurso 				= (int) $this->params()->fromRoute('codcurso', 0);
 			$codModalidad 			= (int) $this->params()->fromRoute('codmodalidad', 0);
@@ -188,7 +195,7 @@ class IndexController extends AbstractActionController implements ServiceLocator
 			$codSeccion 			= (int) $this->params()->fromRoute('codseccion', 0);
 			
 			//Verificamos que se envien los parámetros necesarios para listar los estudiantes.
-			if(!$codSesionClase || !$codCicloAcademico || !$codCurso || !$codModalidad || !$paralelo || !$codAula || !$codSeccion)
+			if(!$codCargaAcademica || !$codSesionClase || !$codCicloAcademico || !$codCurso || !$codModalidad || !$paralelo || !$codAula || !$codSeccion)
 			{
 				return $this->redirect()->toRoute('cursos');
 			}
@@ -196,14 +203,14 @@ class IndexController extends AbstractActionController implements ServiceLocator
 			$cargaAcademicaTable = $this->getServiceLocator()->get('CargaAcademicaTable');		
 				
 			//
-			$cursoSeleccionado = $cargaAcademicaTable->obtenerCurso($codCicloAcademico, $codCurso, $codModalidad, $paralelo, $codAula, $codSeccion, $codDocente);
+			$cursoSeleccionado = $cargaAcademicaTable->obtenerCurso($codCargaAcademica, $codCicloAcademico, $codCurso, $codModalidad, $paralelo, $codAula, $codSeccion, $codDocente);
 			
 			if($cursoSeleccionado)
 			{
 			
 				$matriculaTable = $this->getServiceLocator()->get('MatriculaTable');
 			
-				$estudiantesMatriculados = $matriculaTable->obtenerEstudiantesMatriculados($codCicloAcademico, $codCurso, $codModalidad, $paralelo);	
+				$estudiantesMatriculados = $matriculaTable->obtenerEstudiantesMatriculados($codCargaAcademica, $codCicloAcademico, $codCurso, $codModalidad, $paralelo);	
 			
 				$this->layout()->setVariable('curso', $cursoSeleccionado);
 				
@@ -212,7 +219,7 @@ class IndexController extends AbstractActionController implements ServiceLocator
 				return new ViewModel(array(
 						'curso' => $cursoSeleccionado,
 						'estudiantesMatriculados' => $estudiantesMatriculados,
-						'dataUrl' => array($codSesionClase, $codCicloAcademico, $codCurso, $codModalidad, $paralelo, $codAula, $codSeccion)
+						'dataUrl' => array($codSesionClase, $codCargaAcademica, $codCicloAcademico, $codCurso, $codModalidad, $paralelo, $codAula, $codSeccion)
 				));
 			
 			}
@@ -239,6 +246,7 @@ class IndexController extends AbstractActionController implements ServiceLocator
 
 				$codDocente 			= $this->getDatosDocente()['codDocente'];
 				$codSesionClase 		= $dataEstudiantes->codSesionClase;
+				$codCargaAcademica 		= $dataEstudiantes->codCargaAcademica;
 				$codCicloAcademico 		= $dataEstudiantes->codCicloAcademico;
 				$codCurso 				= $dataEstudiantes->codCurso;
 				$codModalidad 			= $dataEstudiantes->codModalidad;
@@ -285,6 +293,7 @@ class IndexController extends AbstractActionController implements ServiceLocator
 				return $this->redirect()->toRoute('avance-silabo', array(
 							'action'					=>'avance-silabo',
 							'codsesionclase' 			=> $codSesionClase,
+							'codcargaacademica' 		=> $codCargaAcademica,
 							'codcicloacademico' 		=> $codCicloAcademico,
 							'codcurso' 					=> $codCurso,
 							'codmodalidad' 				=> $codModalidad,
@@ -307,6 +316,7 @@ class IndexController extends AbstractActionController implements ServiceLocator
 		{			
 			$codDocente 			= $this->getDatosDocente()['codDocente'];
 			$codSesionClase			= (int) $this->params()->fromRoute('codsesionclase', 0);
+			$codCargaAcademica 		= (int) $this->params()->fromRoute('codcargaacademica', 0);
 			$codCicloAcademico 		= (int) $this->params()->fromRoute('codcicloacademico', 0);
 			$codCurso 				= (int) $this->params()->fromRoute('codcurso', 0);
 			$codModalidad 			= (int) $this->params()->fromRoute('codmodalidad', 0);
@@ -315,7 +325,7 @@ class IndexController extends AbstractActionController implements ServiceLocator
 			$codSeccion 			= (int) $this->params()->fromRoute('codseccion', 0);
 			
 			//Verificamos que se envien los parámetros necesarios.
-			if(!$codSesionClase || !$codCicloAcademico || !$codCurso || !$codModalidad || !$paralelo || !$codAula || !$codSeccion)
+			if(!$codCargaAcademica || !$codSesionClase || !$codCicloAcademico || !$codCurso || !$codModalidad || !$paralelo || !$codAula || !$codSeccion)
 			{
 				return $this->redirect()->toRoute('cursos');
 			}
@@ -323,7 +333,7 @@ class IndexController extends AbstractActionController implements ServiceLocator
 			$cargaAcademicaTable = $this->getServiceLocator()->get('CargaAcademicaTable');		
 				
 			//Verificamos que los valores enviados coincidan.
-			$cursoSeleccionado = $cargaAcademicaTable->obtenerCurso($codCicloAcademico, $codCurso, $codModalidad, $paralelo, $codAula, $codSeccion, $codDocente);
+			$cursoSeleccionado = $cargaAcademicaTable->obtenerCurso($codCargaAcademica, $codCicloAcademico, $codCurso, $codModalidad, $paralelo, $codAula, $codSeccion, $codDocente);
 			
 			if($cursoSeleccionado){
 						
@@ -331,9 +341,9 @@ class IndexController extends AbstractActionController implements ServiceLocator
 				
 				$avanceSilaboTable = $this->getServiceLocator()->get('AvanceSilaboTable');
 				
-				$temas = $silaboDetalleTable->obtenerTemas($codCurso);
+				$temas = $silaboDetalleTable->obtenerTemas($codCargaAcademica);
 		
-				$temasAvanzados = $avanceSilaboTable->obtenerTemasAvanzados($codCicloAcademico, $codCurso, $codModalidad, $paralelo, $codAula, $codSeccion, $codDocente);
+				$temasAvanzados = $avanceSilaboTable->obtenerTemasAvanzados($codCargaAcademica, $codCicloAcademico, $codCurso, $codModalidad, $paralelo, $codAula, $codSeccion, $codDocente);
 				
 				$this->layout()->setVariable('curso', $cursoSeleccionado);
 				
@@ -343,7 +353,7 @@ class IndexController extends AbstractActionController implements ServiceLocator
 						'curso' => $cursoSeleccionado,
 						'temas' => $temas,
 						'temasAvanzados' => $temasAvanzados,
-						'dataUrl' => array($codSesionClase, $codCicloAcademico, $codCurso, $codModalidad, $paralelo, $codAula, $codSeccion)
+						'dataUrl' => array($codSesionClase, $codCargaAcademica, $codCicloAcademico, $codCurso, $codModalidad, $paralelo, $codAula, $codSeccion)
 				));				
 				
 			}
@@ -371,6 +381,7 @@ class IndexController extends AbstractActionController implements ServiceLocator
 			
 				$codDocente 			= $this->getDatosDocente()['codDocente'];
 				$codSesionClase			= $dataAvance->codSesionClase;
+				$codCargaAcademica 		= $dataAvance->codCargaAcademica;
 				$codCicloAcademico 		= $dataAvance->codCicloAcademico;
 				$codCurso 				= $dataAvance->codCurso;
 				$codModalidad 			= $dataAvance->codModalidad;
@@ -382,10 +393,10 @@ class IndexController extends AbstractActionController implements ServiceLocator
 				$avanceSilaboTableTable = $this->getServiceLocator()->get('AvanceSilaboTable');	
 			
 				$avanceTema = array(
-						'avance' => $dataAvance->avance,
-						'observaciones' => $dataAvance->observaciones,
-						'codSilaboDetalle' => $dataAvance->codSilaboDetalle,
-						'codSesionClase' => $codSesionClase
+						'avance'              => $dataAvance->avance,
+						'observaciones'       => $dataAvance->observaciones,
+						'codSilaboDetalle'    => $dataAvance->codSilaboDetalle,
+						'codSesionClase'      => $codSesionClase
 				);	
 			
 				$result = $avanceSilaboTableTable->registrarAvanceTema($avanceTema);				
@@ -405,13 +416,14 @@ class IndexController extends AbstractActionController implements ServiceLocator
 						
 					return $this->redirect()->toRoute('cerrar-sesion', array(
 								'action'				=> 'cerrar-sesion',
-								'codsesionclase' 			=> $codSesionClase,
-								'codcicloacademico' 		=> $codCicloAcademico,
-								'codcurso' 					=> $codCurso,
-								'codmodalidad' 				=> $codModalidad,
-								'paralelo' 					=> $paralelo,
-								'codaula' 					=> $codAula,
-								'codseccion' 				=> $codSeccion
+								'codsesionclase' 		=> $codSesionClase,
+								'codcargaacademica' 	=> $codCargaAcademica,
+								'codcicloacademico' 	=> $codCicloAcademico,
+								'codcurso' 				=> $codCurso,
+								'codmodalidad' 			=> $codModalidad,
+								'paralelo' 				=> $paralelo,
+								'codaula' 				=> $codAula,
+								'codseccion' 			=> $codSeccion
 					));
 				}
 			
@@ -429,6 +441,7 @@ class IndexController extends AbstractActionController implements ServiceLocator
 		{			
 			$codDocente 			= $this->getDatosDocente()['codDocente'];
 			$codSesionClase			= (int) $this->params()->fromRoute('codsesionclase', 0);
+			$codCargaAcademica 		= (int) $this->params()->fromRoute('codcargaacademica', 0);
 			$codCicloAcademico 		= (int) $this->params()->fromRoute('codcicloacademico', 0);
 			$codCurso 				= (int) $this->params()->fromRoute('codcurso', 0);
 			$codModalidad 			= (int) $this->params()->fromRoute('codmodalidad', 0);
@@ -449,7 +462,7 @@ class IndexController extends AbstractActionController implements ServiceLocator
 			
 			$avanceSilaboTable = $this->getServiceLocator()->get('AvanceSilaboTable');
 			
-			$temasTerminados = $avanceSilaboTable->obtenerTemasAvanzados($codCicloAcademico, $codCurso, $codModalidad, $paralelo, $codAula, $codSeccion, $codDocente, true);
+			$temasTerminados = $avanceSilaboTable->obtenerTemasAvanzados($codCargaAcademica, $codCicloAcademico, $codCurso, $codModalidad, $paralelo, $codAula, $codSeccion, $codDocente, true);
 			
 			$sesion = array(
 					'codSesionClase' 	=> $codSesionClase,
@@ -481,9 +494,6 @@ class IndexController extends AbstractActionController implements ServiceLocator
 		return;
 	}
 }
-
-
-
 
 
 

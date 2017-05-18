@@ -73,9 +73,6 @@
 			        <td>
 			        	<a title="Asignar carga académica" href="<?php echo $this->url('carga-academica', array('action' => 'agregar-carga-academica', 'codcurso' => $this->escapeHtml($curso['codCurso'])));?>" class="btn palette-green-sea btn-color btn-sm">
 							<i class="glyphicon glyphicon-new-window"></i>
-						</a>			        	
-						<a title="Asignar sílabo" href="<?php echo $this->url('silabo', array('action' => 'index', 'codcurso' => $this->escapeHtml($curso['codCurso'])));?>" class="btn palette-sun-flower btn-color btn-sm">
-							<i class="glyphicon glyphicon-tasks"></i> 
 						</a>
 						<a title="Editar curso" class="btn btn-info btn-sm" href="<?php echo $this->url('curso', array('action' => 'editar-curso', 'codcurso' => $this->escapeHtml($curso['codCurso'])));?>" >
 							<i class="fa fa-edit"></i>  

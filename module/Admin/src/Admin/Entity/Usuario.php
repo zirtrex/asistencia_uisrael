@@ -6,6 +6,8 @@ class Usuario {
 
     protected $codUsuario;
     
+    protected $codDocente;
+    
     protected $usuario;
     
     protected $clave;
@@ -18,76 +20,85 @@ class Usuario {
     
     protected $token;
 
-    protected $ultimoIngreso;
+    protected $ultimoIngreso;  
 
     public function getCodUsuario() {
-        return $this->codUsuario;
-    }
+		return $this->codUsuario;
+	}
 
-    public function setCodUsuario($codUsuario) {
-        $this->codUsuario = $codUsuario;
-    }
+	public function setCodUsuario($codUsuario) {
+		$this->codUsuario = $codUsuario;
+	}
 
-    public function getUsuario() {
-        return $this->usuario;
-    }
+	public function getCodDocente() {
+		return $this->codDocente;
+	}
 
-    public function setUsuario($usuario) {
-        $this->usuario = $usuario;
-    }
+	public function setCodDocente($codDocente) {
+		$this->codDocente = $codDocente;
+	}
 
-    public function getClave() {
-        return $this->clave;
-    }
+	public function getUsuario() {
+		return $this->usuario;
+	}
 
-    public function setClave($clave) {
-        $this->clave = $clave;
-    }
-    
-    public function getRol() {
-        return $this->rol;
-    }
-    
-    public function setRol($rol) {
-        $this->rol = $rol;
-    }
+	public function setUsuario($usuario) {
+		$this->usuario = $usuario;
+	}
 
+	public function getClave() {
+		return $this->clave;
+	}
 
-    public function getEstado() {
-        return $this->estado;
-    }
+	public function setClave($clave) {
+		$this->clave = $clave;
+	}
 
-    public function setEstado($estado) {
-        $this->estado = $estado;
-    }
+	public function getRol() {
+		return $this->rol;
+	}
 
-    public function getnumeroIntentos() {
-        return $this->numeroIntentos;
-    }
+	public function setRol($rol) {
+		$this->rol = $rol;
+	}
 
-    public function setnumeroIntentos($numeroIntentos) {
-        $this->numeroIntentos = $numeroIntentos;
-    }
+	public function getEstado() {
+		return $this->estado;
+	}
 
-    public function getToken() {
-        return $this->token;
-    }
+	public function setEstado($estado) {
+		$this->estado = $estado;
+	}
 
-    public function setToken($token) {
-        $this->token = $token;
-    }
+	public function getNumeroIntentos() {
+		return $this->numeroIntentos;
+	}
 
-    public function getultimoIngreso() {
-        return $this->ultimoIngreso;
-    }
+	public function setNumeroIntentos($numeroIntentos) {
+		$this->numeroIntentos = $numeroIntentos;
+	}
 
-    public function setultimoIngreso($ultimoIngreso) {
-        $this->ultimoIngreso = $ultimoIngreso;
-    }
+	public function getToken() {
+		return $this->token;
+	}
 
-    public function exchangeArray(Array $data)
+	public function setToken($token) {
+		$this->token = $token;
+	}
+
+	public function getUltimoIngreso() {
+		return $this->ultimoIngreso;
+	}
+
+	public function setUltimoIngreso($ultimoIngreso) {
+		$this->ultimoIngreso = $ultimoIngreso;
+	}
+
+	public function exchangeArray(Array $data)
     {
         $this->codUsuario = (isset($data['codUsuario'])) ? $data['codUsuario'] : null;
+        
+        $this->codDocente = (isset($data['codDocente'])) ? $data['codDocente'] : null;
     
         $this->usuario = (isset($data['usuario'])) ? $data['usuario'] : null;
     

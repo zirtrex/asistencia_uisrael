@@ -8,7 +8,7 @@ use Zend\View\Model\ViewModel;
 
 class SilaboController extends AbstractActionController
 {
-	private $cursoTable;
+	private $cargaAcademicaTable;
 	private $semanaTable;
 	private $tematicaTable;
 	private $silaboDetalleTable;
@@ -17,51 +17,64 @@ class SilaboController extends AbstractActionController
     {
     	if($this->identity())
     	{
-    		$codCurso = (int) $this->params()->fromRoute('codcurso', 0);
+    		$codCargaAcademica = (int) $this->params()->fromRoute('codcargaacademica', 0);
     			
     		//Verificamos que se envien los parámetros necesarios.
-    		if(!$codCurso)
-    		{   		
-    			return $this->redirect()->toRoute('curso');
+    		if(!$codCargaAcademica){   		
+    			return $this->redirect()->toRoute('carga-academica');
     		}	
     		
-    		$curso = $this->getDBCursoTable()->obtenerCurso($codCurso);
+    		$cargaAcademica = $this->getDBCargaAcademicaTable()->obtenerCargaAcademicaPorCodigo($codCargaAcademica);
     		
-    		if(!$curso){
-    			return $this->redirect()->toRoute('curso');
+    		if(!$cargaAcademica){
+    			return $this->redirect()->toRoute('carga-academica');
     		}    			
     		
-    		$temas = $this->getDBSilaboDetalleTable()->obtenerTemas($codCurso);
+    		$temas = $this->getDBSilaboDetalleTable()->obtenerTemas($codCargaAcademica);
+    		
+    		$temasArray = $this->getDBTematicaTable()->obtenerTemasArray();
     		
     		$form = new \Admin\Form\SilaboForm();
     		
     		$form->get('codSemana')->setValueOptions($this->getDBSemanaTable()->obtenerSemanasArray());
     		
     		return new ViewModel(array(
-    				'curso' => $curso,
+    				'cargaAcademica' => $cargaAcademica,
     				'temas' => $temas,
+    		        'temasArray' => $temasArray,
     				'form' 	=> $form,
     		));
     	}
     	 
     	return $this->redirect()->toRoute('ingresar');
     	
-    }    
+    }
+    
+    public function autocompleteAction()
+    {
+        header('Content-Type: application/json');
+        
+        $temas = $this->getDBTematicaTable()->obtenerTemasArray();
+        
+        $valuesJson = \Zend\Json\Json::encode($temas);
+        echo $valuesJson;
+        die ();
+    }
 
     public function agregarTemaAction()
     {
     	if($this->identity())
     	{  		
-    		$codCurso = (int) $this->params()->fromRoute('codcurso', 0);
+    		$codCargaAcademica = (int) $this->params()->fromRoute('codcargaacademica', 0);
     		 
     		//Verificamos que se envien los parámetros necesarios.
-    		if(!$codCurso)
-    			return $this->redirect()->toRoute('curso');
+    		if(!$codCargaAcademica)
+    			return $this->redirect()->toRoute('carga-academica');
 
-    		$curso = $this->getDBCursoTable()->obtenerCurso($codCurso);
+    		$cargaAcademica = $this->getDBCargaAcademicaTable()->obtenerCargaAcademicaPorCodigo($codCargaAcademica);
     		
-    		if(!$curso)
-    			return $this->redirect()->toRoute('curso');
+    		if(!$cargaAcademica)
+    			return $this->redirect()->toRoute('carga-academica');
     		
     		$request = $this->getRequest();
     		
@@ -85,36 +98,34 @@ class SilaboController extends AbstractActionController
     				if($codTematica)
     				{
     					$silaboDetalle = array(
-    						'codCurso' 		=> $codCurso,
-    						'codSemana' 	=> $data['codSemana'],
-    						'codTematica' 	=> $codTematica,
+    						'codCargaAcademica'  => $codCargaAcademica,
+    						'codSemana' 	     => $data['codSemana'],
+    						'codTematica' 	     => $codTematica,
     					);
     					
     					$codSilaboDetalle = $this->getDBSilaboDetalleTable()->insertar($silaboDetalle);
     					
     					if($codSilaboDetalle)
     					{
-    						return $this->redirect()->toRoute('silabo', array('action' => 'index', 'codcurso' => $codCurso));    					
+    						return $this->redirect()->toRoute('silabo', array('action' => 'index', 'codcargaacademica' => $codCargaAcademica));    					
     					}
     					
     				}	
     				
     			}
     			
-    			$temas = $this->getDBSilaboDetalleTable()->obtenerTemas($codCurso);
+    			$temas = $this->getDBSilaboDetalleTable()->obtenerTemas($codCargaAcademica);
 
     			$view = new ViewModel(
     					array(
-    							'curso' => $curso,
-    							'temas' => $temas,
-    							'form' 	=> $form,
+    							'cargaAcademica' => $cargaAcademica,
+    							'temas'          => $temas,
+    							'form' 	         => $form,
     					)
     			);
     			$view->setTemplate('admin/silabo/index.phtml');
-    			return $view;
-    			
-    		}		
-	    	   	
+    			return $view;    			
+    		}	    	   	
     	}
     	
     	return $this->redirect()->toRoute('ingresar');
@@ -125,35 +136,38 @@ class SilaboController extends AbstractActionController
     {
     	if($this->identity())
     	{
-    		$codSilaboDetalle 	= (int) $this->params()->fromRoute('codsilabodetalle', 0);    		
-    		$codCurso 			= (int) $this->params()->fromRoute('codcurso', 0);
+    		$codSilaboDetalle 	   = (int) $this->params()->fromRoute('codsilabodetalle', 0);    		
+    		$codCargaAcademica     = (int) $this->params()->fromRoute('codcargaacademica', 0);
+    		$codTematica           = (int) $this->params()->fromRoute('codtematica', 0);
     		 
     		//Verificamos que se envien los parámetros necesarios.
-    		if(!$codSilaboDetalle || !$codCurso)
-    			return $this->redirect()->toRoute('curso');   	
+    		if(!$codSilaboDetalle || !$codCargaAcademica || !$codTematica)
+    			return $this->redirect()->toRoute('carga-academica');   	
     		
     	
     		$silaboDetalle = $this->getDBSilaboDetalleTable()->obtenerSilaboDetalle($codSilaboDetalle);
     			
     		if($silaboDetalle)
     		{    	
-    			$this->getDBSilaboDetalleTable()->eliminar($codSilaboDetalle);
+    			if($this->getDBSilaboDetalleTable()->eliminar($codSilaboDetalle)){
+    			    $this->getDBTematicaTable()->eliminar($codTematica);
+    			}
     		}
     	
-    		return $this->redirect()->toRoute('silabo', array('action' => 'index', 'codcurso' => $codCurso));
+    		return $this->redirect()->toRoute('silabo', array('action' => 'index', 'codcargaacademica' => $codCargaAcademica));
     	
     	}
     	 
     	return $this->redirect()->toRoute('ingresar');
     }
     
-    private  function getDBCursoTable()
+    private  function getDBCargaAcademicaTable()
     {
-    	if (!$this->cursoTable)
-    	{
-    		$this->cursoTable = $this->getServiceLocator()->get('CursoTable');
-    	}
-    	return $this->cursoTable;
+        if (!$this->cargaAcademicaTable)
+        {
+            $this->cargaAcademicaTable = $this->getServiceLocator()->get('CargaAcademicaTable');
+        }
+        return $this->cargaAcademicaTable;
     }
     
     private  function getDBSilaboDetalleTable()

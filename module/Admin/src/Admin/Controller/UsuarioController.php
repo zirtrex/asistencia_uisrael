@@ -76,7 +76,7 @@ class UsuarioController extends AbstractActionController
             if($request->isPost())
             {
                 $form->setInputFilter(new \Admin\Form\Filter\UsuarioFilter());
-                $form->setValidationGroup(array('codUsuario','usuario','rol'));
+                //$form->setValidationGroup(array('codUsuario','usuario','rol'));
                 
                 $form->setData($request->getPost());
                  

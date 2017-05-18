@@ -70,7 +70,7 @@ AS
 
 CREATE VIEW vw_carga_academica
 AS
-  SELECT caac.fechaInicioClases, caac.paralelo, caac.esComun,	
+  SELECT caac.codCargaAcademica, caac.fechaInicioClases, caac.paralelo, caac.esComun,	
 	ciac.codCicloAcademico, ciac.anio, ciac.semestre,
     ac.codAreaConocimiento, ac.areaConocimiento,
     cp.codCarreraProfesional, cp.carreraProfesional,
@@ -94,31 +94,29 @@ CREATE VIEW vw_matricula
 AS
   SELECT ma.fechaMatricula, ma.paralelo,
 	e.codEstudiante, e.nombres, e.primerApellido, e.segundoApellido, e.correo,
-	ciac.codCicloAcademico, ciac.anio, ciac.semestre, 
-	c.codCurso, c.curso, c.abreviatura,
-	m.codModalidad, m.modalidad
+	caac.codCargaAcademica, caac.codCicloAcademico, caac.anio, caac.semestre, 
+	caac.codCurso, caac.curso,
+	caac.codModalidad, caac.modalidad
   FROM matricula ma
   INNER JOIN vw_estudiante e ON e.codEstudiante = ma.codEstudiante
-  LEFT JOIN ciclo_academico ciac ON ciac.codCicloAcademico = ma.codCicloAcademico
-  INNER JOIN curso c ON c.codCurso = ma.codCurso
-  LEFT JOIN modalidad m ON m.codModalidad = ma.codModalidad;
+  INNER JOIN vw_carga_academica caac ON caac.codCargaAcademica = ma.codCargaAcademica;
 
  
 CREATE VIEW vw_silabo_detalle
 AS
-  SELECT sd.codSilaboDetalle, c.codCurso, se.semana, t.tematica
+  SELECT sd.codSilaboDetalle, caac.codCargaAcademica, se.codSemana, se.semana, t.codTematica, t.tematica
   FROM silabo_detalle sd
-  INNER JOIN curso c ON c.codCurso = sd.codCurso
+  INNER JOIN vw_carga_academica caac ON caac.codCargaAcademica = sd.codCargaAcademica
   INNER JOIN semana se ON se.codSemana = sd.codSemana
   INNER JOIN tematica t ON t.codTematica = sd.codTematica
-  ORDER BY c.codCurso, se.codSemana;
+  ORDER BY caac.codCurso, se.codSemana;
   
 
 CREATE VIEW vw_sesion_clase
 AS
   SELECT secl.codSesionClase, secl.fecha, secl.diaSemana, secl.horaInicio, secl.horaFin, secl.asistenciaRealizada, secl.totalEstudiantes, secl.estudiantesAsistieron, secl.avanceSilabo, secl.totalTemas, secl.temasTerminados, secl.sesionTerminada, secl.observacion,
 	caac.codCicloAcademico, caac.anio, caac.semestre,
-    caac.esComun,
+    caac.codCargaAcademica, caac.esComun,
     caac.codAreaConocimiento, caac.areaConocimiento,
     caac.codCarreraProfesional, caac.carreraProfesional, 
 	caac.codCurso, caac.codigo, caac.curso,
@@ -128,7 +126,7 @@ AS
     caac.codSeccion, caac.seccion,	
 	caac.codDocente, caac.nombres, caac.primerApellido, caac.segundoApellido
   FROM sesion_clase secl
-  LEFT JOIN vw_carga_academica caac ON caac.codCicloAcademico = secl.codCicloAcademico AND caac.codCurso = secl.codCurso AND caac.codModalidad = secl.codModalidad AND caac.paralelo = secl.paralelo
+  LEFT JOIN vw_carga_academica caac ON caac.codCargaAcademica = secl.codCargaAcademica AND caac.codCicloAcademico = secl.codCicloAcademico AND caac.codCurso = secl.codCurso AND caac.codModalidad = secl.codModalidad AND caac.paralelo = secl.paralelo
   ORDER BY secl.codSesionClase;
  
  
@@ -136,7 +134,7 @@ CREATE VIEW vw_avance_silabo
 AS
   SELECT avsi.codAvanceSilabo, avsi.avance, avsi.observaciones,
 	sd.codSilaboDetalle, sd. semana, sd.tematica,
-	secl.codSesionClase, secl.codCicloAcademico, secl.codCurso, secl.codModalidad, secl.paralelo, secl.codAula, secl.codSeccion, secl.codDocente
+	secl.codSesionClase, secl.codCargaAcademica, secl.codCicloAcademico, secl.codCurso, secl.codModalidad, secl.paralelo, secl.codAula, secl.codSeccion, secl.codDocente
   FROM avance_silabo avsi
   INNER JOIN vw_silabo_detalle sd ON sd.codSilaboDetalle = avsi.codSilaboDetalle 
   LEFT JOIN vw_sesion_clase secl ON secl.codSesionClase = avsi.codSesionClase;
@@ -155,11 +153,11 @@ LIMIT 2*/
 
 CREATE VIEW vw_horario_sesion_clase
 AS  
-  SELECT sc.codCicloAcademico, sc.codCurso, sc.codModalidad, sc.paralelo, sc.codAula, sc.codSeccion, sc.codDocente,
+  SELECT sc.codCargaAcademica, sc.codCicloAcademico, sc.codCurso, sc.codModalidad, sc.paralelo, sc.codAula, sc.codSeccion, sc.codDocente,
 		sc.codSesionClase, sc.fecha, WEEK(sc.fecha) AS semanaAnio, sc.diaSemana, sc.horaInicio, sc.horaFin,
         h.codDiaSemana, h.horaInicio AS horaInicioHorario, h.horaFin AS horaFinHorario, TIMESTAMPDIFF(MINUTE, h.horaInicio, sc.horaInicio) AS minutosTarde	
   FROM sesion_clase sc
-  LEFT JOIN horario h ON h.codCicloAcademico = sc.codCicloAcademico AND h.codCurso = sc.codCurso AND h.codModalidad = sc.codModalidad AND h.paralelo = sc.paralelo
+  LEFT JOIN horario h ON h.codCargaAcademica = sc.codCargaAcademica AND h.codCicloAcademico = sc.codCicloAcademico AND h.codCurso = sc.codCurso AND h.codModalidad = sc.codModalidad AND h.paralelo = sc.paralelo
   ORDER BY sc.codSesionClase;
   
 
@@ -170,6 +168,7 @@ AS
 	e.codEstudiante, CONCAT(e.primerApellido, ' ', e.segundoApellido, ', ', e.nombres) AS estudiante,
     secl.fecha,
     secl.esComun,
+    secl.codCargaAcademica,
     secl.codAreaConocimiento, secl.areaConocimiento,
     secl.codCarreraProfesional, secl.carreraProfesional, 
 	secl.codCicloAcademico, secl.anio, secl.semestre,

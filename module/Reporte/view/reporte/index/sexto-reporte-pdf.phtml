@@ -56,9 +56,9 @@
 
 body {
   	font-family: sans-serif;
-	margin: 1.5cm 0;
+	margin: 2.4cm 0 1.5cm 0;
 	text-align: justify;
-	font-size: 0.9em;
+	font-size: 0.8em;
 	color: #222;
 }
 
@@ -68,7 +68,7 @@ body {
   	left: 0;
 	right: 0;
 	color: #aaa;
-	font-size: 1.2em;
+	font-size: 1em;
 }
 
 #header {
@@ -80,6 +80,7 @@ body {
 #footer {
   bottom: 0;
   border-top: 0.1pt solid #aaa;
+  font-size: 0.9em;
 }
 
 #header table,
@@ -122,12 +123,16 @@ td{
 <body>
 
 <div id="header">
-REPORTE DE ASISTENCIA <strong><?php echo $this->cicloAcademico;?></strong><br></br>
-Curso: <strong><?php echo $this->nombreCurso;?></strong>, Modalidad: <strong><?php echo $this->modalidad;?></strong>, Docente: <strong><?php echo $this->docente;?></strong>
+<strong style="text-align: center">REPORTE DE ASISTENCIA <?php echo $this->cicloAcademico;?><br></br></strong>
+Es común: <strong><?php echo $this->esComun;?></strong>, Area del Conocimiento: <strong><?php echo ($this->areaConocimiento)?  $this->areaConocimiento : "COMÚN";?></strong><br/>
+Carrera Profesional: <strong><?php echo ($this->carreraProfesional)? $this->carreraProfesional : "COMÚN";?></strong><br></br>
+Curso: <strong><?php echo $this->nombreCurso;?></strong>, Modalidad: <strong><?php echo $this->modalidad;?></strong><br></br>
+Docente: <strong><?php echo $this->docente;?></strong>
 </div>
 
 <div id="footer">
   <div class="page-number"></div>
+  <div><?php echo date("d-M-Y H:i:s")?></div>
 </div>
 
 <?php if($this->estudiantes != null):?>

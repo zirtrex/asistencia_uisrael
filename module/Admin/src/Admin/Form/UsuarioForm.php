@@ -26,6 +26,16 @@ class UsuarioForm extends Form
                         ),
                 )
         );
+        
+        $this->add(
+        		array(
+        				'name' => 'codDocente',
+        				'type' => 'hidden',
+        				'attributes' => array(
+        						'id' => 'codDocente'
+        				),
+        		)
+        );
       
         $this->add(
                 array(

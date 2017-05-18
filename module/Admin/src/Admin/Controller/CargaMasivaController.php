@@ -6,7 +6,6 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\File\Transfer\Adapter\Http;
 
-
 class CargaMasivaController extends AbstractActionController
 {    
     public function indexAction()
@@ -82,7 +81,7 @@ class CargaMasivaController extends AbstractActionController
 	    	{    	
 	    		$path = $this->getFileUploadLocation();
 	    					
-	    		$sourceFileName = $path . '/' . $file . '.csv'; var_dump($path);return ;
+	    		$sourceFileName = $path . '/' . $file . '.csv'; //var_dump($path);return ;
 	    		
 	    		if(file_exists ($sourceFileName))
 	    		{    	
@@ -194,7 +193,14 @@ class CargaMasivaController extends AbstractActionController
 		    			while (($datos = fgetcsv($fichero, 0, ";", "\"", "\\")) !== FALSE)
 		    			{
 		    				for($icampo = 0; $icampo < $num_campos; $icampo++){
-		    					$registro[$nombres_campos[$icampo]] = trim((string)$datos[$icampo]);
+		    					
+		    					$valor_campo = trim((string)$datos[$icampo]);
+		    					if($valor_campo != "")
+		    					{
+		    						$registro[$nombres_campos[$icampo]] = $valor_campo;
+		    					}else{
+		    						$registro[$nombres_campos[$icampo]] = NULL;
+		    					}
 		    				}
 		    	
 		    				try{

@@ -151,8 +151,8 @@ class CarreraProfesionalController extends AbstractActionController
 
             $view = new ViewModel(array(
                           'form' 	=> $form,
-                          'text'	=>'Editar',
-                          'action'	=>'editar-carrera-profesional'
+                          'text'	=> 'Editar',
+                          'action'	=> 'editar-carrera-profesional'
             ));
             
             $view->setTemplate('admin/carrera-profesional/agregar-carrera-profesional.phtml');

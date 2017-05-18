@@ -18,12 +18,13 @@ return array(
         		'iniciar-sesion' => array(
         				'type'    => 'Zend\Mvc\Router\Http\Segment',
         				'options' => array(
-        						'route'    => '/asistencia/cursos/iniciar-sesion[/codcicloacademico/:codcicloacademico/codcurso/:codcurso/codmodalidad/:codmodalidad/paralelo/:paralelo/codaula/:codaula/codseccion/:codseccion]',
-        						'constraints' => array(        								
+        						'route'    => '/asistencia/cursos/iniciar-sesion[/codcargaacademica/:codcargaacademica/codcicloacademico/:codcicloacademico/codcurso/:codcurso/codmodalidad/:codmodalidad/paralelo/:paralelo/codaula/:codaula/codseccion/:codseccion]',
+        						'constraints' => array(
+        								'codcargaacademica'			=> '[0-9]*',
         								'codcicloacademico'   		=> '[0-9]+',
         								'codcurso'   				=> '[0-9]+',
         								'codmodalidad'   			=> '[0-9]+',
-        								'paralelo'					=> '[a-zA-Z]',
+        								'paralelo'					=> '[a-zA-Z][a-zA-Z0-9_-]*',
         								'codaula'   				=> '[0-9]+',
         								'codseccion'   				=> '[0-9]+',
         						),
@@ -37,14 +38,15 @@ return array(
         		'estudiantes' => array(
         				'type'    => 'Zend\Mvc\Router\Http\Segment',
         				'options' => array(
-        						'route'    => '/asistencia/estudiantes[/:action/codsesion/:codsesionclase/codcicloacademico/:codcicloacademico/codcurso/:codcurso/codmodalidad/:codmodalidad/paralelo/:paralelo/codaula/:codaula/codseccion/:codseccion]',
+        						'route'    => '/asistencia/estudiantes[/:action/codsesion/:codsesionclase/codcargaacademica/:codcargaacademica/codcicloacademico/:codcicloacademico/codcurso/:codcurso/codmodalidad/:codmodalidad/paralelo/:paralelo/codaula/:codaula/codseccion/:codseccion]',
         						'constraints' => array(
         								'action'     				=> '[a-zA-Z][a-zA-Z0-9_-]*',
         								'codsesionclase'   			=> '[0-9]+',
+        								'codcargaacademica'			=> '[0-9]*',
         								'codcicloacademico'   		=> '[0-9]+',
         								'codcurso'   				=> '[0-9]+',
         								'codmodalidad'   			=> '[0-9]+',
-        								'paralelo'					=> '[a-zA-Z]',
+        								'paralelo'					=> '[a-zA-Z][a-zA-Z0-9_-]*',
         								'codaula'   				=> '[0-9]+',        								
         								'codseccion'   				=> '[0-9]+',
         						),
@@ -69,14 +71,15 @@ return array(
         		'avance-silabo' => array(
         				'type'    => 'Zend\Mvc\Router\Http\Segment',
         				'options' => array(
-        						'route'    => '/asistencia/silabo[/:action/codsesion/:codsesionclase/codcicloacademico/:codcicloacademico/codcurso/:codcurso/codmodalidad/:codmodalidad/paralelo/:paralelo/codaula/:codaula/codseccion/:codseccion]',
+        						'route'    => '/asistencia/silabo[/:action/codsesion/:codsesionclase/codcargaacademica/:codcargaacademica/codcicloacademico/:codcicloacademico/codcurso/:codcurso/codmodalidad/:codmodalidad/paralelo/:paralelo/codaula/:codaula/codseccion/:codseccion]',
         						'constraints' => array(
         								'action'     				=> '[a-zA-Z][a-zA-Z0-9_-]*',
         								'codsesionclase'   			=> '[0-9]+',
+        								'codcargaacademica'			=> '[0-9]*',
         								'codcicloacademico'   		=> '[0-9]+',
         								'codcurso'   				=> '[0-9]+',
         								'codmodalidad'   			=> '[0-9]+',
-        								'paralelo'					=> '[a-zA-Z]',
+        								'paralelo'					=> '[a-zA-Z][a-zA-Z0-9_-]*',
         								'codaula'   				=> '[0-9]+',
         								'codseccion'   				=> '[0-9]+',
         						),
@@ -101,14 +104,15 @@ return array(
         		'cerrar-sesion' => array(
         				'type'    => 'Zend\Mvc\Router\Http\Segment',
         				'options' => array(
-        						'route'    => '/asistencia/cerrar-sesion[/:action/codsesion/:codsesionclase/codcicloacademico/:codcicloacademico/codcurso/:codcurso/codmodalidad/:codmodalidad/paralelo/:paralelo/codaula/:codaula/codseccion/:codseccion]',
+        						'route'    => '/asistencia/cerrar-sesion[/:action/codsesion/:codsesionclase/codcargaacademica/:codcargaacademica/codcicloacademico/:codcicloacademico/codcurso/:codcurso/codmodalidad/:codmodalidad/paralelo/:paralelo/codaula/:codaula/codseccion/:codseccion]',
         						'constraints' => array(
         								'action'     				=> '[a-zA-Z][a-zA-Z0-9_-]*',
         								'codsesionclase'   			=> '[0-9]+',
+        								'codcargaacademica'			=> '[0-9]*',
         								'codcicloacademico'   		=> '[0-9]+',
         								'codcurso'   				=> '[0-9]+',
         								'codmodalidad'   			=> '[0-9]+',
-        								'paralelo'					=> '[a-zA-Z]',
+        								'paralelo'					=> '[a-zA-Z][a-zA-Z0-9_-]*',
         								'codaula'   				=> '[0-9]+',
         								'codseccion'   				=> '[0-9]+',
         						),

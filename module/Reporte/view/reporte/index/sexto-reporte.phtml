@@ -12,7 +12,22 @@
 			<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 margin-bottom">
 				<?php echo $this->form()->openTag($form);?>
 				
-				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 margin-bottom"> 				
+				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 margin-bottom">
+				
+					<div class="form-group">						
+						<?php echo $this->formSelect($form->get('esComun'));?>
+						<span><?php echo $this->formElementErrors($form->get('esComun'));?></span>
+					</div>
+					
+					<div class="form-group">						
+						<?php echo $this->formSelect($form->get('codAreaConocimiento'));?>
+						<span><?php echo $this->formElementErrors($form->get('codAreaConocimiento'));?></span>
+					</div>
+					
+					<div class="form-group">						
+						<?php echo $this->formSelect($form->get('codCarreraProfesional'));?>
+						<span><?php echo $this->formElementErrors($form->get('codCarreraProfesional'));?></span>
+					</div>			
 				
 					<div class="form-group">						
 						<?php echo $this->formSelect($form->get('codCicloAcademico'));?>
@@ -22,14 +37,16 @@
 					<div class="form-group">						
 						<?php echo $this->formSelect($form->get('codCurso'));?>
 						<span><?php echo $this->formElementErrors($form->get('codCurso'));?></span>
-					</div>
+					</div>					
 					
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 margin-bottom">
+				
 					<div class="form-group">						
 						<?php echo $this->formSelect($form->get('codModalidad'));?>
 						<span><?php echo $this->formElementErrors($form->get('codModalidad'));?></span>
 					</div>
-				</div>
-				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 margin-bottom"> 	
+						
 					<div class="form-group">						
 						<?php echo $this->formSelect($form->get('paralelo'));?>
 						<span><?php echo $this->formElementErrors($form->get('paralelo'));?></span>
@@ -52,14 +69,17 @@
 					
 					<?php if($this->estudiantes != null):?>
 						<a class="btn btn-labeled btn-danger" target="_blank" href="<?php echo $this->url("reportes", array(
-																										'action' => 'sexto-reporte',
+																										'action' => 'sexto-reporte-pdf',
 																										'imprimirpdf' => 'si',
-																										'codcicloacademico'=> $this->dataUrl[0],
-																										'codcurso'=> $this->dataUrl[1],
-																										'codmodalidad'=> $this->dataUrl[2],
-																										'paralelo'=> $this->dataUrl[3],
-																										'fechainicio'=> $this->dataUrl[4],
-																										'fechafin'=> $this->dataUrl[5],
+																										'escomun'=> $this->dataUrl[0],
+																										'codareaconocimiento'=> $this->dataUrl[1],
+																										'codcarreraprofesional'=> $this->dataUrl[2],
+																										'codcicloacademico'=> $this->dataUrl[3],
+																										'codcurso'=> $this->dataUrl[4],
+																										'codmodalidad'=> $this->dataUrl[5],
+																										'paralelo'=> $this->dataUrl[6],
+																										'fechainicio'=> $this->dataUrl[7],
+																										'fechafin'=> $this->dataUrl[8],
 																										
 																				)); ?>"><span class="btn-label"><i class="fa fa-fw fa-file-pdf-o"></i></span>Descargar Pdf</a>
 					<?php endif;?>					

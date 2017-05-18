@@ -152,13 +152,14 @@ return array (
 						'carga-academica' => array (
 								'type' => 'Zend\Mvc\Router\Http\Segment',
 								'options' => array (
-										'route' => '/admin/carga-academica[/][:action][/codcicloacademico/:codcicloacademico][/codcurso/:codcurso][/codmodalidad/:codmodalidad][/paralelo/:paralelo][/page/:page][/orderby/:orderby][[/]:order]',
+										'route' => '/admin/carga-academica[/][:action][/codcargaacademica/:codcargaacademica][/codcicloacademico/:codcicloacademico][/codcurso/:codcurso][/codmodalidad/:codmodalidad][/paralelo/:paralelo][/page/:page][/orderby/:orderby][[/]:order]',
 										'constraints' => array (
 												'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+												'codcargaacademica' => '[0-9]*',
 												'codcicloacademico' => '[0-9]*',
 												'codcurso' => '[0-9]*',
 												'codmodalidad' => '[0-9]*',
-												'paralelo' => '[a-zA-Z]',
+												'paralelo' => '[a-zA-Z][a-zA-Z0-9_-]*',
 												'page' => '[0-9]+',
 												'orderby' => '[a-zA-Z][a-zA-Z0-9_-]*',
 												'order' => 'ASC|DESC'
@@ -223,13 +224,14 @@ return array (
 						'matricula' => array (
 								'type' => 'Zend\Mvc\Router\Http\Segment',
 								'options' => array (
-										'route' => '/admin/matricula[/][:action][/codcicloacademico/:codcicloacademico/codcurso/:codcurso/codmodalidad/:codmodalidad/paralelo/:paralelo][/codestudiante/:codestudiante]',
+										'route' => '/admin/matricula[/][:action][/codcargaacademica/:codcargaacademica][/codcicloacademico/:codcicloacademico/codcurso/:codcurso/codmodalidad/:codmodalidad/paralelo/:paralelo][/codestudiante/:codestudiante]',
 										'constraints' => array (
 												'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+												'codcargaacademica' => '[0-9]*',
 												'codcicloacademico' => '[0-9]+',
 												'codcurso' => '[0-9]+',
 												'codmodalidad' => '[0-9]+',
-												'paralelo' => '[a-zA-Z]',
+												'paralelo' => '[a-zA-Z][a-zA-Z0-9_-]*',
 												'codestudiante' => '[0-9]+' 
 										),
 										'defaults' => array (
@@ -259,10 +261,10 @@ return array (
 						'silabo' => array (
 								'type' => 'Zend\Mvc\Router\Http\Segment',
 								'options' => array (
-										'route' => '/admin/silabo[/][:action][/codcurso/:codcurso][/codsemana/:codsemana][/codtematica/:codtematica][/codsilabodetalle/:codsilabodetalle]',
+										'route' => '/admin/silabo[/][:action][/codcargaacademica/:codcargaacademica][/codsemana/:codsemana][/codtematica/:codtematica][/codsilabodetalle/:codsilabodetalle]',
 										'constraints' => array (
 												'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-												'codcurso' => '[0-9]+',
+												'codcargaacademica' => '[0-9]+',
 												'codsemana' => '[0-9]+',
 												'codtematica' => '[0-9]+',
 												'codsilabodetalle' => '[0-9]+' 

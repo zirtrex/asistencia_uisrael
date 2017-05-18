@@ -13,6 +13,7 @@ use Admin\Form\BuscarForm;
 
 class CargaAcademicaController extends AbstractActionController
 {
+	private $codCargaAcademica;
 	private $areaConocimientoTable;
 	private $cargaAcademicaTable;
 	private $cursoAperturadoTable;
@@ -34,7 +35,7 @@ class CargaAcademicaController extends AbstractActionController
     		
             $select = new Select();
             
-            $order_by = $this->params()->fromRoute('orderby') ? $this->params()->fromRoute('orderby') : 'fechainicioclases';
+            $order_by = $this->params()->fromRoute('orderby') ? $this->params()->fromRoute('orderby') : 'codCargaAcademica';
             
             $order = $this->params()->fromRoute('order') ? $this->params()->fromRoute('order') : Select::ORDER_ASCENDING;
             
@@ -110,7 +111,7 @@ class CargaAcademicaController extends AbstractActionController
     				if(!$cursoAperturado)
     				{
     					$nuevoCursoAperturado = array(
-    							'fechaApertura' 		=> gmdate("Y-m-d", Miscellanea::getHoraLocal()),    							
+    							'fechaApertura' 		=> gmdate("Y-m-d", Miscellanea::getHoraLocal(-5)),    							
     							'codCicloAcademico' 	=> $data['codCicloAcademico'],
     							'codCurso' 				=> $data['codCurso'],
     					);
@@ -136,8 +137,12 @@ class CargaAcademicaController extends AbstractActionController
     				
     				//\Zend\Debug\Debug::dump($this->getDBCargaAcademicaTable()->insertar($cargaAcademica)); return ;
     				
-    				if($this->getDBCargaAcademicaTable()->insertar($cargaAcademica))
+    				$lastInsertID = $this->getDBCargaAcademicaTable()->insertar($cargaAcademica);
+    				
+    				if($lastInsertID)
     				{
+    					$this->flashMessenger()->addMessage('¡La Carga Académica ' . $lastInsertID. ' ha sido agregada correctamente!');
+    					
     					return $this->redirect()->toRoute('carga-academica');
     					
     					//return $this->redirect()->toUrl('carga-academica'); // Verificar por que ninguno de estos métodos funciona
@@ -191,6 +196,7 @@ class CargaAcademicaController extends AbstractActionController
     		$form->get("codSeccion")->setValueOptions($this->getDBSeccionTable()->obtenerSeccionesArray());
     		$form->get("codDocente")->setValueOptions($this->getDBDocenteTable()->obtenerDocentesArray());
     		
+    		
     		$form->get('paralelo')->setAttribute('disabled', 'disabled');
     		$form->get('esComun')->setAttribute('disabled', 'disabled');
     		$form->get('codCarreraProfesional')->setAttribute('disabled', 'disabled');
@@ -201,16 +207,17 @@ class CargaAcademicaController extends AbstractActionController
     		
     		if($request->isPost())
     		{
+    			$codCargaAcademica 		= (int) $this->params()->fromRoute('codcargaacademica', 0);
     			$codCicloAcademico 		= (int) $this->params()->fromRoute('codcicloacademico', 0);
     			$codCurso 				= (int) $this->params()->fromRoute('codcurso', 0);
     			$codModalidad 			= (int) $this->params()->fromRoute('codmodalidad', 0);
     			$paralelo	 			= $this->params()->fromRoute('paralelo', null);
     			
     			//Verificamos que se envien los parámetros necesarios.
-    			if(!$codCicloAcademico || !$codCurso || !$codModalidad || !$paralelo)
+    			if(!$codCargaAcademica || !$codCicloAcademico || !$codCurso || !$codModalidad || !$paralelo)
     				return $this->redirect()->toRoute('carga-academica');
     			 
-    			$cargaAcademica = $this->getDBCargaAcademicaTable()->obtenerCargaAcademica($codCicloAcademico, $codCurso, $codModalidad, $paralelo);
+    			$cargaAcademica = $this->getDBCargaAcademicaTable()->obtenerCargaAcademica($codCargaAcademica, $codCicloAcademico, $codCurso, $codModalidad, $paralelo);
     			 
     			if(!$cargaAcademica)
     				return $this->redirect()->toRoute('carga-academica');		
@@ -234,31 +241,35 @@ class CargaAcademicaController extends AbstractActionController
     				);
     				
     				$where = array(
+    						'codCargaAcademica' 	=> $codCargaAcademica,
     						'codCicloAcademico' 	=> $codCicloAcademico,
     						'codCurso' 				=> $codCurso,
     						'codModalidad' 			=> $codModalidad,
     						'paralelo' 				=> $paralelo
     				);
     				
-    				if($this->getDBCargaAcademicaTable()->update($editarCargaAcademica, $where))
+    				if($this->getDBCargaAcademicaTable()->actualizar($editarCargaAcademica, $where))
+    				{
+    					$this->flashMessenger()->addMessage('¡La Carga Académica ' . $codCargaAcademica . ' ha sido editada correctamente!');
     					return $this->redirect()->toRoute('carga-academica');
+    				}  				
     			}
     		}
     		else
     		{
+    			$codCargaAcademica 		= (int) $this->params()->fromRoute('codcargaacademica', 0);
 	    		$codCicloAcademico 		= (int) $this->params()->fromRoute('codcicloacademico', 0);
 	    		$codCurso 				= (int) $this->params()->fromRoute('codcurso', 0);
 	    		$codModalidad 			= (int) $this->params()->fromRoute('codmodalidad', 0);
 	    		$paralelo	 			= $this->params()->fromRoute('paralelo', null);
 	    		 
 	    		//Verificamos que se envien los parámetros necesarios.
-	    		if(!$codCicloAcademico || !$codCurso || !$codModalidad || !$paralelo)
+	    		if(!$codCargaAcademica || !$codCicloAcademico || !$codCurso || !$codModalidad || !$paralelo)
 	    		{
 	    			return $this->redirect()->toRoute('carga-academica');
-	    		}
-	    			
+	    		}	    			
 	    		
-	    		$cargaAcademica = $this->getDBCargaAcademicaTable()->obtenerCargaAcademica($codCicloAcademico, $codCurso, $codModalidad, $paralelo);
+	    		$cargaAcademica = $this->getDBCargaAcademicaTable()->obtenerCargaAcademica($codCargaAcademica, $codCicloAcademico, $codCurso, $codModalidad, $paralelo);
 	    		
 	    		if(!$cargaAcademica)
 	    			return $this->redirect()->toRoute('carga-academica'); 		
@@ -270,8 +281,8 @@ class CargaAcademicaController extends AbstractActionController
     		$view = new ViewModel(array(
     				'form' 				=> $form,
     				'cargaAcademica' 	=> $cargaAcademica,
-    				'text'				=>'Editar',
-    				'action'			=>'editar-carga-academica'
+    				'text'				=> 'Editar',
+    				'action'			=> 'editar-carga-academica'
     		));
     		 
     		$view->setTemplate('admin/carga-academica/agregar-carga-academica.phtml');
@@ -295,35 +306,38 @@ class CargaAcademicaController extends AbstractActionController
 
                 if ($respuesta == 'si')
                 {
+                	$codCargaAcademica = $request->getPost('codCargaAcademica');
 	                $codCicloAcademico = $request->getPost('codCicloAcademico');
 	                $codCurso = $request->getPost('codCurso');
 	                $codModalidad = $request->getPost('codModalidad');
 	                $paralelo = $request->getPost('paralelo');
 	                
-	                if($this->getDBCargaAcademicaTable()->eliminar($codCicloAcademico, $codCurso, $codModalidad, $paralelo))
+	                if($this->getDBCargaAcademicaTable()->eliminar($codCargaAcademica, $codCicloAcademico, $codCurso, $codModalidad, $paralelo))
 	                {
-	                	$this->flashMessenger()->addMessage('¡La Carga Académica, se ha eliminado correctamente!');	                	
+	                	$this->flashMessenger()->addMessage('¡La Carga Académica ' . $codCargaAcademica . ', se ha eliminado correctamente!');	                	
+	                }else{
+	                	$this->flashMessenger()->addMessage('¡La Carga Académica ' . $codCargaAcademica . ', no ha sido eliminada correctamente!');
 	                }
                 }
-                return $this->redirect()->toRoute('carga-academica');
-                
+                return $this->redirect()->toRoute('carga-academica');                
             
             }            
             else
             {
+            	$codCargaAcademica 		= (int) $this->params()->fromRoute('codcargaacademica', 0);
             	$codCicloAcademico 		= (int) $this->params()->fromRoute('codcicloacademico', 0);
 	    		$codCurso 				= (int) $this->params()->fromRoute('codcurso', 0);
 	    		$codModalidad 			= (int) $this->params()->fromRoute('codmodalidad', 0);
 	    		$paralelo	 			= $this->params()->fromRoute('paralelo', null);
             	 
             	//Verificamos que se envien los parámetros necesarios.
-	    		if(!$codCicloAcademico || !$codCurso || !$codModalidad || !$paralelo)
+	    		if(!$codCargaAcademica || !$codCicloAcademico || !$codCurso || !$codModalidad || !$paralelo)
 	    		{
 	    			return $this->redirect()->toRoute('carga-academica');
 	    		}
             }
             
-            $cargaAcademica = $this->getDBCargaAcademicaTable()->obtenerCargaAcademica($codCicloAcademico, $codCurso, $codModalidad, $paralelo);
+            $cargaAcademica = $this->getDBCargaAcademicaTable()->obtenerCargaAcademica($codCargaAcademica, $codCicloAcademico, $codCurso, $codModalidad, $paralelo);
             
             if(!$cargaAcademica)
             	return $this->redirect()->toRoute('carga-academica');

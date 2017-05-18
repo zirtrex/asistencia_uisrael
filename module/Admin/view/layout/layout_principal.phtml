@@ -24,8 +24,7 @@ if (defined('RUNNING_FROM_ROOT')) {
         				->prependStylesheet($this->basePath('css/users.css'))
                         ->prependStylesheet($this->basePath('css/font-awesome.min.css'))
                         ->prependStylesheet('//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css')
-                        ->prependStylesheet($this->basePath('css/bootstrap.min.css')) ?>
-        
+                        ->prependStylesheet($this->basePath('css/bootstrap.min.css')) ?>        
 
     </head>
     <body class="fixed">
@@ -242,13 +241,15 @@ if (defined('RUNNING_FROM_ROOT')) {
             	</div>
             </div>
                  
-        </div>
+        </div>tematicas_autocomplete.js
         
         <!-- Scripts -->
         <?php echo $this->headScript()
         		->prependFile($this->basePath('js/custom.js'))
         		->prependFile($this->basePath('js/users_custom.js'))
+        		->prependFile($this->basePath('js/tematicas_autocomplete.js'))
 	        	->prependFile($this->basePath('js/maniac.js'))
+	        	//->prependFile($this->basePath('js/plugins/datepicker/datepicker.js'))
 	        	->prependFile($this->basePath('js/plugins/slimScroll/jquery.slimscroll.min.js'))
 	        	->prependFile($this->basePath('js/plugins/bootstrap/bootstrap-dialog.min.js'))
 	        	->prependFile($this->basePath('js/plugins/bootstrap/bootstrap.min.js'))

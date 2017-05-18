@@ -20,15 +20,17 @@ class AulaFilter extends InputFilter
                         'name' => 'numero',
                         'required' => true,
                         'filters' => array(
-                                array('name' => 'Int')
-                        ),
+		    					array('name' => 'StripTags'),
+		    					array('name' => 'StringTrim'),
+		    			),
                         'validators' => array(
                              array(
-                                  'name' => 'Between',
-                                  'options' => array(
-                                      'min' => 1,
-                                      'max' => 600,
-                                  ),
+                                  'name' => 'StringLength',
+	    							'options' => array(
+	    									'encoding' => 'UTF-8',
+	    									'min' => 1,
+	    									'max' => 100,
+	    							),
                               ),
                         ),
                 )

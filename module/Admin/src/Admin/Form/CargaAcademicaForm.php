@@ -14,6 +14,25 @@ class CargaAcademicaForm extends Form
         
         $this->add(
         		array(
+        				'name' => 'codCargaAcademica',
+        				'type' => 'Zend\Form\Element\Text',
+        				'attributes' => array(
+        						'id' => 'codCargaAcademica',
+        						'readonly' => 'readonly',
+        						'required' => 'required',
+        						'class' => 'form-control',
+        				),
+        				'options' => array(
+        						'label' => 'Código Carga Académica',
+        						'label_attributes' => array(
+        								'class' => 'col-sm-2 control-label'
+        						),
+        				),
+        		)
+        );
+        
+        $this->add(
+        		array(
         				'name' => 'codCurso',
         				'type' => 'hidden',
         				'attributes' => array(
@@ -33,7 +52,7 @@ class CargaAcademicaForm extends Form
         						'class' => 'form-control',
         				),
         				'options' => array(
-        						'label' => 'Código',
+        						'label' => 'Código del curso',
         						'label_attributes' => array(
         								'class' => 'col-sm-2 control-label'
         						),
@@ -220,7 +239,7 @@ class CargaAcademicaForm extends Form
         $this->add(
         		array(
         				'name' => 'paralelo',
-        				"type"     => 'Zend\Form\Element\Select',
+        				"type"     => 'Zend\Form\Element\Text',
         				"options"  => array(
         						'label' => 'Paralelo',
         						'label_attributes' => array(
@@ -238,7 +257,9 @@ class CargaAcademicaForm extends Form
         						),
         				),
         				'attributes' => array(
+        						'id' => 'paralelo',
         						'class' => 'form-control',
+        						'placeholder' => 'Ingrese paralelo',
         				),
         		)
         );            

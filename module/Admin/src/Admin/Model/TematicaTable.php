@@ -31,6 +31,18 @@ class TematicaTable extends AbstractTableGateway
     	return $resultSet;
     }
     
+    public function obtenerTemasArray()
+    {        
+        $temas = array();
+        
+        foreach ($this->obtenerTemas() as $row)
+        {
+            $temas[] = $row['tematica'];
+        }
+        
+        return $temas;
+    }
+    
     public function obtenerTema($codTema)
     {
     	$sql = new Sql($this->adapter);
@@ -66,5 +78,15 @@ class TematicaTable extends AbstractTableGateway
     		return false;
     	}
     	return true;
+    }
+    
+    public function eliminar($codTematica)
+    {
+        try{
+            return $this->delete(array('codTematica' => $codTematica));
+        }catch (\Exception $e){
+            throw new \Exception($e->getPrevious()->getMessage(),$e->getPrevious()->getCode(), $e->getPrevious()->getPrevious());
+            return false;
+        }
     }
 }

@@ -35,22 +35,22 @@ class SesionClaseTable extends AbstractTableGateway
     	return $resultSet;
     }
     
-    public function obtenerSesionAbierta($codCicloAcademico, $codCurso, $codModalidad, $paralelo, $codAula, $codSeccion, $codDocente)
+    public function obtenerSesionAbierta($codCargaAcademica = null, $codCicloAcademico, $codCurso, $codModalidad, $paralelo, $codAula, $codSeccion, $codDocente)
     {
     	$sql = new Sql($this->adapter);
     	$select = $sql->select();
     
-    	$select->from(array('sc' => 'vw_sesion_clase'))
-	    	->columns(array('*'))
-	    	->where(array('sc.codCicloAcademico' => $codCicloAcademico))
-	    	->where(array('sc.codCurso' => $codCurso))
-	    	->where(array('sc.codModalidad' => $codModalidad))
-	    	->where(array('sc.paralelo' => $paralelo))
-	    	->where(array('sc.codAula' => $codAula))
-	    	->where(array('sc.codSeccion' => $codSeccion))
-    		->where(array('sc.codDocente' => $codDocente))
-	    	->where(array('sc.sesionTerminada' => "No"))
-	    	->order('sc.fecha DESC');
+    	$select->from(array('sc' => 'vw_sesion_clase'))->columns(array('*'));
+    	if($codCargaAcademica !== null){ $select->where(array('codCargaAcademica' => $codCargaAcademica)); }
+	    $select->where(array('sc.codCicloAcademico' => $codCicloAcademico));
+	    $select->where(array('sc.codCurso' => $codCurso));
+	    $select->where(array('sc.codModalidad' => $codModalidad));
+	    $select->where(array('sc.paralelo' => $paralelo));
+	    $select->where(array('sc.codAula' => $codAula));
+	    $select->where(array('sc.codSeccion' => $codSeccion));
+    	$select->where(array('sc.codDocente' => $codDocente));
+	    $select->where(array('sc.sesionTerminada' => "No"));
+	    $select->order('sc.fecha DESC');
     	
     	$statement = $sql->prepareStatementForSqlObject($select);
     	$resultSet = $statement->execute();
@@ -75,21 +75,22 @@ class SesionClaseTable extends AbstractTableGateway
     }
     
     
-    public function obtenerTotalTemasTerminados($codCicloAcademico, $codCurso, $codModalidad, $paralelo, $codAula, $codSeccion, $codDocente)
+    public function obtenerTotalTemasTerminados($codCargaAcademica = null, $codCicloAcademico, $codCurso, $codModalidad, $paralelo, $codAula, $codSeccion, $codDocente)
     {
     	$sql = new Sql($this->adapter);
     	$select = $sql->select();
     
-    	$select->from(array('sc' => 'vw_sesion_clase'))
-    		->columns(array('temasTerminados' => new Expression('MAX(temasTerminados)')))
-	    	->where(array('sc.codCicloAcademico' => $codCicloAcademico))
-	    	->where(array('sc.codCurso' => $codCurso))
-	    	->where(array('sc.codModalidad' => $codModalidad))
-	    	->where(array('sc.paralelo' => $paralelo))	    	
-	    	->where(array('sc.codAula' => $codAula))
-	    	->where(array('sc.codSeccion' => $codSeccion))
-	    	->where(array('sc.codDocente' => $codDocente))
-	    	->order(array('sc.temasTerminados' => 'DESC'));
+    	$select->from('vw_sesion_clase')->columns(array('*'));
+    	if($codCargaAcademica !== null){ $select->where(array('codCargaAcademica' => codCargaAcademica)); }
+	    $select->where(array('codCicloAcademico' => $codCicloAcademico));
+	    $select->where(array('codCurso' => $codCurso));
+	    $select->where(array('codModalidad' => $codModalidad));
+	    $select->where(array('paralelo' => $paralelo));
+	    $select->where(array('codAula' => $codAula));
+	    $select->where(array('codSeccion' => $codSeccion));
+    	$select->where(array('codDocente' => $codDocente));
+	    $select->where(array('sesionTerminada' => "Si"));
+	    $select->order('fecha DESC');
     
     	$statement = $sql->prepareStatementForSqlObject($select);
     	$resultSet = $statement->execute();
@@ -105,7 +106,7 @@ class SesionClaseTable extends AbstractTableGateway
     
     	$select->from('vw_sesion_clase');
 	    	$select->columns(array('*', 'maxTemasTerminados' => new Expression('MAX(temasTerminados)'), 'avance' => new Expression('max(temasTerminados) * 100 / totalTemas')));
-	    	$select->group(array('codCicloAcademico', 'codCurso', 'codModalidad', 'paralelo', 'codAula', 'codSeccion', 'codDocente'));
+	    	$select->group(array('codCargaAcademica', 'codCicloAcademico', 'codCurso', 'codModalidad', 'paralelo', 'codAula', 'codSeccion', 'codDocente'));
 	    	$select->order(array('avance' => $order));
     		//$select->limit($limit);
     
@@ -127,7 +128,7 @@ class SesionClaseTable extends AbstractTableGateway
     	if($codCarreraProfesional !== null){ $select->where(array('codCarreraProfesional' => $codCarreraProfesional)); }
     	if($codDocente !== null){ $select->where(array('codDocente' => $codDocente)); }
     	
-	    $select->group(array('codCicloAcademico', 'codCurso', 'codModalidad', 'paralelo', 'codAula', 'codSeccion', 'codDocente'));
+	    $select->group(array('codCargaAcademica', 'codCicloAcademico', 'codCurso', 'codModalidad', 'paralelo', 'codAula', 'codSeccion', 'codDocente'));
     	//$select->limit($limit);
     
     	$resultset = $this->selectWith($select);
@@ -136,13 +137,14 @@ class SesionClaseTable extends AbstractTableGateway
     }
     
     
-    public function obtenerRegistroAsistencia($codCicloAcademico, $codCurso, $codModalidad, $paralelo, $codAula, $codSeccion, $codDocente)
+    public function obtenerRegistroAsistencia($codCargaAcademica = null, $codCicloAcademico, $codCurso, $codModalidad, $paralelo, $codAula, $codSeccion, $codDocente)
     {
     	$sql = new Sql($this->adapter);
     	$select = $sql->select();
     
     	$select->from(array('sc' => 'vw_horario_sesion_clase'))
 	    	->columns(array('*'))
+	    	->where(array('sc.codCargaAcademica' => $codCargaAcademica))
 	    	->where(array('sc.codCicloAcademico' => $codCicloAcademico))
 	    	->where(array('sc.codCurso' => $codCurso))
 	    	->where(array('sc.codModalidad' => $codModalidad))
@@ -157,13 +159,14 @@ class SesionClaseTable extends AbstractTableGateway
     	return $resultSet;
     }
 
-    public function obtenerSesionClase($codCicloAcademico, $codCurso, $codModalidad, $paralelo, $codAula, $codSeccion, $codDocente)
+    public function obtenerSesionClase($codCargaAcademica, $codCicloAcademico, $codCurso, $codModalidad, $paralelo, $codAula, $codSeccion, $codDocente)
     {
     	$sql = new Sql($this->adapter);
     	$select = $sql->select();
     
     	$select->from(array('sc' => 'vw_sesion_clase'))
 	    	->columns(array('*'))
+	    	->where(array('sc.codCargaAcademica' => $codCargaAcademica))
 	    	->where(array('sc.codCicloAcademico' => $codCicloAcademico))
 	    	->where(array('sc.codCurso' => $codCurso))
 	    	->where(array('sc.codModalidad' => $codModalidad))

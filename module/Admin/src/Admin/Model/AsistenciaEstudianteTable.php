@@ -36,13 +36,14 @@ class AsistenciaEstudianteTable extends AbstractTableGateway
     }*/
     
     //Obtengo todos los estudiantes que han asistido a las clases a traves del parametro proporcionado
-    public function obtenerAsistenciaEstudiantes($esComun = null, $codAreaConocimiento = null, $codCarreraProfesional = null, $codCicloAcademico = null, $codCurso = null, $codModalidad = null, $paralelo = null, $codDocente = null, $fechaInicio = null, $fechaFin = null, $limit = 2)
+    public function obtenerAsistenciaEstudiantes($codCargaAcademica = null, $esComun = null, $codAreaConocimiento = null, $codCarreraProfesional = null, $codCicloAcademico = null, $codCurso = null, $codModalidad = null, $paralelo = null, $codDocente = null, $fechaInicio = null, $fechaFin = null, $limit = 2)
     {    	
     	$select = new Select();
     	
     	$select->from('vw_asistencia_estudiante')
     		->columns(array('*', 'numeroClases' => New Expression('COUNT(estadoAsistenciaEstudiante)')));
     	
+    	if($codCargaAcademica !== null){ $select->where(array('codCargaAcademica' => $codCargaAcademica)); }
     	if($esComun !== null){ $select->where(array('esComun' => $esComun)); }
     	if($codAreaConocimiento !== null){ $select->where(array('codAreaConocimiento' => $codAreaConocimiento)); }
     	if($codCarreraProfesional !== null){ $select->where(array('codCarreraProfesional' => $codCarreraProfesional)); }

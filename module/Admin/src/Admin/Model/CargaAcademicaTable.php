@@ -43,13 +43,29 @@ class CargaAcademicaTable extends AbstractTableGateway
         return $resultSet;
     }
     
-    public function obtenerCargaAcademica($codCicloAcademico, $codCurso, $codModalidad, $paralelo)
+    public function obtenerCargaAcademicaPorCodigo($codCargaAcademica)
+    {
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+    
+        $select->from(array('ca' => 'vw_carga_academica'))
+        ->columns(array('*'))
+        ->where(array('ca.codCargaAcademica' => $codCargaAcademica));
+    
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $resultSet = $statement->execute();
+    
+        return $resultSet->current();
+    }
+    
+    public function obtenerCargaAcademica($codCargaAcademica, $codCicloAcademico, $codCurso, $codModalidad, $paralelo)
     {
     	$sql = new Sql($this->adapter);
     	$select = $sql->select();
     
     	$select->from(array('ca' => 'vw_carga_academica'))
 	    	->columns(array('*'))
+	    	->where(array('ca.codCargaAcademica' => $codCargaAcademica))
 	    	->where(array('ca.codCicloAcademico' => $codCicloAcademico))
 	    	->where(array('ca.codCurso' => $codCurso))
 	    	->where(array('ca.codModalidad' => $codModalidad))
@@ -61,13 +77,14 @@ class CargaAcademicaTable extends AbstractTableGateway
     	return $resultSet->current();
     } 
     
-    public function obtenerCurso($codCicloAcademico, $codCurso, $codModalidad, $paralelo, $codAula, $codSeccion, $codDocente)
+    public function obtenerCurso($codCargaAcademica, $codCicloAcademico, $codCurso, $codModalidad, $paralelo, $codAula, $codSeccion, $codDocente)
     {
     	$sql = new Sql($this->adapter);
     	$select = $sql->select();
     
     	$select->from(array('ca' => 'vw_carga_academica'))
 	    	->columns(array('*'))
+	    	->where(array('ca.codCargaAcademica' => $codCargaAcademica))
 	    	->where(array('ca.codCicloAcademico' => $codCicloAcademico))
 	    	->where(array('ca.codCurso' => $codCurso))
 	    	->where(array('ca.codModalidad' => $codModalidad))
@@ -83,17 +100,18 @@ class CargaAcademicaTable extends AbstractTableGateway
     }
 
     //Obtengo todos los cursos que existen en la tabla carga_academica de los parámetros proporcionados (Usado para el primer y tercer reporte)
-    public function obtenerCargaAcademicaParaReportes($esComun = null, $paralelo = null, $codAreaConocimiento = null, $codCarreraProfesional = null, $codCicloAcademico = null, $codCurso = null, $codModalidad = null, $codAula = null, $codSeccion = null, $codDocente = null, $orderBy = array('carreraProfesional' => 'ASC'))
+    public function obtenerCargaAcademicaParaReportes($codCargaAcademica = null, $esComun = null, $paralelo = null, $codAreaConocimiento = null, $codCarreraProfesional = null, $codCicloAcademico = null, $codCurso = null, $codModalidad = null, $codAula = null, $codSeccion = null, $codDocente = null, $orderBy = array('carreraProfesional' => 'ASC'))
     {
     	$sql = new Sql($this->adapter);
     	$select = $sql->select();
     
     	$select->from('vw_carga_academica')->columns(array('*'));
     	
+    	if($codCargaAcademica !== null){ $select->where(array('codCargaAcademica' => codCargaAcademica)); }
     	if($esComun !== null){ $select->where(array('esComun' => $esComun)); }
     	if($paralelo !== null){ $select->where(array('paralelo' => $paralelo)); }
-    	if($codCarreraProfesional !== null){ $select->where(array('codCarreraProfesional' => $codCarreraProfesional)); }
     	if($codAreaConocimiento !== null){ $select->where(array('codAreaConocimiento' => $codAreaConocimiento)); }
+    	if($codCarreraProfesional !== null){ $select->where(array('codCarreraProfesional' => $codCarreraProfesional)); }    	
     	if($codCicloAcademico !== null){ $select->where(array('codCicloAcademico' => $codCicloAcademico)); }
     	if($codCurso !== null){ $select->where(array('codCurso' => $codCurso)); }
     	if($codModalidad !== null){ $select->where(array('codModalidad' => $codModalidad)); }
@@ -110,19 +128,19 @@ class CargaAcademicaTable extends AbstractTableGateway
     }
     
     //Obtengo todos los cursos que tiene asignado el docente para el módulo de Asistencia
-    public function obtenerCursos($codDocente)
+    public function obtenerCursos($codDocente = null)
     {
-    	return  $this->obtenerCargaAcademicaParaReportes(null, null, null, null, null, null, null, null, null, $codDocente, null);
+    	return  $this->obtenerCargaAcademicaParaReportes(null, null, null, null, null, null, null, null, null, null, $codDocente, array('codCargaAcademica' => 'ASC'));
     }
     
     public function obtenerAreasConocimientoArray($codDocente = null)
     {
     	$cursos = array();
     	 
-    	if($codDocente !== null) {
-    		$cargaAcademica = $this->obtenerCargaAcademicaParaReportes(null, null, null, null, null, null, null, null, null, $codDocente, null);
+    	if($codDocente !== null) {    	
+    		$cargaAcademica = $this->obtenerCargaAcademicaParaReportes($codCargaAcademica = null, $esComun = null, $paralelo = null, $codAreaConocimiento = null, $codCarreraProfesional = null, $codCicloAcademico = null, $codCurso = null, $codModalidad = null, $codAula = null, $codSeccion = null, $codDocente, $orderBy = array('carreraProfesional' => 'ASC'));
     	}else {
-    		$cargaAcademica = $this->obtenerCargaAcademicaParaReportes(null, null, null, null, null, null, null, null, null, null, null);
+    		$cargaAcademica = $this->obtenerCargaAcademicaParaReportes($codCargaAcademica = null, $esComun = null, $paralelo = null, $codAreaConocimiento = null, $codCarreraProfesional = null, $codCicloAcademico = null, $codCurso = null, $codModalidad = null, $codAula = null, $codSeccion = null, $codDocente = null, $orderBy = array('carreraProfesional' => 'ASC'));
     	}
     
     	foreach ($cargaAcademica as $row)
@@ -138,9 +156,9 @@ class CargaAcademicaTable extends AbstractTableGateway
     	$cursos = array();
     	
     	if($codDocente !== null) {    	
-    		$cargaAcademica = $this->obtenerCargaAcademicaParaReportes(null, null, null, null, null, null, null, null, null, $codDocente, null);
+    		$cargaAcademica = $this->obtenerCargaAcademicaParaReportes($codCargaAcademica = null, $esComun = null, $paralelo = null, $codAreaConocimiento = null, $codCarreraProfesional = null, $codCicloAcademico = null, $codCurso = null, $codModalidad = null, $codAula = null, $codSeccion = null, $codDocente, $orderBy = array('carreraProfesional' => 'ASC'));
     	}else {
-    		$cargaAcademica = $this->obtenerCargaAcademicaParaReportes(null, null, null, null, null, null, null, null, null, null, null);
+    		$cargaAcademica = $this->obtenerCargaAcademicaParaReportes($codCargaAcademica = null, $esComun = null, $paralelo = null, $codAreaConocimiento = null, $codCarreraProfesional = null, $codCicloAcademico = null, $codCurso = null, $codModalidad = null, $codAula = null, $codSeccion = null, $codDocente = null, $orderBy = array('carreraProfesional' => 'ASC'));
     	}
     
     	foreach ($cargaAcademica as $row)
@@ -156,9 +174,9 @@ class CargaAcademicaTable extends AbstractTableGateway
     	$cursos = array();
     	
     	if($codDocente !== null) {    	
-    		$cargaAcademica = $this->obtenerCargaAcademicaParaReportes(null, null, null, null, null, null, null, null, null, $codDocente, null);
+    		$cargaAcademica = $this->obtenerCargaAcademicaParaReportes($codCargaAcademica = null, $esComun = null, $paralelo = null, $codAreaConocimiento = null, $codCarreraProfesional = null, $codCicloAcademico = null, $codCurso = null, $codModalidad = null, $codAula = null, $codSeccion = null, $codDocente, $orderBy = array('carreraProfesional' => 'ASC'));
     	}else {
-    		$cargaAcademica = $this->obtenerCargaAcademicaParaReportes(null, null, null, null, null, null, null, null, null, null, null);
+    		$cargaAcademica = $this->obtenerCargaAcademicaParaReportes($codCargaAcademica = null, $esComun = null, $paralelo = null, $codAreaConocimiento = null, $codCarreraProfesional = null, $codCicloAcademico = null, $codCurso = null, $codModalidad = null, $codAula = null, $codSeccion = null, $codDocente = null, $orderBy = array('carreraProfesional' => 'ASC'));
     	}
     
     	foreach ($cargaAcademica as $row)
@@ -174,9 +192,9 @@ class CargaAcademicaTable extends AbstractTableGateway
     	$cursos = array();
     	
     	if($codDocente !== null) {    	
-    		$cargaAcademica = $this->obtenerCargaAcademicaParaReportes(null, null, null, null, null, null, null, null, null, $codDocente, null);
+    		$cargaAcademica = $this->obtenerCargaAcademicaParaReportes($codCargaAcademica = null, $esComun = null, $paralelo = null, $codAreaConocimiento = null, $codCarreraProfesional = null, $codCicloAcademico = null, $codCurso = null, $codModalidad = null, $codAula = null, $codSeccion = null, $codDocente, $orderBy = array('carreraProfesional' => 'ASC'));
     	}else {
-    		$cargaAcademica = $this->obtenerCargaAcademicaParaReportes(null, null, null, null, null, null, null, null, null, null, null);
+    		$cargaAcademica = $this->obtenerCargaAcademicaParaReportes($codCargaAcademica = null, $esComun = null, $paralelo = null, $codAreaConocimiento = null, $codCarreraProfesional = null, $codCicloAcademico = null, $codCurso = null, $codModalidad = null, $codAula = null, $codSeccion = null, $codDocente = null, $orderBy = array('carreraProfesional' => 'ASC'));
     	}
     
     	foreach ($cargaAcademica as $row)
@@ -192,9 +210,9 @@ class CargaAcademicaTable extends AbstractTableGateway
     	$cursos = array();
     	
     	if($codDocente !== null) {    	
-    		$cargaAcademica = $this->obtenerCargaAcademicaParaReportes(null, null, null, null, null, null, null, null, null, $codDocente, null);
+    		$cargaAcademica = $this->obtenerCargaAcademicaParaReportes($codCargaAcademica = null, $esComun = null, $paralelo = null, $codAreaConocimiento = null, $codCarreraProfesional = null, $codCicloAcademico = null, $codCurso = null, $codModalidad = null, $codAula = null, $codSeccion = null, $codDocente, $orderBy = array('carreraProfesional' => 'ASC'));
     	}else {
-    		$cargaAcademica = $this->obtenerCargaAcademicaParaReportes(null, null, null, null, null, null, null, null, null, null, null);
+    		$cargaAcademica = $this->obtenerCargaAcademicaParaReportes($codCargaAcademica = null, $esComun = null, $paralelo = null, $codAreaConocimiento = null, $codCarreraProfesional = null, $codCicloAcademico = null, $codCurso = null, $codModalidad = null, $codAula = null, $codSeccion = null, $codDocente = null, $orderBy = array('carreraProfesional' => 'ASC'));
     	}
     
     	foreach ($cargaAcademica as $row)
@@ -210,9 +228,9 @@ class CargaAcademicaTable extends AbstractTableGateway
     	$cursos = array();
     	
     	if($codDocente !== null) {    	
-    		$cargaAcademica = $this->obtenerCargaAcademicaParaReportes(null, null, null, null, null, null, null, null, null, $codDocente, null);
+    		$cargaAcademica = $this->obtenerCargaAcademicaParaReportes($codCargaAcademica = null, $esComun = null, $paralelo = null, $codAreaConocimiento = null, $codCarreraProfesional = null, $codCicloAcademico = null, $codCurso = null, $codModalidad = null, $codAula = null, $codSeccion = null, $codDocente, $orderBy = array('carreraProfesional' => 'ASC'));
     	}else {
-    		$cargaAcademica = $this->obtenerCargaAcademicaParaReportes(null, null, null, null, null, null, null, null, null, null, null);
+    		$cargaAcademica = $this->obtenerCargaAcademicaParaReportes($codCargaAcademica = null, $esComun = null, $paralelo = null, $codAreaConocimiento = null, $codCarreraProfesional = null, $codCicloAcademico = null, $codCurso = null, $codModalidad = null, $codAula = null, $codSeccion = null, $codDocente = null, $orderBy = array('carreraProfesional' => 'ASC'));
     	}
     
     	foreach ($cargaAcademica as $row)
@@ -227,10 +245,10 @@ class CargaAcademicaTable extends AbstractTableGateway
     {
     	$cursos = array();
     	 
-    	if($codDocente !== null) {
-    		$cargaAcademica = $this->obtenerCargaAcademicaParaReportes(null, null, null, null, null, null, null, null, null, $codDocente, null);
+    	if($codDocente !== null) {    	
+    		$cargaAcademica = $this->obtenerCargaAcademicaParaReportes($codCargaAcademica = null, $esComun = null, $paralelo = null, $codAreaConocimiento = null, $codCarreraProfesional = null, $codCicloAcademico = null, $codCurso = null, $codModalidad = null, $codAula = null, $codSeccion = null, $codDocente, $orderBy = array('carreraProfesional' => 'ASC'));
     	}else {
-    		$cargaAcademica = $this->obtenerCargaAcademicaParaReportes(null, null, null, null, null, null, null, null, null, null, null);
+    		$cargaAcademica = $this->obtenerCargaAcademicaParaReportes($codCargaAcademica = null, $esComun = null, $paralelo = null, $codAreaConocimiento = null, $codCarreraProfesional = null, $codCicloAcademico = null, $codCurso = null, $codModalidad = null, $codAula = null, $codSeccion = null, $codDocente = null, $orderBy = array('carreraProfesional' => 'ASC'));
     	}
     
     	foreach ($cargaAcademica as $row)
@@ -245,7 +263,7 @@ class CargaAcademicaTable extends AbstractTableGateway
     {
     	try{
     		$this->insert($data);  
-    		return true;
+    		return $this->lastInsertValue;
     	}catch (\Exception $e){
     		throw new \Exception($e->getPrevious()->getMessage(),$e->getPrevious()->getCode(), $e->getPrevious()->getPrevious());
     		return false;
@@ -266,9 +284,10 @@ class CargaAcademicaTable extends AbstractTableGateway
     	return true;
     }
 
-    public function eliminar($codCicloAcademico, $codCurso, $codModalidad, $paralelo)
+    public function eliminar($codCargaAcademica, $codCicloAcademico, $codCurso, $codModalidad, $paralelo)
     {
     	$where = array(
+    			'codCargaAcademica' => (int) $codCargaAcademica,
     			'codCicloAcademico' => (int) $codCicloAcademico,
     			'codCurso' 			=> (int) $codCurso,
     			'codModalidad' 		=> (int) $codModalidad,

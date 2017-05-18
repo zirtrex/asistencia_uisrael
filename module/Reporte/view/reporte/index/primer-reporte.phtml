@@ -51,6 +51,19 @@
 				</div>
 			    
 			    <?php echo $this->formSubmit($form->get('listar'));?>
+			    
+			    <?php if($this->cursos != null):?>
+						<a class="btn btn-labeled btn-danger" target="_blank" href="<?php echo $this->url("reportes", array(
+																										'action' => 'primer-reporte-pdf',
+																										'imprimirpdf' => 'si',
+																										'escomun'=> $this->dataUrl[0],
+																										'codareaconocimiento'=> $this->dataUrl[1],
+																										'codcarreraprofesional'=> $this->dataUrl[2],
+																										'codcicloacademico'=> $this->dataUrl[3],
+																										'coddocente'=> $this->dataUrl[4],
+																										
+																				)); ?>"><span class="btn-label"><i class="fa fa-fw fa-file-pdf-o"></i></span>Descargar Pdf</a>
+					<?php endif;?>
 		    
 		    <?php echo $this->form()->closeTag() ?>
 		</div>

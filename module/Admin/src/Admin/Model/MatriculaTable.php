@@ -16,13 +16,14 @@ class MatriculaTable extends AbstractTableGateway
     }
     
     //Obtengo todos los alumnos matriculados
-    public function obtenerEstudiantesMatriculados($codCicloAcademico, $codCurso, $codModalidad, $paralelo)
+    public function obtenerEstudiantesMatriculados($codCargaAcademica, $codCicloAcademico, $codCurso, $codModalidad, $paralelo)
     {
     	$sql = new Sql($this->adapter);
     	$select = $sql->select();    	
 
 		$select->from(array('m' => 'vw_matricula'))
         	->columns(array('*'))
+        	->where(array('m.codCargaAcademica' => $codCargaAcademica))
 	    	->where(array('m.codCicloAcademico' => $codCicloAcademico))
 	    	->where(array('m.codCurso' => $codCurso))
 	    	->where(array('m.codModalidad' => $codModalidad))
@@ -35,13 +36,14 @@ class MatriculaTable extends AbstractTableGateway
     	return $resultSet;
     } 
 
-    public function obtenerEstudianteMatriculado($codCicloAcademico, $codCurso, $codModalidad, $paralelo, $codEstudiante)
+    public function obtenerEstudianteMatriculado($codCargaAcademica, $codCicloAcademico, $codCurso, $codModalidad, $paralelo, $codEstudiante)
     {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
     
         $select->from(array('m' => 'vw_matricula'))
                 ->columns(array('*'))
+                ->where(array('m.codCargaAcademica' => $codCargaAcademica))
                 ->where(array('m.codCicloAcademico' => $codCicloAcademico))
                 ->where(array('m.codCurso' => $codCurso))
                 ->where(array('m.codModalidad' => $codModalidad))

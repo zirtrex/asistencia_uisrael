@@ -1,3 +1,7 @@
+<script>
+	var temasArray = <?php echo json_encode($this->temasArray);?>;
+</script>
+
 <div class="box">
 	<div class="box-title">
 		<i class="glyphicon glyphicon-tasks"></i>
@@ -11,31 +15,33 @@
 		<div class="row">
 		
 			<div class="col-md-12">
-				<div class="col-md-3">
+				<div class="col-md-4">
 					<ul class="list-group">
 						<li class="list-group-item">
-							Código: <strong><?php echo $this->curso['codigo'];?></strong>
-						</li>					
-					</ul>
-				</div>
-				<div class="col-md-3">
-					<ul class="list-group">
+							Ciclo Academico: <strong><?php echo $this->cargaAcademica['anio'] . ' - ' . $this->cargaAcademica['semestre'];?></strong>
+						</li>
 						<li class="list-group-item">
-							Curso: <strong><?php echo $this->curso['curso'];?></strong>
+							Modalidad: <strong><?php echo $this->cargaAcademica['modalidad'];?></strong>
 						</li>
 					</ul>
 				</div>
 				<div class="col-md-4">
 					<ul class="list-group">
 						<li class="list-group-item">
-							Plan de Estudio: <strong><?php echo $this->curso['titulo'];?></strong>
+							Curso: <strong><?php echo $this->cargaAcademica['curso'];?></strong>	
+						</li>
+						<li class="list-group-item">
+							Paralelo: <strong><?php echo $this->cargaAcademica['paralelo'];?></strong>
 						</li>
 					</ul>
 				</div>
-				<div class="col-md-2">
+				<div class="col-md-4">
 					<ul class="list-group">
 						<li class="list-group-item">
-							<a class="btn btn-labeled palette-carrot btn-color" href="<?php echo $this->url("curso"); ?>"><span class="btn-label"><i class="glyphicon glyphicon-new-window"></i></span>Seleccionar curso</a>
+							Código Carga Académica: <strong><?php echo $this->cargaAcademica['codCargaAcademica'];?></strong>	
+						</li>
+						<li class="list-group-item">
+							<a class="btn btn-labeled palette-green-sea btn-color" href="<?php echo $this->url("carga-academica"); ?>"><span class="btn-label"><i class="glyphicon glyphicon-new-window"></i></span>Seleccionar carga académica</a>
 						</li>
 					</ul>
 				</div>
@@ -81,8 +87,9 @@
 										        <td>
 													<a class="btn btn-danger btn-sm" href="<?php echo $this->url('silabo', array(
 																				'action' => 'eliminar-tema',
-																				'codcurso' => $this->curso['codCurso'],
+																				'codcargaacademica' => $this->cargaAcademica['codCargaAcademica'],
 																				'codsilabodetalle' => $tema['codSilaboDetalle'],
+													                            'codtematica' => $tema['codTematica'],
 																			));?>">
 														<i class="fa fa-trash-o "></i> 
 													</a>
@@ -112,7 +119,7 @@
 																	
 									<?php
 										$form = $this->form;
-										$form->setAttribute('action', $this->url('silabo', array('action' => 'agregar-tema', 'codcurso' => $this->curso['codCurso'])));
+										$form->setAttribute('action', $this->url('silabo', array('action' => 'agregar-tema', 'codcargaacademica' => $this->cargaAcademica['codCargaAcademica'])));
 										$form->setAttribute('class', 'form-horizontal');
 										$form->prepare();
 									?>

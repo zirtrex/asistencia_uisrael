@@ -15,15 +15,16 @@ class SilaboDetalleTable extends AbstractTableGateway
     	$this->initialize();
     }
     
-    //Obtengo los temas por $codCurso
-    public function obtenerTemas($codCurso)
+    //Obtengo los temas por $codCargaAcademica
+    public function obtenerTemas($codCargaAcademica)
     {
     	$sql = new Sql($this->adapter);
     	$select = $sql->select();
     
     	$select->from(array('sd' => 'vw_silabo_detalle'))
 	    	->columns(array('*'))
-	    	->where(array('sd.codCurso' => $codCurso));
+	    	->where(array('sd.codCargaAcademica' => $codCargaAcademica))
+    	    ->order('sd.semana ASC');
     
     	$statement = $sql->prepareStatementForSqlObject($select);
     	$resultSet = $statement->execute();
@@ -71,12 +72,11 @@ class SilaboDetalleTable extends AbstractTableGateway
     public function eliminar($codSilaboDetalle)
     {
     	try{
-    		$this->delete(array('codSilaboDetalle' => $codSilaboDetalle));
+    		return $this->delete(array('codSilaboDetalle' => $codSilaboDetalle));
     	}catch (\Exception $e){
     		throw new \Exception($e->getPrevious()->getMessage(),$e->getPrevious()->getCode(), $e->getPrevious()->getPrevious());
     		return false;
     	}
-    	return true;
     }
     
 }

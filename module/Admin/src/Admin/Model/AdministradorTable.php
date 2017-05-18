@@ -93,7 +93,7 @@ class AdministradorTable extends AbstractTableGateway
     public function insertar(Administrador $administrador)
     {
         $data = array(
-               'codUsuario' => $administrador->getUsuario()->getCodUsuario(),
+               'codUsuario' => null,
                'codPersona' => $administrador->getPersona()->getCodPersona(),
                'estado'		=>'1'
             );
@@ -140,11 +140,10 @@ class AdministradorTable extends AbstractTableGateway
     public function insertarCM(Array $data)
     {
     	try{
-    		$this->insert($data);
+    		return $this->insert($data);
     	}catch (\Exception $e){
     		throw new \Exception($e->getPrevious()->getMessage(),$e->getPrevious()->getCode(), $e->getPrevious()->getPrevious());
     		return false;
     	}
-    	return true;
     }
 }

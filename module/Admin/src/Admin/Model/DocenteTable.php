@@ -91,7 +91,7 @@ class DocenteTable extends AbstractTableGateway
     	return $docentes;
     }
     
-     public function insertar(Docente $docente)
+    public function insertar(Docente $docente)
     {
         $data = array(
                 'modalidad' 		=> $docente->getModalidad(),

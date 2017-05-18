@@ -41,12 +41,13 @@
 		<form action="<?php echo $this->url('registrar-avance');?>" method="post" class="form-horizontal" role="form">
 		
 			<input type="hidden" name="codSesionClase" value="<?php echo $this->dataUrl[0]; ?>">
-			<input type="hidden" name="codCicloAcademico" value="<?php echo $this->dataUrl[1]; ?>"/>
-			<input type="hidden" name="codCurso" value="<?php echo $this->dataUrl[2]; ?>"/>
-			<input type="hidden" name="codModalidad" value="<?php echo $this->dataUrl[3]; ?>"/>
-			<input type="hidden" name="paralelo" value="<?php echo $this->dataUrl[4]; ?>"/>
-			<input type="hidden" name="codAula" value="<?php echo $this->dataUrl[5]; ?>"/>
-			<input type="hidden" name="codSeccion" value="<?php echo $this->dataUrl[6]; ?>"/>
+			<input type="hidden" name="codCargaAcademica" value="<?php echo $this->dataUrl[1]; ?>"/>
+			<input type="hidden" name="codCicloAcademico" value="<?php echo $this->dataUrl[2]; ?>"/>
+			<input type="hidden" name="codCurso" value="<?php echo $this->dataUrl[3]; ?>"/>
+			<input type="hidden" name="codModalidad" value="<?php echo $this->dataUrl[4]; ?>"/>
+			<input type="hidden" name="paralelo" value="<?php echo $this->dataUrl[5]; ?>"/>
+			<input type="hidden" name="codAula" value="<?php echo $this->dataUrl[6]; ?>"/>
+			<input type="hidden" name="codSeccion" value="<?php echo $this->dataUrl[7]; ?>"/>
 			<input type="hidden" name="totalTemas" value="<?php echo $this->temas->count(); ?>"/>
 			
 			<div class="form-group">

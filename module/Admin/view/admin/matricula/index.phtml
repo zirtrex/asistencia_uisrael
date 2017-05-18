@@ -34,6 +34,9 @@
 				<div class="col-md-4">
 					<ul class="list-group">
 						<li class="list-group-item">
+							Código Carga Académica: <strong><?php echo $this->cargaAcademica['codCargaAcademica'];?></strong>	
+						</li>
+						<li class="list-group-item">
 							<a class="btn btn-labeled palette-green-sea btn-color" href="<?php echo $this->url("carga-academica"); ?>"><span class="btn-label"><i class="glyphicon glyphicon-new-window"></i></span>Seleccionar carga académica</a>
 						</li>
 					</ul>
@@ -91,7 +94,7 @@
 										        <td>
 													<a class="btn btn-danger btn-sm" href="<?php echo $this->url('matricula', array(
 																				'action' => 'eliminar-estudiante',
-																				'codcarreraprofesional' => $this->cargaAcademica['codCarreraProfesional'],
+																				'codcargaacademica' => $this->cargaAcademica['codCargaAcademica'],
 															        			'codcicloacademico' => $this->cargaAcademica['codCicloAcademico'],
 															        			'codcurso' => $this->cargaAcademica['codCurso'],
 															        			'codmodalidad' => $this->cargaAcademica['codModalidad'],
@@ -122,7 +125,7 @@
 								<div class="box-title">
 									<form method="post" action="<?php echo $this->url('matricula', array(
 																				'action' => 'index',
-																				'codcarreraprofesional' => $this->cargaAcademica['codCarreraProfesional'],
+																				'codcargaacademica' => $this->cargaAcademica['codCargaAcademica'],
 															        			'codcicloacademico' => $this->cargaAcademica['codCicloAcademico'],
 															        			'codcurso' => $this->cargaAcademica['codCurso'],
 															        			'codmodalidad' => $this->cargaAcademica['codModalidad'],
@@ -173,7 +176,7 @@
 											        <td>
 														<a title="Matricular estudiante" class="btn btn-success btn-sm" href="<?php echo $this->url('matricula', array(
 																											'action' => 'matricular-estudiante',
-																											'codcarreraprofesional' => $this->cargaAcademica['codCarreraProfesional'],
+																											'codcargaacademica' => $this->cargaAcademica['codCargaAcademica'],
 																						        			'codcicloacademico' => $this->cargaAcademica['codCicloAcademico'],
 																						        			'codcurso' => $this->cargaAcademica['codCurso'],
 																						        			'codmodalidad' => $this->cargaAcademica['codModalidad'],

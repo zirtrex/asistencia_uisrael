@@ -113,7 +113,7 @@ class UsuarioTable extends AbstractTableGateway
     {
     	$data = array(
     			'usuario'			=> $usuario->getUsuario(),
-    			'clave'				=> $usuario->getClave(),
+    			'clave'				=> md5($usuario->getClave()),
     			'rol'				=> $usuario->getRol(),
     			'numeroIntentos'	=> $usuario->getnumeroIntentos(),
     			'token'				=> $usuario->getToken(),
@@ -133,7 +133,7 @@ class UsuarioTable extends AbstractTableGateway
     {
     	$data = array(
     			'usuario'			=> $usuario->getUsuario(),
-    			'clave'				=> $usuario->getClave(),
+    			'clave'				=> md5($usuario->getClave()),
     			'rol'				=> $usuario->getRol(),
     			'numeroIntentos'	=> $usuario->getnumeroIntentos(),
     			'token'				=> $usuario->getToken(),

@@ -125,14 +125,14 @@ class AdministradorController extends AbstractActionController
             {
                 //primero guardar el usuario y obtener su id
                 $form->setInputFilter(new \Admin\Form\Filter\UsuarioFilter());                
-                $form->setValidationGroup(array('codUsuario','usuario','clave','rol'));
+                $form->setValidationGroup(array('codDocente','usuario','clave','rol'));
                 
                 $form->setData($request->getPost());
                  
                 if ($form->isValid())
                 {                   
                     $usuario = $form->getData();
-                    $codAdministrador = $usuario->getCodUsuario();
+                    $codAdministrador = $usuario->getCodDocente();
                     
                     $codUsuario = $this->getDBUsuarioTable()->insertar($usuario);
 
@@ -179,7 +179,7 @@ class AdministradorController extends AbstractActionController
                 $usuario = new Usuario();
                 
                 $usuario->setRol('administrador'); //predeterminar la casilla del combo
-                $usuario->setCodUsuario($codAdministrador); //guardar el codigo en el formulario usuario 
+                $usuario->setCodDocente($codAdministrador); //guardar el codigo en el formulario usuario 
                 
                 $form->bind($usuario);
             }

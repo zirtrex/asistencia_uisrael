@@ -20,10 +20,7 @@ class AreaConocimientoForm extends Form
         $this->add(
         		array(
         				'name' => 'codAreaConocimiento',
-        				'type' => 'hidden',
-        				'attributes' => array(
-        						'id' => 'codAreaConocimiento'
-        				),
+        				'type' => 'hidden'
         		)
         );
  

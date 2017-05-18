@@ -35,6 +35,12 @@ class IndexController extends AbstractActionController
 
             $cursos = array();
             
+            $esComun				= null;
+            $codAreaConocimiento 	= 0;
+            $codCarreraProfesional 	= 0;
+            $codCicloAcademico 		= 0;
+            $codDocente  			= 0;
+            
             $request = $this->getRequest();
             
             if($request->isPost())
@@ -49,8 +55,14 @@ class IndexController extends AbstractActionController
             	
             	$form->setData($data);     	    	            	
             	
-            	$resulsetCursos = $this->getDBCargaAcademicaTable()->obtenerCargaAcademicaParaReportes($esComun, null, $codAreaConocimiento, $codCarreraProfesional, $codCicloAcademico, null, null, null, null, $codDocente, null);
+            	$resulsetCursos = $this->getDBCargaAcademicaTable()->obtenerCargaAcademicaParaReportes(/*codCargaAcademica*/ null, $esComun, null, $codAreaConocimiento, $codCarreraProfesional, $codCicloAcademico, null, null, null, null, $codDocente, null);
 
+            	$avanceSilaboTable = $this->getServiceLocator()->get('AvanceSilaboTable');
+            	
+            	//\Zend\Debug\Debug::dump($resulsetCursos); return;
+            	
+            	$i = 0;
+            	
             	if($resulsetCursos->count() != 0)
             	{            		
             		foreach ($resulsetCursos as $curso)
@@ -58,8 +70,18 @@ class IndexController extends AbstractActionController
             			$totalTemas = $this->getDBSesionClaseTable()->obtenerTotalTemas($curso['codCurso']);            			
             			$curso['totalTemas'] = $totalTemas['totalTemas'];
             			
-            			$temasTerminados = $this->getDBSesionClaseTable()->obtenerTotalTemasTerminados($curso['codCicloAcademico'], $curso['codCurso'], $curso['codModalidad'], $curso['paralelo'], $curso['codAula'], $curso['codSeccion'], $curso['codDocente']);            			
-            			$curso['totalTemasTerminados'] = $temasTerminados['temasTerminados'];
+            			//$temasTerminados = $this->getDBSesionClaseTable()->obtenerTotalTemasTerminados(/*codCargaAcademica*/ null, $curso['codCicloAcademico'], $curso['codCurso'], $curso['codModalidad'], $curso['paralelo'], $curso['codAula'], $curso['codSeccion'], $curso['codDocente']);            			
+            			$temasTerminados = $avanceSilaboTable->obtenerTemasAvanzados($curso['codCargaAcademica'], $curso['codCicloAcademico'], $curso['codCurso'], $curso['codModalidad'], $curso['paralelo'], $curso['codAula'], $curso['codSeccion'], $curso['codDocente'], $terminados = true);
+         			
+            			if($temasTerminados->count() != 0)
+            			{ 
+            				$i = 0;
+            				foreach ($temasTerminados as $temaTerminado){
+            					$i++;
+            				}            				
+            			}
+            			
+            			$curso['totalTemasTerminados'] = $i;
             			
             			array_push($cursos, $curso);       			
             		}          		
@@ -69,12 +91,99 @@ class IndexController extends AbstractActionController
             $this->layout()->setVariable('titulo', 'Avance de Sílabo por Docente');
             
             return new ViewModel(array(
-                	'form' 					=> $form,
-            		'cursos' 				=> $cursos,
+                	'form' 			=> $form,
+            		'cursos' 		=> $cursos,
+            		'dataUrl' 		=> array($esComun, $codAreaConocimiento, $codCarreraProfesional, $codCicloAcademico, $codDocente)
             ));
         }
         
         return $this->redirect()->toRoute('ingresar');
+	}
+	
+	//Avance de sílabo por docente
+	public function primerReportePdfAction()
+	{
+		if($this->identity())
+		{
+			$cursos = array();
+			
+			//Recibimos los parámetros por url
+			$imprimirpdf 			= $this->params()->fromRoute('imprimirpdf');
+			$esComun 				= $this->params()->fromRoute('escomun', null);
+			$codAreaConocimiento 	= $this->params()->fromRoute('codareaconocimiento', null);
+			$codCarreraProfesional 	= $this->params()->fromRoute('codcarreraprofesional', null);
+			$codCicloAcademico 		= $this->params()->fromRoute('codcicloacademico', null);
+			$codDocente 			= (int) $this->params()->fromRoute('coddocente', 0);
+	
+			$resulsetCursos = $this->getDBCargaAcademicaTable()->obtenerCargaAcademicaParaReportes(/*codCargaAcademica*/ null, $esComun, null, $codAreaConocimiento, $codCarreraProfesional, $codCicloAcademico, null, null, null, null, $codDocente, null);
+			
+			$avanceSilaboTable = $this->getServiceLocator()->get('AvanceSilaboTable');
+				 
+			$i = 0;
+			
+			//\Zend\Debug\Debug::dump($resulsetCursos); return;
+				 
+			if($resulsetCursos->count() != 0)
+			{
+				foreach ($resulsetCursos as $curso)
+				{
+					$totalTemas = $this->getDBSesionClaseTable()->obtenerTotalTemas($curso['codCurso']);
+					$curso['totalTemas'] = $totalTemas['totalTemas'];
+					 
+					//$temasTerminados = $this->getDBSesionClaseTable()->obtenerTotalTemasTerminados(/*codCargaAcademica*/ null, $curso['codCicloAcademico'], $curso['codCurso'], $curso['codModalidad'], $curso['paralelo'], $curso['codAula'], $curso['codSeccion'], $curso['codDocente']);
+					$temasTerminados = $avanceSilaboTable->obtenerTemasAvanzados($curso['codCargaAcademica'], $curso['codCicloAcademico'], $curso['codCurso'], $curso['codModalidad'], $curso['paralelo'], $curso['codAula'], $curso['codSeccion'], $curso['codDocente'], $terminados = true);
+				 
+					if($temasTerminados->count() != 0)
+					{
+						$i = 0;
+						foreach ($temasTerminados as $temaTerminado){
+							$i++;
+						}
+					}
+					 
+					$curso['totalTemasTerminados'] = $i;
+					
+					//Datos para imprimir PDF
+					$areaConocimiento 	= $curso['areaConocimiento'];
+					$carreraProfesional 	= $curso['carreraProfesional'];
+					$cicloAcademico = $curso['anio'] . ' - ' . $curso['semestre'];
+					$nombreCurso = $curso['curso'];
+					$modalidad = $curso['modalidad'];
+					$docente = $curso['primerApellido'] .' '. $curso['segundoApellido'] .', '. $curso['nombres'];
+					 
+					array_push($cursos, $curso);
+				}
+			}
+			
+			//\Zend\Debug\Debug::dump($cursos); return;
+			
+			if($imprimirpdf == 'si')
+			{
+				$pdf = new PdfModel();
+				$pdf->setTerminal(true);
+				$pdf->setTemplate('reporte/index/primer-reporte-pdf.phtml');
+				//$pdf->setOption('filename', 'Asistencia de estudiantes'); // Esta opcion fuerza la descarga del PDF.
+				// La extension ".pdf" se agrega automaticamente
+				$pdf->setOption('paperSize', 'a4'); // Tamaño del papel
+				$pdf->setOption('paperOrientation', 'landscape'); // Defaults to "portrait"
+					
+				// Pasamos variables a la vista
+				$pdf->setVariables(array(
+						'cursos' 				=> $cursos,
+						'esComun'				=> $esComun,
+						'areaConocimiento' 		=> $areaConocimiento,
+						'carreraProfesional'	=> $carreraProfesional,
+						'cicloAcademico'		=> $cicloAcademico,
+						'modalidad'				=> $modalidad,
+						'docente'				=> $docente
+				));
+			
+				return $pdf;
+			}
+			
+		}
+	
+		return $this->redirect()->toRoute('ingresar');
 	}
 	
 	//Ranking 10 de avance de sílabo
@@ -397,30 +506,39 @@ class IndexController extends AbstractActionController
 		{
 			$docente = $this->obtenerDatosUsuario();
 			
+			//\Zend\Debug\Debug::dump($docente['codDocente']); return;
+			
 			$form = new ReportForm();
+			$form->get("codAreaConocimiento")->setValueOptions($this->getDBCargaAcademicaTable()->obtenerAreasConocimientoArray($docente['codDocente']));
+			$form->get("codCarreraProfesional")->setValueOptions($this->getDBCargaAcademicaTable()->obtenerCarrerasProfesionalesArray($docente['codDocente']));
 			$form->get("codCicloAcademico")->setValueOptions($this->getDBCargaAcademicaTable()->obtenerCiclosAcademicosArray($docente['codDocente']));
 			$form->get("codCurso")->setValueOptions($this->getDBCargaAcademicaTable()->obtenerCursosArray($docente['codDocente']));
 			$form->get("codModalidad")->setValueOptions($this->getDBCargaAcademicaTable()->obtenerModalidadesArray($docente['codDocente']));
 			$form->get("paralelo")->setValueOptions($this->getDBCargaAcademicaTable()->obtenerParalelosArray($docente['codDocente']));
 			
-			$estudiantes = array();
+			$form->setAttribute('class', '');
 			
-			$imprimirpdf 		= 'no';
-			$codCicloAcademico 	= 0;			
-			$codCurso 			= 0;
-			$codModalidad 		= 0;
-			$paralelo 			= null;
-			$fechaInicio		= "";
-			$fechaFin			= "";
+			$estudiantes = array();
+				
+			$esComun				= null;
+			$codAreaConocimiento 	= 0;
+			$codCarreraProfesional 	= 0;
+			$codCicloAcademico 		= 0;			
+			$codCurso 				= 0;
+			$codModalidad 			= 0;
+			$paralelo 				= null;
+			$fechaInicio			= "";
+			$fechaFin				= "";
 			
 			$request = $this->getRequest();
-			
-			$form->setAttribute('class', '');
 			
 			if($request->isPost())
 			{									
 				$data = $request->getPost();
-
+				
+				$esComun 				= ($data['esComun'] != "") ? $data['esComun'] : null;
+				$codAreaConocimiento 	= ($data['codAreaConocimiento'] != "" && $data['esComun'] == "No") ? $data['codAreaConocimiento'] : null;
+				$codCarreraProfesional 	= ($data['codCarreraProfesional'] != "" && $data['esComun'] == "No") ? $data['codCarreraProfesional'] : null;
 				$codCicloAcademico 		= $data['codCicloAcademico'];
 				$codCurso 				= $data['codCurso'];
 				$codModalidad 			= $data['codModalidad'];
@@ -430,18 +548,8 @@ class IndexController extends AbstractActionController
 				
 				$form->setData($data);
 			}
-			else
-			{
-				$imprimirpdf 			= $this->params()->fromRoute('imprimirpdf');
-	    		$codCicloAcademico 		= (int) $this->params()->fromRoute('codcicloacademico', 0);
-	    		$codCurso 				= (int) $this->params()->fromRoute('codcurso', 0);
-	    		$codModalidad 			= (int) $this->params()->fromRoute('codmodalidad', 0);
-	    		$paralelo	 			= $this->params()->fromRoute('paralelo', null);
-	    		$fechaInicio			= $this->params()->fromRoute('fechainicio');
-	    		$fechaFin				= $this->params()->fromRoute('fechafin');
-			}
 				
-			$resulsetEstudiantes = $this->getDBAsistenciaEstudianteTable()->obtenerAsistenciaEstudiantes(null, null, null, $codCicloAcademico, $codCurso, $codModalidad, $paralelo, $docente['codDocente'], $fechaInicio, $fechaFin,  $limit = 2);
+			$resulsetEstudiantes = $this->getDBAsistenciaEstudianteTable()->obtenerAsistenciaEstudiantes(/*codCargaAcademica*/null, $esComun, $codAreaConocimiento, $codCarreraProfesional, $codCicloAcademico, $codCurso, $codModalidad, $paralelo, $docente['codDocente'], $fechaInicio, $fechaFin,  $limit = 2);
 				
 			//\Zend\Debug\Debug::dump($docente['codDocente']); return;
 				
@@ -459,18 +567,76 @@ class IndexController extends AbstractActionController
 						
 					$totalFalta = $this->getDBAsistenciaEstudianteTable()->obtenerEstudiantesEstado($estudiante['codEstudiante'], $estudiante['codCicloAcademico'], $estudiante['codCurso'], $estudiante['paralelo'], $estudiante['codModalidad'], $fechaInicio, $fechaFin, "Falta");
 						
-					$estudiante['totalFalta'] = $totalFalta['totalEstado'];		
-					
-					//Datos para imprimir PDF
-					$cicloAcademico = $estudiante['anio'] . ' - ' . $estudiante['semestre'];					
-					$nombreCurso = $estudiante['curso'];
-					$modalidad = $estudiante['modalidad'];
+					$estudiante['totalFalta'] = $totalFalta['totalEstado'];					
 						
 					array_push($estudiantes, $estudiante);						
 				}
 					
 			}
+
+			// $this->layout('layout/login');			
+			return new ViewModel(array(					
+					'form' 			=> $form,
+					'estudiantes' 	=> $estudiantes,
+					'dataUrl' 		=> array($esComun, $codAreaConocimiento, $codCarreraProfesional, $codCicloAcademico, $codCurso, $codModalidad, $paralelo, $fechaInicio, $fechaFin)
+			));
 			
+		}
+	
+		return $this->redirect()->toRoute('ingresar');
+	}
+	
+	//Asistencia de estudiantes  por curso/docente
+	public function sextoReportePdfAction()
+	{
+		if($this->identity())
+		{
+			$docente = $this->obtenerDatosUsuario();				
+							
+			$estudiantes = array();				
+			
+			//Recibimos los parámetros por url
+			$imprimirpdf 			= $this->params()->fromRoute('imprimirpdf');
+			$esComun 				= $this->params()->fromRoute('escomun', null);
+			$codAreaConocimiento 	= $this->params()->fromRoute('codareaconocimiento', null);
+			$codCarreraProfesional 	= $this->params()->fromRoute('codcarreraprofesional', null);
+			$codCicloAcademico 		= (int) $this->params()->fromRoute('codcicloacademico', 0);
+			$codCurso 				= (int) $this->params()->fromRoute('codcurso', 0);
+			$codModalidad 			= (int) $this->params()->fromRoute('codmodalidad', 0);
+			$paralelo	 			= $this->params()->fromRoute('paralelo', null);
+			$fechaInicio			= $this->params()->fromRoute('fechainicio');
+			$fechaFin				= $this->params()->fromRoute('fechafin');
+				
+			$resulsetEstudiantes = $this->getDBAsistenciaEstudianteTable()->obtenerAsistenciaEstudiantes(/*codCargaAcademica*/null, $esComun, $codAreaConocimiento, $codCarreraProfesional, $codCicloAcademico, $codCurso, $codModalidad, $paralelo, $docente['codDocente'], $fechaInicio, $fechaFin,  $limit = 2);
+	
+			if($resulsetEstudiantes->count() != 0)
+			{
+				foreach ($resulsetEstudiantes as $estudiante){
+	
+					$totalPuntual = $this->getDBAsistenciaEstudianteTable()->obtenerEstudiantesEstado($estudiante['codEstudiante'], $estudiante['codCicloAcademico'], $estudiante['codCurso'], $estudiante['paralelo'], $estudiante['codModalidad'], $fechaInicio, $fechaFin, "Puntual");
+	
+					$estudiante['totalPuntual'] = $totalPuntual['totalEstado'];
+	
+					$totalTardanza = $this->getDBAsistenciaEstudianteTable()->obtenerEstudiantesEstado($estudiante['codEstudiante'], $estudiante['codCicloAcademico'], $estudiante['codCurso'], $estudiante['paralelo'], $estudiante['codModalidad'], $fechaInicio, $fechaFin, "Tarde");
+	
+					$estudiante['totalTarde'] = $totalTardanza['totalEstado'];
+	
+					$totalFalta = $this->getDBAsistenciaEstudianteTable()->obtenerEstudiantesEstado($estudiante['codEstudiante'], $estudiante['codCicloAcademico'], $estudiante['codCurso'], $estudiante['paralelo'], $estudiante['codModalidad'], $fechaInicio, $fechaFin, "Falta");
+	
+					$estudiante['totalFalta'] = $totalFalta['totalEstado'];
+						
+					//Datos para imprimir PDF
+					$areaConocimiento 	= $estudiante['areaConocimiento'];
+					$carreraProfesional 	= $estudiante['carreraProfesional'];
+					$cicloAcademico = $estudiante['anio'] . ' - ' . $estudiante['semestre'];
+					$nombreCurso = $estudiante['curso'];
+					$modalidad = $estudiante['modalidad'];
+	
+					array_push($estudiantes, $estudiante);
+				}
+					
+			}
+				
 			if($imprimirpdf == 'si')
 			{
 				$pdf = new PdfModel();
@@ -480,26 +646,22 @@ class IndexController extends AbstractActionController
 				// La extension ".pdf" se agrega automaticamente
 				$pdf->setOption('paperSize', 'a4'); // Tamaño del papel
 				$pdf->setOption('paperOrientation', 'landscape'); // Defaults to "portrait"
-				 
+					
 				// Pasamos variables a la vista
 				$pdf->setVariables(array(
-						'estudiantes' 		=> $estudiantes,						
-						'cicloAcademico'	=> $cicloAcademico,
-						'nombreCurso' 		=> $nombreCurso,
-						'modalidad'			=> $modalidad,
-						'docente'			=> $docente['primerApellido'] .' '. $docente['segundoApellido'] .', '. $docente['nombres']
+						'estudiantes' 			=> $estudiantes,
+						'esComun'				=> $esComun,
+						'areaConocimiento' 		=> $areaConocimiento,
+						'carreraProfesional'	=> $carreraProfesional,
+						'cicloAcademico'		=> $cicloAcademico,
+						'nombreCurso' 			=> $nombreCurso,
+						'modalidad'				=> $modalidad,
+						'docente'				=> $docente['primerApellido'] .' '. $docente['segundoApellido'] .', '. $docente['nombres']
 				));
-				
+	
 				return $pdf;
 			}
-
-			// $this->layout('layout/login');			
-			return new ViewModel(array(					
-					'form' 			=> $form,
-					'estudiantes' 	=> $estudiantes,
-					'dataUrl' 		=> array($codCicloAcademico, $codCurso, $codModalidad, $paralelo, $fechaInicio, $fechaFin)
-			));
-			
+							
 		}
 	
 		return $this->redirect()->toRoute('ingresar');
@@ -604,13 +766,14 @@ class IndexController extends AbstractActionController
 	{
 		$rol = $this->identity()['rol'];
 		$codUsuario = $this->identity()['codUsuario'];
+		
+		//\Zend\Debug\Debug::dump($rol); return;
 	
 		if ($rol == "administrador")
 		{
 			$administradorTable = $this->getServiceLocator()->get('AdministradorTable');
 			return $administradorTable->obtenerAdministradorPorCodUsuario($codUsuario);
-		}
-	
+		}	
 		else if($rol == "docente")
 		{
 			$docenteTable = $this->getServiceLocator()->get('DocenteTable');

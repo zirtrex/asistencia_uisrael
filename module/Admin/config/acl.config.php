@@ -92,6 +92,7 @@ return array(
 		
 								'Admin\Controller\Silabo' => array(
 										'index'   					=> 'administrador',
+								        'autocomplete'   			=> 'administrador',
 										'agregar-tema'				=> 'administrador',
 										'eliminar-tema'				=> 'administrador'
 								),

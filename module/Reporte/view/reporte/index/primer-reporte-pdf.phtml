@@ -1,0 +1,211 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+
+<title>Avance de Sílabo por Docente</title>
+
+<style type="text/css">
+
+.grafico {
+	position: relative; /* IE is dumb */
+	width: 100%;
+	border: 1px solid #B1D632;
+	padding: 2px;
+}
+
+.grafico .barra {
+	display: block;
+	min-width: 1%;
+	position: relative;
+	background: #B1D632;
+	text-align: center;
+	color: #333;
+	height: 2em;
+	line-height: 2em;
+}
+
+.grafico_red {
+	border: 1px solid #b33030;
+}
+
+.grafico_green {
+	border: 1px solid #B1D632;
+}
+
+.grafico_yellow {
+	border: 1px solid #ffb527;
+}
+
+.grafico .barra_red {
+	background: #b33030;
+}
+
+.grafico .barra_green {
+	background: #B1D632;
+}
+
+.grafico .barra_yellow {
+	background: #ffb527;
+}
+
+@page {
+	margin: 2.0cm;
+}
+
+body {
+  	font-family: sans-serif;
+	margin: 1.2cm 0 1.5cm 0;
+	text-align: justify;
+	font-size: 0.8em;
+	color: #222;
+}
+
+#header,
+#footer {
+ 	position: fixed;
+  	left: 0;
+	right: 0;
+	color: #aaa;
+	font-size: 1.1em;
+}
+
+#header {
+  	top: 0;
+	border-bottom: 0.1pt solid #aaa;
+	margin-bottom: 20px;
+}
+
+#footer {
+  bottom: 0;
+  border-top: 0.1pt solid #aaa;
+  font-size: 0.9em;
+}
+
+#header table,
+#footer table {
+	margin; 1pt;
+	width: 100%;
+	border-collapse: collapse;
+	border: none;
+}
+
+#header td,
+#footer td {
+  	padding: 0;
+	width: 50%;
+}
+
+.page-number {
+  text-align: center;
+}
+
+.page-number:before {
+  content: "Page " counter(page);
+}
+
+hr {
+  page-break-after: always;
+  border: 0;
+}
+
+td{
+	border-top: 1px solid #ddd;
+	vertical-align: middle;
+	line-height: 1.42857;
+    padding: 8px;
+}
+</style>
+  
+</head>
+
+<body>
+
+<div id="header">
+<strong style="text-align: center">Avance de Sílabo por Docente <?php echo $this->cicloAcademico;?><br></br></strong>
+Docente: <strong><?php echo $this->docente;?></strong>
+</div>
+
+<div id="footer">
+  <div class="page-number"></div>
+  <div><?php echo date("d-M-Y H:i:s")?></div>
+</div>
+
+<?php if($this->cursos != null):?>
+	<table class="table">
+	    <thead>
+	    <tr>
+	        <th>N°</th>			        
+	        <th>Es Común</th>
+	        <th>Area del Conocimiento</th>
+	        <th>Carrera Profesional</th>
+	        <th>Código</th>      
+	        <th>Curso</th>
+	        <th>Modalidad</th>
+	        <th>Paralelo</th>
+	        <th>Aula</th>
+	        <th>Sección</th>
+	        <th>Total de temas</th>
+	        <th>Temas terminados</th>
+	        <th>% Avanzado</th>      
+	    </tr>
+	    </thead>
+	    <tbody>
+	    <?php
+	    	$i = 0;
+			foreach ($this->cursos as $curso) :
+			$i++;
+		?>    
+	    <tr>
+	        <td><?php echo $i;?></td>
+	        
+	        <td><?php echo $this->escapeHtml($curso['esComun']);?></td>
+	        
+	        <td><?php echo $this->escapeHtml($curso['areaConocimiento']);?></td>
+	        
+	        <td><?php echo $this->escapeHtml($curso['carreraProfesional']);?></td>       
+	        
+	        <td><?php echo $this->escapeHtml($curso['codigo']);?></td>
+	        
+	        <td><?php echo $this->escapeHtml($curso['curso']);?></td>
+	        
+	        <td><?php echo $this->escapeHtml($curso['modalidad']);?></td>
+	        
+	        <td><?php echo $this->escapeHtml($curso['paralelo']);?></td>
+	        
+	        <td><?php echo $this->escapeHtml($curso['numero']);?></td>
+	        
+	        <td><?php echo $this->escapeHtml($curso['seccion']);?></td>			        
+	        
+	        <td><?php echo ($curso['totalTemas']) ? $curso['totalTemas'] : "0"; ?></td>
+	        
+	        <td><?php echo $curso['totalTemasTerminados'] ? $curso['totalTemasTerminados'] : "0";?></td>       			        
+	        
+	        <?php
+	        
+	        	$barra = "_red";
+	        	$porcentajeAvance = 0;
+	        	
+	        	if($curso['totalTemas'] != 0 )
+	        	{
+		        	$porcentajeAvance = round($curso['totalTemasTerminados'] * 100 /  $curso['totalTemas'], 2);			        	
+		        	
+		        	if($porcentajeAvance >= 70 && $porcentajeAvance <= 85) $barra = "_yellow";
+		        	if($porcentajeAvance > 85) $barra = "_green";
+	        	}
+	        ?>
+	        
+	        <td><div class="grafico grafico<?php echo $barra;?>"><strong class="barra barra<?php echo $barra;?>" style="width: <?php echo $porcentajeAvance; ?>%;"><?php echo $porcentajeAvance; ?>%</strong></div></td>		        		        
+	        
+	    </tr>
+	    <?php endforeach; ?>
+	    </tbody>
+	</table>
+	<?php else: ?>
+	
+	<h2>No se han encontrado resultados</h2>
+
+<?php endif;?>	
+
+</body>
+</html>
