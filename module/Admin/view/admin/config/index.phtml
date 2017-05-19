@@ -1,0 +1,68 @@
+<?php $url_order = ($this->order == 'ASC') ? 'DESC' : 'ASC'; ?>
+
+<?php
+	//$buscarForm = $this->buscarForm;
+	//$buscarForm->setAttribute('action', $this->url('aula'));
+	//$buscarForm->prepare();
+?>
+
+<div class="box">
+	<div class="box-title">
+		<i class="fa fa-fw fa-config"></i>
+		<h3>Configuraciones</h3>
+		<div class="pull-right box-toolbar">
+			<a class="btn btn-link btn-xs collapse-box" href="#"><i class="fa fa-chevron-up"></i></a>			
+		</div>
+	</div>
+	<div class="box-body">
+	
+		<div class="row">
+		
+			<div class="col-md-6">
+				<a class="btn btn-labeled btn-success" href="<?php echo $this->url("config", array('action' => 'agregar-config')); ?>"><span class="btn-label"><i class="fa fa-fw fa-plus-square"></i></span>Agregar</a>
+			</div>			
+		</div>
+				
+		<hr>
+		
+		<?php if($this->config->count() != 0):?>
+			<table class="table table-hover table-striped" data-server="aula">
+			    <thead>
+			    <tr>
+			        <th>id</th>
+			        <th>Nombre</th>
+			        <th>Valor</th>
+			    </tr>
+			    </thead>
+			    <tbody>
+			    <?php foreach ($this->config as $config) : ?>    
+			    <tr>        
+			        <td><?php echo $this->escapeHtml($config['idConfig']);?></td>
+			        <td><?php echo $this->escapeHtml($config['name']);?></td>
+			        <td><?php echo $this->escapeHtml($config['value']);?></td>			        
+			        <td>
+						<a class="btn btn-info btn-sm" href="<?php echo $this->url('config', array('action' => 'editar-config','idconfig'=>$this->escapeHtml($config['idConfig'])));?>" >
+							<i class="fa fa-edit"></i>  
+						</a>
+						<a class="btn btn-danger btn-sm" href="<?php echo $this->url('config', array('action' => 'eliminar-config','idconfig'=>$this->escapeHtml($config['idConfig'])));?>">
+							<i class="fa fa-trash-o"></i> 
+						</a>
+					</td>
+			    </tr>
+			    <?php endforeach; ?>
+			    </tbody>
+			    <tfoot>
+    			    <tr>
+    			        <th>id</th>
+    			        <th>Nombre</th>
+    			        <th>Valor</th>
+    			    </tr>
+			    </tfoot>    
+			</table>
+			<?php else: ?>
+			
+			<h2>No se han encontrado resultados.</h2>
+		
+		<?php endif;?>			
+	</div>
+</div>

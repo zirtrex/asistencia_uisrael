@@ -467,13 +467,15 @@ COLLATE = utf8_spanish_ci;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `plataforma_uisrael`.`silabo_detalle` (
   `codSilaboDetalle` INT(11) NOT NULL AUTO_INCREMENT,
-  `codCargaAcademica` INT(11) UNSIGNED NOT NULL,
+  `codCicloAcademico` INT(11) NOT NULL,
+  `codCurso` INT(11) NOT NULL,
   `codSemana` INT(11) NOT NULL,
   `codTematica` INT(11) NOT NULL,
   PRIMARY KEY (`codSilaboDetalle`),
   INDEX `fk_silabo_detalle_semana1_idx` (`codSemana` ASC),
   INDEX `fk_silabo_detalle_tematica1_idx` (`codTematica` ASC),
-  INDEX `fk_silabo_detalle_carga_academica1_idx` (`codCargaAcademica` ASC),
+  INDEX `fk_silabo_detalle_curso1_idx` (`codCurso` ASC),
+  INDEX `fk_silabo_detalle_ciclo_academico1_idx` (`codCicloAcademico` ASC),
   CONSTRAINT `fk_silabo_detalle_semana1`
     FOREIGN KEY (`codSemana`)
     REFERENCES `plataforma_uisrael`.`semana` (`codSemana`)
@@ -484,9 +486,14 @@ CREATE TABLE IF NOT EXISTS `plataforma_uisrael`.`silabo_detalle` (
     REFERENCES `plataforma_uisrael`.`tematica` (`codTematica`)
     ON DELETE RESTRICT
     ON UPDATE RESTRICT,
-  CONSTRAINT `fk_silabo_detalle_carga_academica1`
-    FOREIGN KEY (`codCargaAcademica`)
-    REFERENCES `plataforma_uisrael`.`carga_academica` (`codCargaAcademica`)
+  CONSTRAINT `fk_silabo_detalle_curso1`
+    FOREIGN KEY (`codCurso`)
+    REFERENCES `plataforma_uisrael`.`curso` (`codCurso`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_silabo_detalle_ciclo_academico1`
+    FOREIGN KEY (`codCicloAcademico`)
+    REFERENCES `plataforma_uisrael`.`ciclo_academico` (`codCicloAcademico`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -638,6 +645,20 @@ DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_spanish_ci;
 
 
+-- -----------------------------------------------------
+-- Table `plataforma_uisrael`.`config`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `plataforma_uisrael`.`config` (
+  `idConfig` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(32) CHARACTER SET 'utf8' COLLATE 'utf8_spanish_ci' NULL,
+  `value` VARCHAR(32) NULL,
+  PRIMARY KEY (`idConfig`),
+  UNIQUE INDEX `name_UNIQUE` (`name` ASC))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8
+COLLATE = utf8_spanish_ci;
+
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
@@ -648,7 +669,6 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 START TRANSACTION;
 USE `plataforma_uisrael`;
 INSERT INTO `plataforma_uisrael`.`usuario` (`codUsuario`, `usuario`, `clave`, `rol`, `numeroIntentos`, `token`, `ultimoIngreso`, `estado`) VALUES (1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'administrador', NULL, NULL, NULL, 1);
-INSERT INTO `plataforma_uisrael`.`usuario` (`codUsuario`, `usuario`, `clave`, `rol`, `numeroIntentos`, `token`, `ultimoIngreso`, `estado`) VALUES (2, 'docente', 'ac99fecf6fcb8c25d18788d14a5384ee', 'docente', NULL, NULL, NULL, 1);
 
 COMMIT;
 

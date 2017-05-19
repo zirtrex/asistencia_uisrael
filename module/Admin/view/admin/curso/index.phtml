@@ -71,6 +71,9 @@
 			        <td><?php echo $this->escapeHtml($curso['titulo']);?></td>
 			        
 			        <td>
+			        	<a title="Asignar sílabo" href="<?php echo $this->url('silabo', array('action' => 'index', 'codcurso' => $this->escapeHtml($curso['codCurso'])));?>" class="btn palette-sun-flower btn-color btn-sm">
+							<i class="glyphicon glyphicon-tasks"></i> 
+						</a>
 			        	<a title="Asignar carga académica" href="<?php echo $this->url('carga-academica', array('action' => 'agregar-carga-academica', 'codcurso' => $this->escapeHtml($curso['codCurso'])));?>" class="btn palette-green-sea btn-color btn-sm">
 							<i class="glyphicon glyphicon-new-window"></i>
 						</a>

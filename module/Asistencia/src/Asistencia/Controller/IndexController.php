@@ -9,16 +9,23 @@ use Zend\ServiceManager\ServiceLocatorAwareInterface;
 
 class IndexController extends AbstractActionController implements ServiceLocatorAwareInterface
 {
+    private $configTable;
+    
 	//Muestra los cursos que tiene asignado un docente, es procesado cuando se inicia sesión
 	public function indexAction()
 	{		
 		if($this->identity())
-		{			
+		{	
+		
+		    $config = $this->getDBConfigTable()->obtenerConfiguracion(2);
+		    
+		    $codCicloAcademico = $config['value'];
+		    
 			$codDocente = $this->getDatosDocente()['codDocente'];
 			
 			$cargaAcademicaTable = $this->getServiceLocator()->get('CargaAcademicaTable');
             
-            $cursosDocente = $cargaAcademicaTable->obtenerCursos($this->getDatosDocente()['codDocente']);
+            $cursosDocente = $cargaAcademicaTable->obtenerCursos($this->getDatosDocente()['codDocente'], $codCicloAcademico);
             
             $sesionClaseTable = $this->getServiceLocator()->get('SesionClaseTable');
             
@@ -341,7 +348,7 @@ class IndexController extends AbstractActionController implements ServiceLocator
 				
 				$avanceSilaboTable = $this->getServiceLocator()->get('AvanceSilaboTable');
 				
-				$temas = $silaboDetalleTable->obtenerTemas($codCargaAcademica);
+				$temas = $silaboDetalleTable->obtenerTemasPorCiclo($codCurso, $codCicloAcademico);
 		
 				$temasAvanzados = $avanceSilaboTable->obtenerTemasAvanzados($codCargaAcademica, $codCicloAcademico, $codCurso, $codModalidad, $paralelo, $codAula, $codSeccion, $codDocente);
 				
@@ -492,6 +499,15 @@ class IndexController extends AbstractActionController implements ServiceLocator
 		}
 		
 		return;
+	}
+	
+	private  function getDBConfigTable()
+	{
+	    if (!$this->configTable)
+	    {
+	        $this->configTable = $this->getServiceLocator()->get('ConfigTable');
+	    }
+	    return $this->configTable;
 	}
 }
 

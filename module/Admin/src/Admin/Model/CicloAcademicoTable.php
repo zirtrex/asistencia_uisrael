@@ -34,6 +34,7 @@ class CicloAcademicoTable extends AbstractTableGateway
     	 
     	return $resultSet;
     }
+    
     public function obtenerCiclosAcademicosPagination(Select $select = null)
     {
         if (null === $select)

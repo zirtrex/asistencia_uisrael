@@ -106,6 +106,7 @@ class AulaTable extends AbstractTableGateway
     		throw new \Exception($e->getPrevious()->getMessage(),$e->getPrevious()->getCode(), $e->getPrevious()->getPrevious());
     	}
     }
+    
     public function actualizar(Aula $aula)
     {
         $data = array(

@@ -118,10 +118,7 @@
 			        	<?php echo $this->escapeHtml($cargaAcademica['paralelo']);?>
 			        </td>     
 			        
-			        <td>
-			        	<a title="Asignar sílabo" href="<?php echo $this->url('silabo', array('action' => 'index', 'codcargaacademica' => $this->escapeHtml($cargaAcademica['codCargaAcademica'])));?>" class="btn palette-sun-flower btn-color btn-sm">
-							<i class="glyphicon glyphicon-tasks"></i> 
-						</a>
+			        <td>			        	
 			        	<a title="Matricular estudiantes" class="btn palette-wet-asphalt btn-color btn-sm" href="<?php echo $this->url('matricula', array(
 				        			'action' => 'index',
 			        				'codcargaacademica' => $this->escapeHtml($cargaAcademica['codCargaAcademica']),

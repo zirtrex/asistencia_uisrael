@@ -43,6 +43,11 @@ class Module implements AutoloaderProviderInterface, FormElementProviderInterfac
 				},*/
 				
 				'navigation' => 'Zend\Navigation\Service\DefaultNavigationFactory',
+			    
+			    //CarreraProfesionalTable
+			    'ConfigTable' => function ($sm) {
+			         return new \Admin\Model\ConfigTable($sm);
+			    },
 				
 				//CarreraProfesionalTable
 				'AreaConocimientoTable' => function ($sm) {
@@ -216,6 +221,10 @@ class Module implements AutoloaderProviderInterface, FormElementProviderInterfac
 						'usuario_helper' => function($sm) {
 							$usuarioHelper = new View\Helper\UsuarioHelper($sm);
 							return $usuarioHelper;
+						},
+						'config_helper' => function($sm) {
+						     $configHelper = new View\Helper\ConfigHelper($sm);
+						     return $configHelper;
 						}
 				)
 		);

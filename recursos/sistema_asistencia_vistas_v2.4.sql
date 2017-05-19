@@ -104,12 +104,13 @@ AS
  
 CREATE VIEW vw_silabo_detalle
 AS
-  SELECT sd.codSilaboDetalle, caac.codCargaAcademica, se.codSemana, se.semana, t.codTematica, t.tematica
+  SELECT sd.codSilaboDetalle, ciac.codCicloAcademico, ciac.anio, ciac.semestre, c.codCurso, c.curso, se.codSemana, se.semana, t.codTematica, t.tematica
   FROM silabo_detalle sd
-  INNER JOIN vw_carga_academica caac ON caac.codCargaAcademica = sd.codCargaAcademica
+  INNER JOIN ciclo_academico ciac ON ciac.codCicloAcademico = sd.codCicloAcademico
+  INNER JOIN curso c ON c.codCurso = sd.codCurso
   INNER JOIN semana se ON se.codSemana = sd.codSemana
   INNER JOIN tematica t ON t.codTematica = sd.codTematica
-  ORDER BY caac.codCurso, se.codSemana;
+  ORDER BY c.codCurso, se.codSemana;
   
 
 CREATE VIEW vw_sesion_clase

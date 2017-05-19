@@ -10,6 +10,22 @@ class SilaboForm extends Form
         parent::__construct('SilaboForm');
  
         $this->setAttributes(array('method' => 'post'));
+        
+        $this->add(
+            array(
+                'name' => 'codCicloAcademico',
+                "type"     => 'Zend\Form\Element\Select',
+                "options"  => array(
+                    'label' => 'Elige el Ciclo Académico',
+                    'label_attributes' => array(
+                        'class' => 'col-sm-2 control-label'
+                    ),
+                ),
+                'attributes' => array(
+                    'class' => 'form-control',
+                ),
+            )
+        );
 
         $this->add(
         		array(

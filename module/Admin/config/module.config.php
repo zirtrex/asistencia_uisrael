@@ -13,6 +13,23 @@ return array (
 										) 
 								) 
 						),
+				    
+    				    'config' => array (
+    				        'type' => 'Zend\Mvc\Router\Http\Segment',
+    				        'options' => array (
+    				            'route' => '/admin/config[/][:action][/idconfig/:idconfig][/orderby/:orderby][/:order]',
+    				            'constraints' => array (
+    				                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+    				                'idconfig' => '[0-9]+',
+    				                'orderby' => '[a-zA-Z][a-zA-Z0-9_-]*',
+    				                'order' => 'ASC|DESC'
+    				            ),
+    				            'defaults' => array (
+    				                'controller' => 'Admin\Controller\Config',
+    				                'action' => 'index'
+    				            )
+    				        )
+    				    ),
 						
 						'aula' => array (
 								'type' => 'Zend\Mvc\Router\Http\Segment',
@@ -261,10 +278,11 @@ return array (
 						'silabo' => array (
 								'type' => 'Zend\Mvc\Router\Http\Segment',
 								'options' => array (
-										'route' => '/admin/silabo[/][:action][/codcargaacademica/:codcargaacademica][/codsemana/:codsemana][/codtematica/:codtematica][/codsilabodetalle/:codsilabodetalle]',
+										'route' => '/admin/silabo[/][:action][/codcicloacademico/:codcicloacademico][/codcurso/:codcurso][/codsemana/:codsemana][/codtematica/:codtematica][/codsilabodetalle/:codsilabodetalle]',
 										'constraints' => array (
 												'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-												'codcargaacademica' => '[0-9]+',
+												'codcicloacademico' => '[0-9]+',
+										        'codcurso' => '[0-9]+',
 												'codsemana' => '[0-9]+',
 												'codtematica' => '[0-9]+',
 												'codsilabodetalle' => '[0-9]+' 
@@ -291,8 +309,7 @@ return array (
 												'action' => 'index' 
 										) 
 								) 
-						),
-						
+						),						
 						
 				)
 				 
@@ -338,6 +355,7 @@ return array (
 		'controllers' => array (
 				'invokables' => array (
 						'Admin\Controller\Index' => 'Admin\Controller\IndexController',
+				        'Admin\Controller\Config' => 'Admin\Controller\ConfigController',
 						'Admin\Controller\Login' => 'Admin\Controller\LoginController',
 						'Admin\Controller\CargaMasiva' => 'Admin\Controller\CargaMasivaController',
 						'Admin\Controller\AreaConocimiento' => 'Admin\Controller\AreaConocimientoController',
@@ -405,6 +423,10 @@ return array (
 												'label' => 'Carga masiva',
 												'route' => 'carga-masiva' 
 										),
+    								    array (
+    								        'label' => 'Config',
+    								        'route' => 'config'
+    								    ),
 										array (
 												'label' => 'Area Conocimiento',
 												'route' => 'area-conocimiento',

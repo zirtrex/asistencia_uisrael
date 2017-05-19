@@ -1,0 +1,50 @@
+<?php
+	$form = $this->form;
+	$form->setAttribute('action', $this->url('config', array('action' => $this->action)));
+	$form->setAttribute('class', 'form-horizontal');
+	$form->prepare();
+?>
+<div class="row">
+	<div class="col-md-12">
+		<div class="box">
+			<div class="box-title">
+				<h3><?php echo $this->text;?></h3>
+			</div>
+			<div class="box-body padding-md">
+				<?php echo $this->form()->openTag($form);?>
+					
+					<?php echo $this->formHidden($form->get('idConfig')); ?>					
+					
+					<div class="form-group">
+						<?php echo $this->formLabel($form->get('name')) ?>
+						<div class="col-sm-10">
+							<?php echo $this->formInput($form->get('name')); ?>
+							<?php echo $this->formElementErrors()
+	                            ->setMessageOpenFormat('<div class="alert alert-error alert-dismissable">')
+	                            ->setMessageSeparatorString('</div><div class="alert alert-error alert-dismissable">')
+	                            ->setMessageCloseString('</div>')
+	                            ->render($form->get('name'));?>
+						</div>
+					</div>
+					<div class="form-group">
+						<?php echo $this->formLabel($form->get('value')) ?>
+						<div class="col-sm-10">
+							<?php echo $this->formInput($form->get('value')); ?>
+							<?php echo $this->formElementErrors()
+	                            ->setMessageOpenFormat('<div class="alert alert-error alert-dismissable">')
+	                            ->setMessageSeparatorString('</div><div class="alert alert-error alert-dismissable">')
+	                            ->setMessageCloseString('</div>')
+	                            ->render($form->get('value'));?>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-offset-2 col-sm-10">
+							<?php echo $this->formInput($form->get('guardar')); ?>
+						</div>
+					</div>		
+				
+				<?php echo $this->form()->closeTag($form);?>
+			</div>
+		</div>
+	</div>
+</div>

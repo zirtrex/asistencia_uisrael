@@ -128,9 +128,9 @@ class CargaAcademicaTable extends AbstractTableGateway
     }
     
     //Obtengo todos los cursos que tiene asignado el docente para el módulo de Asistencia
-    public function obtenerCursos($codDocente = null)
+    public function obtenerCursos($codDocente = null, $codCicloAcademico = null)
     {
-    	return  $this->obtenerCargaAcademicaParaReportes(null, null, null, null, null, null, null, null, null, null, $codDocente, array('codCargaAcademica' => 'ASC'));
+    	return  $this->obtenerCargaAcademicaParaReportes(null, null, null, null, null, $codCicloAcademico, null, null, null, null, $codDocente, array('codCargaAcademica' => 'ASC'));
     }
     
     public function obtenerAreasConocimientoArray($codDocente = null)

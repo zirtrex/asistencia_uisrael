@@ -15,21 +15,53 @@ class SilaboDetalleTable extends AbstractTableGateway
     	$this->initialize();
     }
     
-    //Obtengo los temas por $codCargaAcademica
-    public function obtenerTemas($codCargaAcademica)
+    //Obtengo los temas por $codCurso
+    public function obtenerTemas($codCurso)
     {
     	$sql = new Sql($this->adapter);
     	$select = $sql->select();
     
     	$select->from(array('sd' => 'vw_silabo_detalle'))
 	    	->columns(array('*'))
-	    	->where(array('sd.codCargaAcademica' => $codCargaAcademica))
-    	    ->order('sd.semana ASC');
+	    	->where(array('sd.codCurso' => $codCurso))
+    	    ->order('sd.codCicloAcademico ASC');
     
     	$statement = $sql->prepareStatementForSqlObject($select);
     	$resultSet = $statement->execute();
     	 
     	return $resultSet;
+    }
+    
+    //Obtengo los temas por $codCurso
+    public function obtenerTemasPorCiclo($codCurso, $codCicloAcademico)
+    {
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+    
+        $select->from(array('sd' => 'vw_silabo_detalle'))
+        ->columns(array('*'))
+            ->where(array('sd.codCurso' => $codCurso))
+            ->where(array('sd.codCicloAcademico' => $codCicloAcademico))
+            ->order('sd.codCicloAcademico ASC');
+    
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $resultSet = $statement->execute();
+    
+        return $resultSet;
+    }
+    
+    public function obtenerSilabos()
+    {
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+    
+        $select->from(array('sd' => 'vw_silabo_detalle'))
+               ->columns(array('*'));
+    
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $resultSet = $statement->execute();
+    
+        return $resultSet->current();
     }
 
     public function obtenerSilaboDetalle($codSilaboDetalle)

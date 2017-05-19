@@ -91,13 +91,22 @@
 	</div>
 	<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
 		<div class="custom-box palette-green-sea">
+			<h4>Sílabo</h4>
+			<p><a href="<?php echo $this->url("silabo"); ?>">Ver</a></p>
+			<p><a href="<?php echo $this->url("silabo", array('action' => 'agregar-silabo')); ?>">Agregar</a></p>
+			<p><a href="<?php echo $this->url("carga-masiva"); ?>">Carga masiva</a></p>
+			<i class="fa fa-fw fa-book"></i>
+		</div>
+	</div>	
+	<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+		<div class="custom-box palette-concrete">
 			<h4>Carga Académica</h4>
 			<p><a href="<?php echo $this->url("carga-academica"); ?>">Ver</a></p>
 			<p><a href="<?php echo $this->url("carga-academica", array('action' => 'agregar-carga-academica')); ?>">Agregar</a></p>
 			<p><a href="<?php echo $this->url("carga-masiva"); ?>">Carga masiva</a></p>
 			<i class="glyphicon glyphicon-new-window"></i>
 		</div>
-	</div>
+	</div>	
 	<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
 		<div class="custom-box palette-midnight-blue">
 			<h4>Aula</h4>

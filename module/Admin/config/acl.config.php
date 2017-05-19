@@ -33,6 +33,14 @@ return array(
 								'Admin\Controller\Index' => array(
 										'index'   					=> array('administrador'),
 								),
+						    
+    						    'Admin\Controller\Config' => array(
+        						        'index'              => 'administrador',
+        						        'agregar-config'     => 'administrador',
+        						        'guardar-config'     => 'administrador',
+        						        'editar-config'      => 'administrador',
+        						        'eliminar-config'    => 'administrador',
+    						    ),
 		
 								'Admin\Controller\CargaMasiva' => array(
 										'index'   					=> 'administrador',
