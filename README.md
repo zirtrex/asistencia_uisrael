@@ -32,6 +32,10 @@ El registro "codCicloAcademico" permite asignar el ciclo en el que se está trab
 
 Notas: Recuerde cambiar el "codCicloAcademico" con el valor que corresponda, actualmente tiene el valor 1, que es por defecto.
 
+Ver nuevo modelo:
+
+![Diagrama Fisico v.2.4](https://github.com/zirtrex/asistencia_uisrael/blob/master/recursos/diagrama_fisico_uisrael_v2.4.png)
+
 
 2.4:
 ---
