@@ -15,17 +15,6 @@ use Zend\Mail\Transport\SmtpOptions;
 class Module implements AutoloaderProviderInterface, FormElementProviderInterface
 {
 
-	public function onBootstrap(MvcEvent $e)
-	{
-		$app = $e->getApplication();
-		$eventManager = $e->getApplication()->getEventManager();
-
-		$moduleRouteListener = new ModuleRouteListener();
-		$moduleRouteListener->attach($eventManager);
-		
-		$eventManager->attach('route', array($this, 'onRoute'), -150);
-	}
-
 	public function getServiceConfig()
 	{
 		return array(
@@ -228,6 +217,17 @@ class Module implements AutoloaderProviderInterface, FormElementProviderInterfac
 						}
 				)
 		);
+	}
+	
+	public function onBootstrap(MvcEvent $e)
+	{
+	    $app = $e->getApplication();
+	    $eventManager = $e->getApplication()->getEventManager();
+	    
+	    $moduleRouteListener = new ModuleRouteListener();
+	    $moduleRouteListener->attach($eventManager);
+	    
+	    $eventManager->attach('route', array($this, 'onRoute'), -150);
 	}
 
 	public function onRoute(\Zend\EventManager\EventInterface $e) {

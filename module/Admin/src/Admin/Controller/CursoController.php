@@ -100,7 +100,6 @@ class CursoController extends AbstractActionController
     	
     }    
     
-    
     public function editarCursoAction()
     {
     	if($this->identity())

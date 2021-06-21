@@ -122,10 +122,8 @@ $(document).ready(function(){
         var id = $(this).attr("id");
     	
     	if($("#children-"+id).css("display") == "none") 
-    	{
-        
-    		$("#children-"+id).css("display", "table-row");
- 
+    	{        
+    		$("#children-"+id).css("display", "table-row"); 
     	}
     	else
     	{         
